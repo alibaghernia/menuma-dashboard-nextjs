@@ -10,7 +10,6 @@ import {
   Flex,
   Layout,
   Menu,
-  MenuItemProps,
   Typography,
 } from "antd";
 import { Header } from "antd/es/layout/layout";
@@ -24,18 +23,12 @@ import type { MenuProps } from "antd";
 import DashboardOutlinedIcon from "@/icons/dashboard-outlined";
 import ArrowCollapseRightIcon from "@/icons/arrow-collapse-right";
 import { Content } from "antd/lib/layout/layout";
-import { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
 
 const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
   const primaryColor = useTailwindColor("primary");
-  const path = usePathname();
-  console.log({
-    path,
-  });
   const sideMenuItems = useMemo(() => {
     const items: MenuProps["items"] = [
       {
@@ -105,10 +98,13 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         <Sider
           width={"13rem"}
           className={twMerge(
-            classNames("bg-white fixed h-full", {
-              "!right-[-100%]": siderCollapsed && breakpoints.isXs,
-              "transition-all duration-[.1s] right-0": breakpoints.isXs,
-            })
+            classNames(
+              "bg-white fixed h-full shadow-[0_8px_8px_0_rgba(0,0,0,.1)]",
+              {
+                "!right-[-100%]": siderCollapsed && breakpoints.isXs,
+                "transition-all duration-[.1s] right-0": breakpoints.isXs,
+              }
+            )
           )}
           trigger={null}
         >
