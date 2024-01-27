@@ -4,7 +4,10 @@ import React from "react";
 import bg from "@/assets/images/login-bg.svg";
 import { Logo } from "@/components/core/logo";
 import {} from "antd/lib/icon";
-import LoginForm from "./components/form.component";
+import dynamic from "next/dynamic";
+const LoginForm = dynamic(() => import("./components/form.component"), {
+  ssr: false,
+});
 
 export const metadata = {
   title: "ورود به پنل",

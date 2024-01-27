@@ -2,7 +2,7 @@
 import LockOutlinedIcon from "@/icons/lock-outlined";
 import UserOutlinedIcon from "@/icons/user-outlined";
 import { useTailwindColor } from "@/utils/hooks";
-import { Button, Checkbox, Col, Flex, Form, Input } from "antd";
+import { Button, Col, Flex, Form, Input } from "antd";
 import Link from "next/link";
 import React from "react";
 
