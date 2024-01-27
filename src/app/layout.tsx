@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import LocalFont from "next/font/local";
 import { Vazirmatn } from "next/font/google";
-import "./globals.scss";
+import "@/assets/styles/globals.scss";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
+import { GeneralProvider } from "@/providers/general/provider";
+import { RouteChangeProvider } from "@/providers/routeChange/provider";
 const vazirMatn = LocalFont({
   src: [
     {
@@ -53,21 +55,23 @@ export default function RootLayout({
     <html lang="fa">
       <body className={vazirMatn.className}>
         <AntdRegistry>
-          <ConfigProvider
-            theme={{
-              token: {
-                fontFamily: vazirMatn.style.fontFamily,
-                colorPrimary: "#3177FF",
-              },
-              components: {
-                Input: {
-                  paddingBlock: 6,
+          <RouteChangeProvider>
+            <ConfigProvider
+              theme={{
+                token: {
+                  fontFamily: vazirMatn.style.fontFamily,
+                  colorPrimary: "#3177FF",
                 },
-              },
-            }}
-          >
-            {children}
-          </ConfigProvider>
+                components: {
+                  Input: {
+                    paddingBlock: 6,
+                  },
+                },
+              }}
+            >
+              <GeneralProvider>{children}</GeneralProvider>
+            </ConfigProvider>
+          </RouteChangeProvider>
         </AntdRegistry>
       </body>
     </html>
