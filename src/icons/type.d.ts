@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { FC, HTMLAttributes } from "react";
 
-declare interface IconProps {
+declare interface IconProps extends HTMLAttributes<HTMLSpanElement> {
   width?: number;
   height?: number;
   color?: string;
