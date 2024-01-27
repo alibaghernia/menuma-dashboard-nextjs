@@ -52,8 +52,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body className={vazirMatn.className}>
+    <html lang="fa" dir="rtl" className={vazirMatn.className}>
+      <body
+        className={vazirMatn.className}
+        style={{
+          fontFamily: vazirMatn.style.fontFamily,
+        }}
+      >
         <AntdRegistry>
           <RouteChangeProvider>
             <ConfigProvider
@@ -61,6 +66,7 @@ export default function RootLayout({
                 token: {
                   fontFamily: vazirMatn.style.fontFamily,
                   colorPrimary: "#3177FF",
+                  fontSize: 16,
                 },
                 components: {
                   Input: {
@@ -69,7 +75,9 @@ export default function RootLayout({
                 },
               }}
             >
-              <GeneralProvider>{children}</GeneralProvider>
+              <GeneralProvider theme_fontFamily={vazirMatn.style.fontFamily}>
+                {children}
+              </GeneralProvider>
             </ConfigProvider>
           </RouteChangeProvider>
         </AntdRegistry>

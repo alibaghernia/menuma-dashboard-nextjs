@@ -22,7 +22,7 @@ const config: Config = {
       },
     },
     fontFamily: {
-      sans: ["Vazirmatn"],
+      sans: ["vazirmatn"],
     },
   },
   plugins: [],
