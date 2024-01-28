@@ -1,7 +1,11 @@
 "use client";
 import { Logo } from "@/components/core/logo";
 import MenuBarsIcon from "@/icons/menu-bars";
-import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useTailwindColor,
+} from "@/utils/hooks";
 import {
   Avatar,
   Badge,
@@ -14,7 +18,14 @@ import {
 } from "antd";
 import { Header } from "antd/es/layout/layout";
 import classNames from "classnames";
-import React, { FC, PropsWithChildren, useMemo, useState } from "react";
+import React, {
+  FC,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { twMerge } from "tailwind-merge";
 import { BellOutlined } from "@ant-design/icons";
 import userAvatar from "@/assets/images/user-avatar.png";
@@ -23,29 +34,220 @@ import type { MenuProps } from "antd";
 import DashboardOutlinedIcon from "@/icons/dashboard-outlined";
 import ArrowCollapseRightIcon from "@/icons/arrow-collapse-right";
 import { Content } from "antd/lib/layout/layout";
+import PicRightOutlinedIcon from "@/icons/pic-right-outlined";
+import _ from "lodash";
+import PeopleOutlinedIcon from "@/icons/people-outlined";
+import HandshakeOutlined from "@/icons/handshake-outlined";
+import SpacesOutlined from "@/icons/spaces-outlined";
+import GearOutlined from "@/icons/gear-outlined";
+import { Overlay } from "antd/lib/popconfirm/PurePanel";
+import { BreadcrumbProps, MenuRef } from "antd/lib";
+import { usePathname, useSearchParams } from "next/navigation";
+import { MENU_KEYS } from "./contants";
+import { comparePatternWithPathname, setMenuKeys } from "./helpers";
 
 const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
   const primaryColor = useTailwindColor("primary");
+  const router = useCustomRouter();
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(["dashboard"]);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setMenuKeys({ pathname, setSelectedKeys });
+  }, []);
+
   const sideMenuItems = useMemo(() => {
+    const iconColor = (id: string) =>
+      selectedKeys.some((key) => key == id) ? primaryColor : typographyColor;
+
     const items: MenuProps["items"] = [
       {
-        key: "dashboard",
+        key: MENU_KEYS.dashboard,
         label: "داشبورد",
-        icon: <DashboardOutlinedIcon className="ml-1" color={primaryColor} />,
+        onClick: () => router.push("/"),
+        icon: (
+          <DashboardOutlinedIcon
+            className="ml-1"
+            color={iconColor("dashboard")}
+          />
+        ),
+      },
+      {
+        key: MENU_KEYS.menu,
+        label: "منو",
+        icon: (
+          <PicRightOutlinedIcon className="ml-1" color={iconColor("menu")} />
+        ),
+        children: [
+          {
+            key: MENU_KEYS.menu_children.categories,
+            label: "دسته بندی ها",
+            children: [
+              {
+                key: MENU_KEYS.menu_children.categories_children.list,
+                label: "لیست",
+                onClick: () => router.push("/menu/categories"),
+              },
+              {
+                key: MENU_KEYS.menu_children.categories_children.add,
+                label: "افزودن",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        key: MENU_KEYS.customer_club,
+        icon: (
+          <PeopleOutlinedIcon
+            className="ml-1"
+            color={iconColor("customer-club")}
+          />
+        ),
+        label: "باشگاه مشتریان",
+        children: [
+          {
+            key: MENU_KEYS.customer_club_children.customers,
+            label: "مشتریان",
+          },
+        ],
+      },
+      {
+        key: MENU_KEYS.gatherings,
+        icon: (
+          <HandshakeOutlined className="ml-1" color={iconColor("gathers")} />
+        ),
+        label: "دورهمی ها",
+        children: [
+          {
+            key: MENU_KEYS.gatherings_children.list,
+            label: "لیست",
+          },
+        ],
+      },
+      {
+        key: MENU_KEYS.spaces,
+        icon: <SpacesOutlined className="ml-1" color={iconColor("spaces")} />,
+        label: "فضا ها",
+        children: [
+          {
+            key: MENU_KEYS.spaces_children.list,
+            label: "لیست",
+          },
+        ],
+      },
+      {
+        key: MENU_KEYS.settings,
+        icon: <GearOutlined className="ml-1" color={iconColor("settings")} />,
+        label: "تنظیمات",
+        children: [
+          {
+            key: MENU_KEYS.settings_children.profile,
+            label: "پروفایل",
+          },
+        ],
       },
     ];
     return items;
-  }, []);
+  }, [selectedKeys]);
+
+  const breadcrumbs = useMemo(() => {
+    const keys = _.clone(selectedKeys);
+    const breadcrumbsItems: BreadcrumbProps["items"] = [];
+    for (const key of keys) {
+      switch (key) {
+        case MENU_KEYS.dashboard: {
+          breadcrumbsItems.push({
+            title: "داشبورد",
+          });
+          break;
+        }
+        case MENU_KEYS.menu: {
+          breadcrumbsItems.push({
+            title: "منو",
+          });
+          break;
+        }
+        case MENU_KEYS.menu_children.categories: {
+          breadcrumbsItems.push({
+            title: "دسته بندی ها",
+          });
+          break;
+        }
+        case MENU_KEYS.customer_club: {
+          breadcrumbsItems.push({
+            title: "باشگاه مشتریان",
+          });
+          break;
+        }
+        case MENU_KEYS.customer_club_children.customers: {
+          breadcrumbsItems.push({
+            title: "مشتریان",
+          });
+          break;
+        }
+        case MENU_KEYS.menu_children.categories_children.add: {
+          breadcrumbsItems.push({
+            title: "افزودن دسته بندی",
+          });
+          break;
+        }
+        case MENU_KEYS.menu_children.categories_children.list: {
+          breadcrumbsItems.push({
+            title: "لیست دسته بندی ها",
+          });
+          break;
+        }
+        case MENU_KEYS.gatherings: {
+          breadcrumbsItems.push({
+            title: "دورهمی ها",
+          });
+          break;
+        }
+        case MENU_KEYS.gatherings_children.list: {
+          breadcrumbsItems.push({
+            title: "لیست دورهمی ها",
+          });
+          break;
+        }
+        case MENU_KEYS.spaces: {
+          breadcrumbsItems.push({
+            title: "فضا ها",
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.list: {
+          breadcrumbsItems.push({
+            title: "لیست فضا ها",
+          });
+          break;
+        }
+        case MENU_KEYS.settings: {
+          breadcrumbsItems.push({
+            title: "تنظیمات",
+          });
+          break;
+        }
+        case MENU_KEYS.settings_children.profile: {
+          breadcrumbsItems.push({
+            title: "پروفایل",
+          });
+          break;
+        }
+      }
+    }
+    return breadcrumbsItems;
+  }, [selectedKeys]);
 
   return (
     <Layout>
       <Header
         className={twMerge(
           classNames(
-            "bg-white shadow-[0_-2px_8px_0_rgba(0,0,0,.2)] sticky top-0",
+            "bg-white shadow-[0_-2px_8px_0_rgba(0,0,0,.2)] sticky z-20 top-0",
             {
               "px-[1.5rem]": breakpoints.isXs,
             }
@@ -95,34 +297,60 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         </Flex>
       </Header>
       <Layout className="min-h-[calc(100vh-63px)]">
+        <span
+          onClick={() => setSiderCollapsed(true)}
+          className={twMerge(
+            classNames(
+              "z-10 fixed inset-0 bg-black/[.1] pointer-events-none opacity-0 transition-opacity duration-[.3s]",
+              {
+                "pointer-events-auto opacity-1":
+                  breakpoints.isXs && !siderCollapsed,
+              }
+            )
+          )}
+        />
+
         <Sider
           width={"13rem"}
           className={twMerge(
             classNames(
-              "bg-white fixed h-full shadow-[0_8px_8px_0_rgba(0,0,0,.1)]",
+              "bg-white fixed h-full shadow-[0_8px_8px_0_rgba(0,0,0,.1)] z-30",
               {
-                "!right-[-100%]": siderCollapsed && breakpoints.isXs,
                 "transition-all duration-[.1s] right-0": breakpoints.isXs,
+                "right-[-100%]": siderCollapsed && breakpoints.isXs,
               }
             )
           )}
           trigger={null}
         >
-          <Menu mode="inline" items={sideMenuItems} />
+          <Menu
+            key={selectedKeys.toString()}
+            mode="inline"
+            items={sideMenuItems}
+            selectedKeys={selectedKeys}
+            defaultOpenKeys={selectedKeys}
+            onSelect={(info) => {
+              setSiderCollapsed(true);
+              setSelectedKeys(info.keyPath.reverse());
+            }}
+          />
         </Sider>
         <Layout
           className={twMerge(
             classNames("transition duration-[.3s] p-[1.5rem] sm:p-[2.5rem]", {
-              "mr-[13rem]":
-                (!siderCollapsed && breakpoints.isXs) || breakpoints.isSm,
+              "mr-[13rem]": breakpoints.isSm,
             })
           )}
         >
-          <Breadcrumb>
-            <Breadcrumb.Item>منوما</Breadcrumb.Item>
-            <Breadcrumb.Item>داشبورد</Breadcrumb.Item>
-          </Breadcrumb>
-          <Content>{children}</Content>
+          <Breadcrumb
+            className={twMerge(
+              classNames({
+                "text-[.7rem]": breakpoints.isXs,
+              })
+            )}
+            items={breadcrumbs}
+          />
+          <Content className="mt-[1.5rem]">{children}</Content>
         </Layout>
       </Layout>
     </Layout>

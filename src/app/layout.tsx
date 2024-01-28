@@ -1,12 +1,13 @@
 import "@/assets/styles/globals.scss";
 import type { Metadata } from "next";
 import LocalFont from "next/font/local";
-import { Vazirmatn } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import { GeneralProvider } from "@/providers/general/provider";
 import { RouteChangeProvider } from "@/providers/routeChange/provider";
 const vazirMatn = LocalFont({
+  display: "swap",
+  variable: "--font-vazirmatn",
   src: [
     {
       path: "../assets/fonts/vazirFD-100.woff2",
@@ -55,7 +56,7 @@ export default function RootLayout({
       <body
         className={vazirMatn.className}
         style={{
-          fontFamily: vazirMatn.style.fontFamily,
+          fontFamily: "var(--font-vazirmatn)",
         }}
       >
         <AntdRegistry>

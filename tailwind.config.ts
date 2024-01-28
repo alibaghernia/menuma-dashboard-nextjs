@@ -22,7 +22,8 @@ const config: Config = {
       },
     },
     fontFamily: {
-      sans: ["vazirmatn"],
+      sans: ["var(--font-vazirmatn)"],
+      mono: ["var(--font-vazirmatn)"],
     },
   },
   plugins: [],
