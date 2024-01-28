@@ -1,21 +1,10 @@
 import { Col, Flex, Row } from "antd";
-import { Button, Table, TableProps, Typography } from "antd/lib";
 import Search from "antd/lib/input/Search";
 import React from "react";
+import CategoriesTable from "./components/table";
+import NavigateToAddButton from "./components/navigate-to-add-button";
 
 const CategoriesPage = () => {
-  const columns: TableProps["columns"] = [
-    {
-      key: "name",
-      title: "نام",
-    },
-    {
-      key: "actions",
-      title: "عملیات",
-      width: 100,
-    },
-  ];
-
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -38,20 +27,12 @@ const CategoriesPage = () => {
                 <Search />
               </Col>
               <Col>
-                <Button ghost type="primary">
-                  افزودن
-                </Button>
+                <NavigateToAddButton />
               </Col>
             </Flex>
           </Row>
           <Row>
-            <Table
-              className="w-full rounded-[1rem] overflow-hidden"
-              locale={{
-                emptyText: "داده ای وجود ندارد",
-              }}
-              columns={columns}
-            />
+            <CategoriesTable />
           </Row>
         </Flex>
       </Row>

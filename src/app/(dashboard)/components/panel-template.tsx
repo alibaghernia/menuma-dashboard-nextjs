@@ -57,7 +57,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     setMenuKeys({ pathname, setSelectedKeys });
-  }, []);
+  }, [pathname]);
 
   const sideMenuItems = useMemo(() => {
     const iconColor = (id: string) =>
@@ -94,6 +94,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
               {
                 key: MENU_KEYS.menu_children.categories_children.add,
                 label: "افزودن",
+                onClick: () => router.push("/menu/categories/add"),
               },
             ],
           },
@@ -296,7 +297,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
           </Col>
         </Flex>
       </Header>
-      <Layout className="min-h-[calc(100vh-63px)]">
+      <Layout className="min-h-[calc(100vh-64px)]">
         <span
           onClick={() => setSiderCollapsed(true)}
           className={twMerge(

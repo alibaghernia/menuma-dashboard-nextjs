@@ -62,6 +62,7 @@ export default function RootLayout({
         <AntdRegistry>
           <RouteChangeProvider>
             <ConfigProvider
+              direction="rtl"
               theme={{
                 token: {
                   fontFamily: vazirMatn.style.fontFamily,
