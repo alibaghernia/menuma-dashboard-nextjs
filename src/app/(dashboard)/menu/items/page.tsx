@@ -1,16 +1,17 @@
 import { Card, Col, Flex, Row } from "antd";
 import Search from "antd/lib/input/Search";
 import React from "react";
-import CategoriesTable from "./components/table";
-import NavigateToAddButton from "./components/navigate-to-add-button";
+import ItemsTable from "./components/table";
+import { Button } from "antd/lib";
+import Link from "@/components/common/link/link";
 
-const CategoriesPage = () => {
+const ItemsPage = () => {
   return (
     <Flex vertical gap="1.44rem">
       <Row>
         <Flex>
           <Col>
-            <div className="text-[1.5rem] font-semibold">دسته بندی ها</div>
+            <div className="text-[1.5rem] font-semibold">آیتم ها</div>
           </Col>
         </Flex>
       </Row>
@@ -28,12 +29,14 @@ const CategoriesPage = () => {
                   <Search />
                 </Col>
                 <Col>
-                  <NavigateToAddButton />
+                  <Button ghost type="primary">
+                    <Link href="/menu/items/add">افزودن</Link>
+                  </Button>
                 </Col>
               </Flex>
             </Row>
             <Row>
-              <CategoriesTable />
+              <ItemsTable />
             </Row>
           </Flex>
         </Card>
@@ -42,4 +45,4 @@ const CategoriesPage = () => {
   );
 };
 
-export default CategoriesPage;
+export default ItemsPage;

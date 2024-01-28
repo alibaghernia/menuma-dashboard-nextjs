@@ -1,8 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 
-declare interface IGeneralProviderProps {
-  theme_fontFamily: string;
-}
+declare interface IGeneralProviderProps {}
 
 declare type IGeneralProviderContext = {
   loadings: string[];

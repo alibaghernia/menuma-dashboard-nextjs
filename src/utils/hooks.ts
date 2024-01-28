@@ -9,15 +9,8 @@ import { useContext, useMemo } from "react";
 import resolveConfig from "tailwindcss/resolveConfig";
 export const useTailwindColor = (color: string) => {
   const resolvedTailwindConfig = resolveConfig(tailwindConfig);
-
   //@ts-ignore
-  return resolvedTailwindConfig.theme.colors[color]?.toString();
-};
-
-export const useFontFamily = () => {
-  const { theme_fontFamily } = useContext(GeneralProviderContext);
-
-  return theme_fontFamily;
+  return resolvedTailwindConfig.theme.colors[color];
 };
 
 export const useCurrentBreakpoints = () => {

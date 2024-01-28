@@ -7,6 +7,11 @@ export const MENU_KEYS = {
       list: "categories-list",
       add: "categories-add",
     },
+    items: "items",
+    items_children: {
+      list: "items-list",
+      add: "items-add",
+    },
   },
   customer_club: "customer_club",
   customer_club_children: {

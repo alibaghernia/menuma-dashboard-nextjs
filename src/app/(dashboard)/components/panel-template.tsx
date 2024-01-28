@@ -6,16 +6,7 @@ import {
   useCustomRouter,
   useTailwindColor,
 } from "@/utils/hooks";
-import {
-  Avatar,
-  Badge,
-  Breadcrumb,
-  Col,
-  Flex,
-  Layout,
-  Menu,
-  Typography,
-} from "antd";
+import { Avatar, Badge, Col, Flex, Layout, Menu, Typography } from "antd";
 import { Header } from "antd/es/layout/layout";
 import classNames from "classnames";
 import React, {
@@ -23,7 +14,6 @@ import React, {
   PropsWithChildren,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
@@ -40,11 +30,10 @@ import PeopleOutlinedIcon from "@/icons/people-outlined";
 import HandshakeOutlined from "@/icons/handshake-outlined";
 import SpacesOutlined from "@/icons/spaces-outlined";
 import GearOutlined from "@/icons/gear-outlined";
-import { Overlay } from "antd/lib/popconfirm/PurePanel";
-import { BreadcrumbProps, MenuRef } from "antd/lib";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { MENU_KEYS } from "./contants";
-import { comparePatternWithPathname, setMenuKeys } from "./helpers";
+import { setMenuKeys } from "./helpers";
+import Breadcrumb from "./breadcrumb";
 
 const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
@@ -95,6 +84,22 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
                 key: MENU_KEYS.menu_children.categories_children.add,
                 label: "افزودن",
                 onClick: () => router.push("/menu/categories/add"),
+              },
+            ],
+          },
+          {
+            key: MENU_KEYS.menu_children.items,
+            label: "آیتم ها",
+            children: [
+              {
+                key: MENU_KEYS.menu_children.items_children.list,
+                label: "لیست",
+                onClick: () => router.push("/menu/items"),
+              },
+              {
+                key: MENU_KEYS.menu_children.items_children.add,
+                label: "افزودن",
+                onClick: () => router.push("/menu/items/add"),
               },
             ],
           },
@@ -153,94 +158,6 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
       },
     ];
     return items;
-  }, [selectedKeys]);
-
-  const breadcrumbs = useMemo(() => {
-    const keys = _.clone(selectedKeys);
-    const breadcrumbsItems: BreadcrumbProps["items"] = [];
-    for (const key of keys) {
-      switch (key) {
-        case MENU_KEYS.dashboard: {
-          breadcrumbsItems.push({
-            title: "داشبورد",
-          });
-          break;
-        }
-        case MENU_KEYS.menu: {
-          breadcrumbsItems.push({
-            title: "منو",
-          });
-          break;
-        }
-        case MENU_KEYS.menu_children.categories: {
-          breadcrumbsItems.push({
-            title: "دسته بندی ها",
-          });
-          break;
-        }
-        case MENU_KEYS.customer_club: {
-          breadcrumbsItems.push({
-            title: "باشگاه مشتریان",
-          });
-          break;
-        }
-        case MENU_KEYS.customer_club_children.customers: {
-          breadcrumbsItems.push({
-            title: "مشتریان",
-          });
-          break;
-        }
-        case MENU_KEYS.menu_children.categories_children.add: {
-          breadcrumbsItems.push({
-            title: "افزودن دسته بندی",
-          });
-          break;
-        }
-        case MENU_KEYS.menu_children.categories_children.list: {
-          breadcrumbsItems.push({
-            title: "لیست دسته بندی ها",
-          });
-          break;
-        }
-        case MENU_KEYS.gatherings: {
-          breadcrumbsItems.push({
-            title: "دورهمی ها",
-          });
-          break;
-        }
-        case MENU_KEYS.gatherings_children.list: {
-          breadcrumbsItems.push({
-            title: "لیست دورهمی ها",
-          });
-          break;
-        }
-        case MENU_KEYS.spaces: {
-          breadcrumbsItems.push({
-            title: "فضا ها",
-          });
-          break;
-        }
-        case MENU_KEYS.spaces_children.list: {
-          breadcrumbsItems.push({
-            title: "لیست فضا ها",
-          });
-          break;
-        }
-        case MENU_KEYS.settings: {
-          breadcrumbsItems.push({
-            title: "تنظیمات",
-          });
-          break;
-        }
-        case MENU_KEYS.settings_children.profile: {
-          breadcrumbsItems.push({
-            title: "پروفایل",
-          });
-          break;
-        }
-      }
-    }
-    return breadcrumbsItems;
   }, [selectedKeys]);
 
   return (
@@ -343,14 +260,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
             })
           )}
         >
-          <Breadcrumb
-            className={twMerge(
-              classNames({
-                "text-[.7rem]": breakpoints.isXs,
-              })
-            )}
-            items={breadcrumbs}
-          />
+          <Breadcrumb selectedKeys={selectedKeys} />
           <Content className="mt-[1.5rem]">{children}</Content>
         </Layout>
       </Layout>

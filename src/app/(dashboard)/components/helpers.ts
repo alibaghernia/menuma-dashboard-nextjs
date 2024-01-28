@@ -7,6 +7,8 @@ export const setMenuKeys = ({
   pathname: string;
   setSelectedKeys: (satte: string[]) => void;
 }) => {
+  const menu_categories = [MENU_KEYS.menu, MENU_KEYS.menu_children.categories];
+  const menu_items = [MENU_KEYS.menu, MENU_KEYS.menu_children.items];
   switch (pathname) {
     case "/": {
       setSelectedKeys([MENU_KEYS.dashboard]);
@@ -14,17 +16,29 @@ export const setMenuKeys = ({
     }
     case "/menu/categories": {
       setSelectedKeys([
-        MENU_KEYS.menu,
-        MENU_KEYS.menu_children.categories,
+        ...menu_categories,
         MENU_KEYS.menu_children.categories_children.list,
       ]);
       break;
     }
     case "/menu/categories/add": {
       setSelectedKeys([
-        MENU_KEYS.menu,
-        MENU_KEYS.menu_children.categories,
+        ...menu_categories,
         MENU_KEYS.menu_children.categories_children.add,
+      ]);
+      break;
+    }
+    case "/menu/items/add": {
+      setSelectedKeys([
+        ...menu_items,
+        MENU_KEYS.menu_children.items_children.add,
+      ]);
+      break;
+    }
+    case "/menu/items": {
+      setSelectedKeys([
+        ...menu_items,
+        MENU_KEYS.menu_children.items_children.list,
       ]);
       break;
     }

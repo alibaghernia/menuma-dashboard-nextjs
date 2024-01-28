@@ -4,7 +4,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { Button, Col, Flex, Table, TableProps } from "antd/lib";
 import React from "react";
 
-const CategoriesTable = () => {
+const ItemsTable = () => {
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
   const columns: TableProps["columns"] = [
@@ -35,21 +35,17 @@ const CategoriesTable = () => {
       },
     },
   ];
-  const dataSource = [
-    {
-      name: "test",
-    },
-  ];
+  // const dataSource = [];
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
-      locale={{
-        emptyText: "داده ای وجود ندارد",
-      }}
+      // locale={{
+      //   emptyText: "داده ای وجود ندارد",
+      // }}
       columns={columns}
-      dataSource={dataSource}
+      // dataSource={dataSource}
     />
   );
 };
 
-export default CategoriesTable;
+export default ItemsTable;

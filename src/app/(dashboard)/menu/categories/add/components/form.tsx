@@ -10,7 +10,7 @@ const AddCategoryForm = () => {
 
   return (
     <Card className="w-full">
-      <Form form={form} layout="vertical" className="w-fit">
+      <Form form={form} layout="vertical" className="w-full md:w-fit">
         <Form.Item
           name="name"
           label="نام"
@@ -30,6 +30,7 @@ const AddCategoryForm = () => {
             listType="picture"
             multiple={false}
             showUploadList
+            accept=".png,.jpg,.jpeg"
             onChange={(info) => {
               setFileList(info.fileList);
             }}
