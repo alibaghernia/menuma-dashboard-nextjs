@@ -1,6 +1,6 @@
 "use client";
 import { InboxOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Select } from "antd";
 import {
   Card,
   Col,
@@ -49,6 +49,15 @@ const TableForm = () => {
               ]}
             >
               <Input placeholder="کد..." />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="hall"
+              label="سالن"
+              help="در صورتی که میز داخل سالن خاصی است، سالن را انتخاب کنید."
+            >
+              <Select className="w-full" placeholder="سالن..." />
             </Form.Item>
           </Col>
         </Row>
