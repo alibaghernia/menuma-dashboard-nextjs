@@ -20,28 +20,29 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <ConfigProvider
-          direction="rtl"
-          theme={{
-            token: {
-              colorPrimary: "#3177FF",
-              fontSize: 16,
-            },
-            components: {
-              Input: {
-                paddingBlock: 6,
-              },
-            },
-          }}
-        >
+        <AntdRegistry>
           <LocaleProvider locale={faIR}>
-            <AntdRegistry>
+            <ConfigProvider
+              direction="rtl"
+              theme={{
+                token: {
+                  colorPrimary: "#3177FF",
+                  fontSize: 16,
+                },
+                components: {
+                  Input: {
+                    paddingBlock: 6,
+                  },
+                },
+              }}
+              locale={faIR}
+            >
               <RouteChangeProvider>
                 <GeneralProvider>{children}</GeneralProvider>
               </RouteChangeProvider>
-            </AntdRegistry>
+            </ConfigProvider>
           </LocaleProvider>
-        </ConfigProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

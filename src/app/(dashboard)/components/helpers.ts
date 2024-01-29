@@ -67,6 +67,20 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case "/conditional_discounts": {
+      setSelectedKeys([
+        MENU_KEYS.conditional_discounts,
+        MENU_KEYS.conditional_discounts_children.list,
+      ]);
+      break;
+    }
+    case "/conditional_discounts/add": {
+      setSelectedKeys([
+        MENU_KEYS.conditional_discounts,
+        MENU_KEYS.conditional_discounts_children.add,
+      ]);
+      break;
+    }
     default: {
       if (comparePatternWithPathname(pathname, "/menu/categories/[add]")) {
         setSelectedKeys([

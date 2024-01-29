@@ -34,6 +34,7 @@ import { usePathname } from "next/navigation";
 import { MENU_KEYS } from "./contants";
 import { setMenuKeys } from "./helpers";
 import Breadcrumb from "./breadcrumb";
+import DiscountOutlined from "@/icons/discount-outlined";
 
 const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
@@ -65,6 +66,28 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         ),
       },
       {
+        key: MENU_KEYS.conditional_discounts,
+        icon: (
+          <DiscountOutlined
+            className="ml-1"
+            color={iconColor(MENU_KEYS.conditional_discounts)}
+          />
+        ),
+        label: "تخفیف های شرطی",
+        onClick: () => router.push("/conditional_discounts"),
+      },
+      {
+        key: MENU_KEYS.gatherings,
+        onClick: () => router.push("/events"),
+        icon: (
+          <HandshakeOutlined
+            className="ml-1"
+            color={iconColor(MENU_KEYS.gatherings)}
+          />
+        ),
+        label: "دورهمی ها",
+      },
+      {
         key: MENU_KEYS.menu,
         label: "منو",
         icon: (
@@ -77,34 +100,12 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
           {
             key: MENU_KEYS.menu_children.categories,
             label: "دسته بندی ها",
-            children: [
-              {
-                key: MENU_KEYS.menu_children.categories_children.list,
-                label: "لیست",
-                onClick: () => router.push("/menu/categories"),
-              },
-              {
-                key: MENU_KEYS.menu_children.categories_children.add,
-                label: "افزودن",
-                onClick: () => router.push("/menu/categories/add"),
-              },
-            ],
+            onClick: () => router.push("/menu/categories"),
           },
           {
             key: MENU_KEYS.menu_children.items,
             label: "آیتم ها",
-            children: [
-              {
-                key: MENU_KEYS.menu_children.items_children.list,
-                label: "لیست",
-                onClick: () => router.push("/menu/items"),
-              },
-              {
-                key: MENU_KEYS.menu_children.items_children.add,
-                label: "افزودن",
-                onClick: () => router.push("/menu/items/add"),
-              },
-            ],
+            onClick: () => router.push("/menu/items"),
           },
         ],
       },
@@ -126,17 +127,6 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         ],
       },
       {
-        key: MENU_KEYS.gatherings,
-        onClick: () => router.push("/events"),
-        icon: (
-          <HandshakeOutlined
-            className="ml-1"
-            color={iconColor(MENU_KEYS.gatherings)}
-          />
-        ),
-        label: "دورهمی ها",
-      },
-      {
         key: MENU_KEYS.spaces,
         icon: (
           <SpacesOutlined
@@ -147,8 +137,8 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         label: "فضا ها",
         children: [
           {
-            key: MENU_KEYS.spaces_children.list,
-            label: "لیست",
+            key: MENU_KEYS.spaces_children.halls,
+            label: "سالن ها",
           },
         ],
       },

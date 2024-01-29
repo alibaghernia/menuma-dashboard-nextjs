@@ -13,6 +13,11 @@ export const MENU_KEYS = {
       add: "items-add",
     },
   },
+  conditional_discounts: "conditional-discounts",
+  conditional_discounts_children: {
+    list: "cond-dis-list",
+    add: "cond-dis-add",
+  },
   customer_club: "customer_club",
   customer_club_children: {
     customers: "customer_club-customers",
@@ -28,7 +33,7 @@ export const MENU_KEYS = {
   },
   spaces: "spaces",
   spaces_children: {
-    list: "spaces-list",
+    halls: "spaces-halls",
   },
   settings: "settings",
   settings_children: {

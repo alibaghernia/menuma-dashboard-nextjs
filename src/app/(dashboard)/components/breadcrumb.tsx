@@ -84,7 +84,7 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
-        case MENU_KEYS.spaces_children.list: {
+        case MENU_KEYS.spaces_children.halls: {
           breadcrumbsItems.push({
             title: "لیست فضا ها",
           });
@@ -129,6 +129,28 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.customer_club_children.customers_children.add: {
           breadcrumbsItems.push({
             title: linking("افزودن مشتری", "/customer_club/customers/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.conditional_discounts: {
+          breadcrumbsItems.push({
+            title: linking("تخفیف های شرطی", "/conditional_discounts", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.conditional_discounts_children.list: {
+          breadcrumbsItems.push({
+            title: linking("تخفیف های شرطی", "/conditional_discounts", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.conditional_discounts_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن تحفیف شرطی",
+              "/conditional_discounts/add",
+              idx
+            ),
           });
           break;
         }
