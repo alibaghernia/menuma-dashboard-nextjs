@@ -35,6 +35,7 @@ import { MENU_KEYS } from "./contants";
 import { setMenuKeys } from "./helpers";
 import Breadcrumb from "./breadcrumb";
 import DiscountOutlined from "@/icons/discount-outlined";
+import Link from "@/components/common/link/link";
 
 const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
@@ -138,7 +139,11 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         children: [
           {
             key: MENU_KEYS.spaces_children.halls,
-            label: "سالن ها",
+            label: <Link href="/spaces/halls">سالن ها</Link>,
+          },
+          {
+            key: MENU_KEYS.spaces_children.tables,
+            label: <Link href="/spaces/tables">میز ها</Link>,
           },
         ],
       },

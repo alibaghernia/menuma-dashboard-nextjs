@@ -34,6 +34,15 @@ export const MENU_KEYS = {
   spaces: "spaces",
   spaces_children: {
     halls: "spaces-halls",
+    halls_children: {
+      list: "spa-hal-list",
+      add: "spa-hal-add",
+    },
+    tables: "spaces-table",
+    tables_children: {
+      list: "spa-tab-list",
+      add: "spa-tab-add",
+    },
   },
   settings: "settings",
   settings_children: {

@@ -13,6 +13,8 @@ export const setMenuKeys = ({
     MENU_KEYS.customer_club,
     MENU_KEYS.customer_club_children.customers,
   ];
+  const spaces_halls = [MENU_KEYS.spaces, MENU_KEYS.spaces_children.halls];
+  const spaces_tables = [MENU_KEYS.spaces, MENU_KEYS.spaces_children.tables];
   switch (pathname) {
     case "/": {
       setSelectedKeys([MENU_KEYS.dashboard]);
@@ -78,6 +80,34 @@ export const setMenuKeys = ({
       setSelectedKeys([
         MENU_KEYS.conditional_discounts,
         MENU_KEYS.conditional_discounts_children.add,
+      ]);
+      break;
+    }
+    case "/spaces/halls": {
+      setSelectedKeys([
+        ...spaces_halls,
+        MENU_KEYS.spaces_children.halls_children.list,
+      ]);
+      break;
+    }
+    case "/spaces/halls/add": {
+      setSelectedKeys([
+        ...spaces_halls,
+        MENU_KEYS.spaces_children.halls_children.add,
+      ]);
+      break;
+    }
+    case "/spaces/tables": {
+      setSelectedKeys([
+        ...spaces_tables,
+        MENU_KEYS.spaces_children.tables_children.list,
+      ]);
+      break;
+    }
+    case "/spaces/tables/add": {
+      setSelectedKeys([
+        ...spaces_tables,
+        MENU_KEYS.spaces_children.tables_children.add,
       ]);
       break;
     }

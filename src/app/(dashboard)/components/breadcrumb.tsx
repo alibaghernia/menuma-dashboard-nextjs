@@ -84,12 +84,6 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
-        case MENU_KEYS.spaces_children.halls: {
-          breadcrumbsItems.push({
-            title: "لیست فضا ها",
-          });
-          break;
-        }
         case MENU_KEYS.settings: {
           breadcrumbsItems.push({
             title: "تنظیمات",
@@ -141,6 +135,48 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.conditional_discounts_children.list: {
           breadcrumbsItems.push({
             title: linking("تخفیف های شرطی", "/conditional_discounts", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces: {
+          breadcrumbsItems.push({
+            title: "فضاها",
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.halls: {
+          breadcrumbsItems.push({
+            title: linking("سالن ها", "/spaces/halls", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.halls_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست سالن ها", "/spaces/halls", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.halls_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن سالن", "/spaces/halls/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.tables: {
+          breadcrumbsItems.push({
+            title: linking("میز ها", "/spaces/tables", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.tables_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست میز ها", "/spaces/tables", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.tables_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن میز", "/spaces/tables/add", idx),
           });
           break;
         }

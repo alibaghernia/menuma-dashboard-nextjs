@@ -3,7 +3,7 @@ import PopDots from "@/icons/pop-dots";
 import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Col, Drawer, Flex, Popover, Table } from "antd/lib";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { ITableActions } from "./types";
 
 const TableActions: ITableActions = (props) => {
@@ -18,6 +18,23 @@ const TableActions: ITableActions = (props) => {
       value: v,
     }));
   }, [props.record, props.seeAllNames]);
+
+  const otherActions = useMemo(() => {
+    return props.otherActions?.map((action, idx) => (
+      <Col key={idx}>
+        <Button
+          icon={action.icon}
+          type={action.type}
+          onClick={(e) => {
+            action.onClick?.(e);
+            if (action.closeActionsOnClick) setIsOpen(false);
+          }}
+        >
+          {action.title}
+        </Button>
+      </Col>
+    ));
+  }, [props.otherActions]);
 
   return (
     <>
@@ -52,6 +69,7 @@ const TableActions: ITableActions = (props) => {
                 </Button>
               </Col>
             )}
+            {otherActions}
           </Flex>
         }
         open={isOpen}
