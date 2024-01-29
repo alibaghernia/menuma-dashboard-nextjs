@@ -180,6 +180,18 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.settings: {
+          breadcrumbsItems.push({
+            title: "تنظیمات",
+          });
+          break;
+        }
+        case MENU_KEYS.settings_children.profile: {
+          breadcrumbsItems.push({
+            title: linking("پروفایل", "/settings/profile", idx),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(

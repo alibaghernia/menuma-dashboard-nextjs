@@ -159,7 +159,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         children: [
           {
             key: MENU_KEYS.settings_children.profile,
-            label: "پروفایل",
+            label: <Link href="/settings/profile">پروفایل</Link>,
           },
         ],
       },

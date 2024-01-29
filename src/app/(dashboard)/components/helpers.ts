@@ -111,6 +111,13 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case "/settings/profile": {
+      setSelectedKeys([
+        MENU_KEYS.settings,
+        MENU_KEYS.settings_children.profile,
+      ]);
+      break;
+    }
     default: {
       if (comparePatternWithPathname(pathname, "/menu/categories/[add]")) {
         setSelectedKeys([
