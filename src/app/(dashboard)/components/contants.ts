@@ -16,6 +16,10 @@ export const MENU_KEYS = {
   customer_club: "customer_club",
   customer_club_children: {
     customers: "customer_club-customers",
+    customers_children: {
+      list: "cus-club-cust-list",
+      add: "cus-club-cust-add",
+    },
   },
   gatherings: "getherings",
   gatherings_children: {

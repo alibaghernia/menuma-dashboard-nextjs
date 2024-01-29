@@ -5,27 +5,49 @@ import { EditOutlined } from "@ant-design/icons";
 import { Button, Col, Flex, Table, TableProps } from "antd/lib";
 import React from "react";
 
-const CategoriesTable = () => {
+const CustomersTable = () => {
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
   const columns: TableProps["columns"] = [
     {
-      key: "name",
       title: "نام",
-      dataIndex: "name",
+      dataIndex: "first_name",
+    },
+    {
+      title: "نام خانوادگی",
+      dataIndex: "last_name",
+    },
+    {
+      title: "شماره موبایل",
+      dataIndex: "mobile",
+      responsive: ["md"],
     },
     {
       key: "actions",
       title: "عملیات",
       width: 100,
       render: (value, rec, idx) => {
-        return <TableActions value={value} record={rec} index={idx} />;
+        return (
+          <TableActions
+            value={value}
+            record={rec}
+            index={idx}
+            seeAllNames={{
+              first_name: "نام",
+              last_name: "نام خانوادگی",
+              mobile: "شماره موبایل",
+            }}
+            seeAll
+          />
+        );
       },
     },
   ];
   const dataSource = [
     {
-      name: "test",
+      first_name: "test",
+      last_name: "test",
+      mobile: "09900000000",
     },
   ];
   return (
@@ -40,4 +62,4 @@ const CategoriesTable = () => {
   );
 };
 
-export default CategoriesTable;
+export default CustomersTable;

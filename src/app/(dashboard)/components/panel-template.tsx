@@ -60,7 +60,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         icon: (
           <DashboardOutlinedIcon
             className="ml-1"
-            color={iconColor("dashboard")}
+            color={iconColor(MENU_KEYS.dashboard)}
           />
         ),
       },
@@ -68,7 +68,10 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         key: MENU_KEYS.menu,
         label: "منو",
         icon: (
-          <PicRightOutlinedIcon className="ml-1" color={iconColor("menu")} />
+          <PicRightOutlinedIcon
+            className="ml-1"
+            color={iconColor(MENU_KEYS.menu)}
+          />
         ),
         children: [
           {
@@ -110,7 +113,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
         icon: (
           <PeopleOutlinedIcon
             className="ml-1"
-            color={iconColor("customer-club")}
+            color={iconColor(MENU_KEYS.customer_club)}
           />
         ),
         label: "باشگاه مشتریان",
@@ -118,25 +121,34 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
           {
             key: MENU_KEYS.customer_club_children.customers,
             label: "مشتریان",
+            onClick: () => router.push("/customer_club/customers"),
           },
         ],
       },
       {
         key: MENU_KEYS.gatherings,
         icon: (
-          <HandshakeOutlined className="ml-1" color={iconColor("gathers")} />
+          <HandshakeOutlined
+            className="ml-1"
+            color={iconColor(MENU_KEYS.gatherings)}
+          />
         ),
         label: "دورهمی ها",
-        children: [
-          {
-            key: MENU_KEYS.gatherings_children.list,
-            label: "لیست",
-          },
-        ],
+        // children: [
+        //   {
+        //     key: MENU_KEYS.gatherings_children.list,
+        //     label: "لیست",
+        //   },
+        // ],
       },
       {
         key: MENU_KEYS.spaces,
-        icon: <SpacesOutlined className="ml-1" color={iconColor("spaces")} />,
+        icon: (
+          <SpacesOutlined
+            className="ml-1"
+            color={iconColor(MENU_KEYS.spaces)}
+          />
+        ),
         label: "فضا ها",
         children: [
           {
@@ -147,7 +159,12 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
       },
       {
         key: MENU_KEYS.settings,
-        icon: <GearOutlined className="ml-1" color={iconColor("settings")} />,
+        icon: (
+          <GearOutlined
+            className="ml-1"
+            color={iconColor(MENU_KEYS.settings)}
+          />
+        ),
         label: "تنظیمات",
         children: [
           {

@@ -9,6 +9,10 @@ export const setMenuKeys = ({
 }) => {
   const menu_categories = [MENU_KEYS.menu, MENU_KEYS.menu_children.categories];
   const menu_items = [MENU_KEYS.menu, MENU_KEYS.menu_children.items];
+  const customer_club_customers = [
+    MENU_KEYS.customer_club,
+    MENU_KEYS.customer_club_children.customers,
+  ];
   switch (pathname) {
     case "/": {
       setSelectedKeys([MENU_KEYS.dashboard]);
@@ -35,10 +39,17 @@ export const setMenuKeys = ({
       ]);
       break;
     }
-    case "/menu/items": {
+    case "/customer_club/customers": {
       setSelectedKeys([
-        ...menu_items,
-        MENU_KEYS.menu_children.items_children.list,
+        ...customer_club_customers,
+        MENU_KEYS.customer_club_children.customers_children.list,
+      ]);
+      break;
+    }
+    case "/customer_club/customers/add": {
+      setSelectedKeys([
+        ...customer_club_customers,
+        MENU_KEYS.customer_club_children.customers_children.add,
       ]);
       break;
     }
