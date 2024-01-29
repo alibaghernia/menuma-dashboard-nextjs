@@ -62,13 +62,19 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         }
         case MENU_KEYS.gatherings: {
           breadcrumbsItems.push({
-            title: "دورهمی ها",
+            title: linking("دورهمی ها", "/events", idx),
           });
           break;
         }
         case MENU_KEYS.gatherings_children.list: {
           breadcrumbsItems.push({
-            title: "لیست دورهمی ها",
+            title: linking("لیست دورهمی ها", "/events", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.gatherings_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن دورهمی", "/events/add", idx),
           });
           break;
         }

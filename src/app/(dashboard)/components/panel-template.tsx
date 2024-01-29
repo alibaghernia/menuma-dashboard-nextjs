@@ -127,6 +127,7 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
       },
       {
         key: MENU_KEYS.gatherings,
+        onClick: () => router.push("/events"),
         icon: (
           <HandshakeOutlined
             className="ml-1"
@@ -134,12 +135,6 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
           />
         ),
         label: "دورهمی ها",
-        // children: [
-        //   {
-        //     key: MENU_KEYS.gatherings_children.list,
-        //     label: "لیست",
-        //   },
-        // ],
       },
       {
         key: MENU_KEYS.spaces,

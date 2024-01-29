@@ -27,7 +27,19 @@ const AddItemForm = () => {
   const redColor = useTailwindColor("red");
   return (
     <Card className="w-full">
-      <Form form={form} layout="vertical" className="w-full ">
+      <Form
+        form={form}
+        layout="vertical"
+        className="w-full"
+        initialValues={{
+          prices: [
+            {
+              title: "",
+              price: null,
+            },
+          ],
+        }}
+      >
         <Row gutter={16}>
           <Col xs={24} sm={12}>
             <Form.Item
@@ -143,6 +155,7 @@ const AddItemForm = () => {
                             <InputNumber
                               className="w-full"
                               placeholder="قیمت..."
+                              min={0}
                             />
                           </Form.Item>
                         </Col>

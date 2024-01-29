@@ -53,6 +53,20 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case "/events": {
+      setSelectedKeys([
+        MENU_KEYS.gatherings,
+        MENU_KEYS.gatherings_children.list,
+      ]);
+      break;
+    }
+    case "/events/add": {
+      setSelectedKeys([
+        MENU_KEYS.gatherings,
+        MENU_KEYS.gatherings_children.add,
+      ]);
+      break;
+    }
     default: {
       if (comparePatternWithPathname(pathname, "/menu/categories/[add]")) {
         setSelectedKeys([

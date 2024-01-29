@@ -2,7 +2,8 @@ import { Flex, Row, Col, Button } from "antd";
 import Search from "antd/lib/input/Search";
 import React from "react";
 import ItemsTable from "../components/table";
-import AddItemForm from "./components/form";
+import dynamic from "next/dynamic";
+const AddItemForm = dynamic(() => import("./components/form"), { ssr: false });
 
 const AddItemsPage = () => {
   return (
