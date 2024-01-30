@@ -216,7 +216,10 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
                 </Col>
                 <Col>
                   <Flex align="center" gap={16}>
-                    <Logo className="text-[2rem]" />
+                    <Logo
+                      className="text-[2rem]"
+                      href={administrator ? "/administrator" : "/"}
+                    />
                     {administrator && (
                       <div className="text-typography/[.8]">(مدیریت)</div>
                     )}
