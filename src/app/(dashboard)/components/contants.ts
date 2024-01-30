@@ -74,5 +74,10 @@ export const MENU_KEYS = {
       list: "adm-ctlgs-list",
       add: "adm-ctlgs-add",
     },
+    users: "admin-users",
+    users_children: {
+      list: "adm-usrs-list",
+      add: "adm-usrs-add",
+    },
   },
 };

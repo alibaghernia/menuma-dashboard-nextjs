@@ -306,6 +306,24 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.users: {
+          breadcrumbsItems.push({
+            title: linking("کاربران", "/administrator/users", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.users_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست کاربران", "/administrator/users", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.users_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن کاربر", "/administrator/users/add", idx),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(

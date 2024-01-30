@@ -106,6 +106,10 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
           key: MENU_KEYS.administrator.catalogs,
           label: <Link href="/administrator/catalogs">کاتالوگ</Link>,
         },
+        {
+          key: MENU_KEYS.administrator.users,
+          label: <Link href="/administrator/users">کاربران</Link>,
+        },
       ]);
     else
       return items.concat([

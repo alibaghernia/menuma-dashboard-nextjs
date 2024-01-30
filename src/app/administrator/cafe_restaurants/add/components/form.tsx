@@ -9,6 +9,7 @@ import {
   Input,
   Radio,
   Row,
+  Select,
   Upload,
   UploadFile,
 } from "antd/lib";
@@ -61,6 +62,22 @@ const CafeRestaurantForm = () => {
           long: 54.34,
         }}
       >
+        <Row gutter={24}>
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="manager"
+              label="مدیر"
+              rules={[
+                {
+                  required: true,
+                  message: "انتخاب مدیر اجباری است",
+                },
+              ]}
+            >
+              <Select placeholder="انتخاب مدیر..." />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item
