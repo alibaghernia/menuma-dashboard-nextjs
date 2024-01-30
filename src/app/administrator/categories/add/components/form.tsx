@@ -23,6 +23,24 @@ const AddCategoryForm = () => {
           <Row gutter={24}>
             <Col xs={24} sm={12}>
               <Form.Item
+                name="cafe_restaurant"
+                label="کافه یا رستوران"
+                rules={[
+                  {
+                    required: true,
+                    message: "انتخاب کافه یا رستوران اجباری است!",
+                  },
+                ]}
+              >
+                <Select placeholder="انتخاب کافه یا رستوران..." />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>{" "}
+        <Form.Item>
+          <Row gutter={24}>
+            <Col xs={24} sm={12}>
+              <Form.Item
                 name="name"
                 label="نام"
                 rules={[
@@ -34,20 +52,6 @@ const AddCategoryForm = () => {
                 extra="مثلا: نوشیدنی گرم"
               >
                 <Input placeholder="نام دسته بندی..." />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="cafe_restaurant"
-                label="کافه یا رستوران"
-                rules={[
-                  {
-                    required: true,
-                    message: "انتخاب کافه یا رستوران اجباری است!",
-                  },
-                ]}
-              >
-                <Select placeholder="انتخاب کافه یا رستوران..." />
               </Form.Item>
             </Col>
           </Row>

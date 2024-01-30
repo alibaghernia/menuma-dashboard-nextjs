@@ -248,6 +248,24 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.items: {
+          breadcrumbsItems.push({
+            title: linking("آیتم ها", "/administrator/items", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.items_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست آیتم ها", "/administrator/items", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.items_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن آیتم", "/administrator/items/add", idx),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(

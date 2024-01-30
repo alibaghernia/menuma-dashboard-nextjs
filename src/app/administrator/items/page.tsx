@@ -30,7 +30,7 @@ const ItemsPage = () => {
                 </Col>
                 <Col>
                   <Button ghost type="primary">
-                    <Link href="/menu/items/add">افزودن</Link>
+                    <Link href="/administrator/items/add">افزودن</Link>
                   </Button>
                 </Col>
               </Flex>

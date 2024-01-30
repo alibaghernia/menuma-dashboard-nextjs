@@ -43,6 +43,22 @@ const AddItemForm = () => {
         <Row gutter={16}>
           <Col xs={24} sm={12}>
             <Form.Item
+              name="cafe_restaurant"
+              label="کافه یا رستوران"
+              rules={[
+                {
+                  required: true,
+                  message: "انتخاب کافه یا رستوران اجباری است!",
+                },
+              ]}
+            >
+              <Select placeholder="انتخاب کافه یا رستوران..." />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col xs={24} sm={12}>
+            <Form.Item
               name="name"
               label="نام"
               rules={[
@@ -53,7 +69,7 @@ const AddItemForm = () => {
               ]}
               extra="مثلا: اسپرسو"
             >
-              <Input size="large" placeholder="نام آیتم..." />
+              <Input placeholder="نام آیتم..." />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>

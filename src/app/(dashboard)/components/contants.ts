@@ -59,5 +59,10 @@ export const MENU_KEYS = {
       list: "admin-categ-list",
       add: "admin-categ-add",
     },
+    items: "admin-items",
+    items_children: {
+      list: "adm-itms-list",
+      add: "adm-itms-add",
+    },
   },
 };
