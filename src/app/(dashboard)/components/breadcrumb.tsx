@@ -222,6 +222,32 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.categories: {
+          breadcrumbsItems.push({
+            title: linking("دسته بندی ها", "/administrator/categories", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.categories_children.list: {
+          breadcrumbsItems.push({
+            title: linking(
+              "لیست دسته بندی ها",
+              "/administrator/categories",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.categories_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن دسته بندی",
+              "/administrator/categories/add",
+              idx
+            ),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(

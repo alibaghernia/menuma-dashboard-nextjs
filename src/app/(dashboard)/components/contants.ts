@@ -54,5 +54,10 @@ export const MENU_KEYS = {
       list: "ad-ca-res-list",
       add: "ad-ca-res-add",
     },
+    categories: "admin-categories",
+    categories_children: {
+      list: "admin-categ-list",
+      add: "admin-categ-add",
+    },
   },
 };

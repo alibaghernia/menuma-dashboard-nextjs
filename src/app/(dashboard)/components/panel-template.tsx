@@ -75,12 +75,20 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
     if (administrator)
       return items.concat([
         {
+          type: "group",
+          label: <div className="text-[.8rem]">کافه و رستوران</div>,
+        },
+        {
           key: MENU_KEYS.administrator.cafe_restaurants,
           label: (
             <Link href="/administrator/cafe_restaurants">
               کافه و رستوران ها
             </Link>
           ),
+        },
+        {
+          key: MENU_KEYS.administrator.categories,
+          label: <Link href="/administrator/categories">دسته بندی ها</Link>,
         },
       ]);
     else

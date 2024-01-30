@@ -136,6 +136,20 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case "/administrator/categories": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.categories,
+        MENU_KEYS.administrator.categories_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/categories/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.categories,
+        MENU_KEYS.administrator.categories_children.add,
+      ]);
+      break;
+    }
     default: {
       if (comparePatternWithPathname(pathname, "/menu/categories/[add]")) {
         setSelectedKeys([
