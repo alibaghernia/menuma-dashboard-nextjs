@@ -69,5 +69,10 @@ export const MENU_KEYS = {
       list: "adm-evnts-list",
       add: "adm-evnts-add",
     },
+    catalogs: "admin-catalogs",
+    catalogs_children: {
+      list: "adm-ctlgs-list",
+      add: "adm-ctlgs-add",
+    },
   },
 };

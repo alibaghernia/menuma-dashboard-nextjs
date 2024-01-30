@@ -98,6 +98,14 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
           key: MENU_KEYS.administrator.events,
           label: <Link href="/administrator/events">دورهمی ها</Link>,
         },
+        {
+          type: "group",
+          label: <div className="text-[.8rem]">پلتفرم</div>,
+        },
+        {
+          key: MENU_KEYS.administrator.catalogs,
+          label: <Link href="/administrator/catalogs">کاتالوگ</Link>,
+        },
       ]);
     else
       return items.concat([

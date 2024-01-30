@@ -284,6 +284,28 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.catalogs: {
+          breadcrumbsItems.push({
+            title: linking("کاتالوگ", "/administrator/catalogs", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.catalogs_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست کاتالوگ ها", "/administrator/catalogs", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.catalogs_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن کاتالوگ",
+              "/administrator/catalogs/add",
+              idx
+            ),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(
