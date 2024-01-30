@@ -8,20 +8,15 @@ export const metadata: Metadata = {
 
 export default function Dashboard() {
   return (
-    <Row gutter={24}>
+    <Row gutter={24} justify="center">
       <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="اسکن های امروز">
+        <Card title="کاربران">
           <div className="text-[1.5rem] font-bold mx-auto w-fit">25</div>
         </Card>
       </Col>
       <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="اسکن های هفته">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">200</div>
-        </Card>
-      </Col>
-      <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="اسکن های ماه">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">520</div>
+        <Card title="کافه و رستوران ها">
+          <div className="text-[1.5rem] font-bold mx-auto w-fit">20</div>
         </Card>
       </Col>
     </Row>
