@@ -266,6 +266,24 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.events: {
+          breadcrumbsItems.push({
+            title: linking("دورهمی ها", "/administrator/events", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.events_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست دورهمی ها", "/administrator/events", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.events_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن دورهمی", "/administrator/events/add", idx),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(
