@@ -192,6 +192,36 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.cafe_restaurants: {
+          breadcrumbsItems.push({
+            title: linking(
+              "کافه و رستوران ها",
+              "/administrator/cafe_restaurants",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.cafe_restaurants_children.list: {
+          breadcrumbsItems.push({
+            title: linking(
+              "لیست کافه و رستوران ها",
+              "/administrator/cafe_restaurants",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.cafe_restaurants_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن کافه یا رستوران",
+              "/administrator/cafe_restaurants/add",
+              idx
+            ),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(

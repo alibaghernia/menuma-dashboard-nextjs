@@ -48,4 +48,11 @@ export const MENU_KEYS = {
   settings_children: {
     profile: "settings-profile",
   },
+  administrator: {
+    cafe_restaurants: "admin-cafe-restaurants",
+    cafe_restaurants_children: {
+      list: "ad-ca-res-list",
+      add: "ad-ca-res-add",
+    },
+  },
 };

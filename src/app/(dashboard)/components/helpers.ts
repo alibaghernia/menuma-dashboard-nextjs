@@ -15,6 +15,9 @@ export const setMenuKeys = ({
   ];
   const spaces_halls = [MENU_KEYS.spaces, MENU_KEYS.spaces_children.halls];
   const spaces_tables = [MENU_KEYS.spaces, MENU_KEYS.spaces_children.tables];
+
+  // administrator
+  const admin_cafe_restaurants = [MENU_KEYS.administrator.cafe_restaurants];
   switch (pathname) {
     case "/": {
       setSelectedKeys([MENU_KEYS.dashboard]);
@@ -115,6 +118,21 @@ export const setMenuKeys = ({
       setSelectedKeys([
         MENU_KEYS.settings,
         MENU_KEYS.settings_children.profile,
+      ]);
+      break;
+    }
+    // administrator
+    case "/administrator/cafe_restaurants": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.cafe_restaurants,
+        MENU_KEYS.administrator.cafe_restaurants_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/cafe_restaurants/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.cafe_restaurants,
+        MENU_KEYS.administrator.cafe_restaurants_children.add,
       ]);
       break;
     }

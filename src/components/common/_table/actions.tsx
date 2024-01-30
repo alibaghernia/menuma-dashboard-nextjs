@@ -15,9 +15,9 @@ const TableActions: ITableActions = (props) => {
   const getRecords = useCallback(() => {
     return Object.entries(props.record as any).map(([k, v]) => ({
       name: props.seeAllNames?.[k] || k,
-      value: v,
+      value: props.seeAllRender?.[k]?.(v, props.record, props.index) || v,
     }));
-  }, [props.record, props.seeAllNames]);
+  }, [props.record, props.seeAllNames, props.seeAllRender]);
 
   const otherActions = useMemo(() => {
     return props.otherActions?.map((action, idx) => (

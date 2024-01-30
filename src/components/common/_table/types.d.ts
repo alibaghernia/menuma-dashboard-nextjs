@@ -1,4 +1,6 @@
+import { TableColumnProps } from "antd";
 import { BaseButtonProps } from "antd/lib/button/button";
+import { ColumnProps } from "antd/lib/table";
 import { FC, ReactNode } from "react";
 
 type Action = {
@@ -15,6 +17,7 @@ declare interface ITableActionsProps {
   index: number;
   seeAll?: boolean;
   seeAllNames?: Record<string, string>;
+  seeAllRender?: Record<string, ColumnProps<unknown>["render"]>;
   otherActions?: Action[];
 }
 
