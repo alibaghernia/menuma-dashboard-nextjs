@@ -48,4 +48,36 @@ export const MENU_KEYS = {
   settings_children: {
     profile: "settings-profile",
   },
+  administrator: {
+    cafe_restaurants: "admin-cafe-restaurants",
+    cafe_restaurants_children: {
+      list: "ad-ca-res-list",
+      add: "ad-ca-res-add",
+    },
+    categories: "admin-categories",
+    categories_children: {
+      list: "admin-categ-list",
+      add: "admin-categ-add",
+    },
+    items: "admin-items",
+    items_children: {
+      list: "adm-itms-list",
+      add: "adm-itms-add",
+    },
+    events: "admin-events",
+    events_children: {
+      list: "adm-evnts-list",
+      add: "adm-evnts-add",
+    },
+    catalogs: "admin-catalogs",
+    catalogs_children: {
+      list: "adm-ctlgs-list",
+      add: "adm-ctlgs-add",
+    },
+    users: "admin-users",
+    users_children: {
+      list: "adm-usrs-list",
+      add: "adm-usrs-add",
+    },
+  },
 };

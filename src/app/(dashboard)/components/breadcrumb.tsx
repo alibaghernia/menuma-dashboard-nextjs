@@ -192,6 +192,138 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.cafe_restaurants: {
+          breadcrumbsItems.push({
+            title: linking(
+              "کافه و رستوران ها",
+              "/administrator/cafe_restaurants",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.cafe_restaurants_children.list: {
+          breadcrumbsItems.push({
+            title: linking(
+              "لیست کافه و رستوران ها",
+              "/administrator/cafe_restaurants",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.cafe_restaurants_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن کافه یا رستوران",
+              "/administrator/cafe_restaurants/add",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.categories: {
+          breadcrumbsItems.push({
+            title: linking("دسته بندی ها", "/administrator/categories", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.categories_children.list: {
+          breadcrumbsItems.push({
+            title: linking(
+              "لیست دسته بندی ها",
+              "/administrator/categories",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.categories_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن دسته بندی",
+              "/administrator/categories/add",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.items: {
+          breadcrumbsItems.push({
+            title: linking("آیتم ها", "/administrator/items", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.items_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست آیتم ها", "/administrator/items", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.items_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن آیتم", "/administrator/items/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.events: {
+          breadcrumbsItems.push({
+            title: linking("دورهمی ها", "/administrator/events", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.events_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست دورهمی ها", "/administrator/events", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.events_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن دورهمی", "/administrator/events/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.catalogs: {
+          breadcrumbsItems.push({
+            title: linking("کاتالوگ", "/administrator/catalogs", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.catalogs_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست کاتالوگ ها", "/administrator/catalogs", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.catalogs_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن کاتالوگ",
+              "/administrator/catalogs/add",
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.users: {
+          breadcrumbsItems.push({
+            title: linking("کاربران", "/administrator/users", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.users_children.list: {
+          breadcrumbsItems.push({
+            title: linking("لیست کاربران", "/administrator/users", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.users_children.add: {
+          breadcrumbsItems.push({
+            title: linking("افزودن کاربر", "/administrator/users/add", idx),
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts_children.add: {
           breadcrumbsItems.push({
             title: linking(

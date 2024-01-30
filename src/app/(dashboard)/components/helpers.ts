@@ -15,8 +15,15 @@ export const setMenuKeys = ({
   ];
   const spaces_halls = [MENU_KEYS.spaces, MENU_KEYS.spaces_children.halls];
   const spaces_tables = [MENU_KEYS.spaces, MENU_KEYS.spaces_children.tables];
+
+  // administrator
+  const admin_cafe_restaurants = [MENU_KEYS.administrator.cafe_restaurants];
   switch (pathname) {
     case "/": {
+      setSelectedKeys([MENU_KEYS.dashboard]);
+      break;
+    }
+    case "/administrator": {
       setSelectedKeys([MENU_KEYS.dashboard]);
       break;
     }
@@ -115,6 +122,91 @@ export const setMenuKeys = ({
       setSelectedKeys([
         MENU_KEYS.settings,
         MENU_KEYS.settings_children.profile,
+      ]);
+      break;
+    }
+    // administrator
+    case "/administrator/cafe_restaurants": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.cafe_restaurants,
+        MENU_KEYS.administrator.cafe_restaurants_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/cafe_restaurants/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.cafe_restaurants,
+        MENU_KEYS.administrator.cafe_restaurants_children.add,
+      ]);
+      break;
+    }
+    case "/administrator/categories": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.categories,
+        MENU_KEYS.administrator.categories_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/categories/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.categories,
+        MENU_KEYS.administrator.categories_children.add,
+      ]);
+      break;
+    }
+    case "/administrator/items": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.items,
+        MENU_KEYS.administrator.items_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/items/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.items,
+        MENU_KEYS.administrator.items_children.add,
+      ]);
+      break;
+    }
+    case "/administrator/events": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.events,
+        MENU_KEYS.administrator.events_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/events/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.events,
+        MENU_KEYS.administrator.events_children.add,
+      ]);
+      break;
+    }
+    case "/administrator/catalogs": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.catalogs,
+        MENU_KEYS.administrator.catalogs_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/catalogs/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.catalogs,
+        MENU_KEYS.administrator.catalogs_children.add,
+      ]);
+      break;
+    }
+    case "/administrator/users": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.users,
+        MENU_KEYS.administrator.users_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/users/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.users,
+        MENU_KEYS.administrator.users_children.add,
       ]);
       break;
     }

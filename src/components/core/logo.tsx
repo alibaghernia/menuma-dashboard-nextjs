@@ -8,7 +8,7 @@ import classNames from "classnames";
 export const Logo: ILogo = (props) => {
   return (
     <Link
-      href="/"
+      href={props.href || "/"}
       className={twMerge(
         classNames(
           "text-[2.5rem] flex items-center font-bold w-fit",

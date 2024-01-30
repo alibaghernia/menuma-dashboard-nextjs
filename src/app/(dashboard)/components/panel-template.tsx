@@ -38,7 +38,10 @@ import DiscountOutlined from "@/icons/discount-outlined";
 import Link from "@/components/common/link/link";
 import PagerRequestsDrawer from "./pager-requests-drawer";
 
-const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
+const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
+  children,
+  administrator,
+}) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
@@ -52,15 +55,15 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
     setMenuKeys({ pathname, setSelectedKeys });
   }, [pathname]);
 
-  const sideMenuItems = useMemo(() => {
+  const sideMenuItems = useMemo<MenuProps["items"]>(() => {
     const iconColor = (id: string) =>
       selectedKeys.some((key) => key == id) ? primaryColor : typographyColor;
-
     const items: MenuProps["items"] = [
       {
         key: MENU_KEYS.dashboard,
-        label: "داشبورد",
-        onClick: () => router.push("/"),
+        label: (
+          <Link href={administrator ? "/administrator" : "/"}>داشبورد</Link>
+        ),
         icon: (
           <DashboardOutlinedIcon
             className="ml-1"
@@ -68,105 +71,146 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
           />
         ),
       },
-      {
-        key: MENU_KEYS.conditional_discounts,
-        icon: (
-          <DiscountOutlined
-            className="ml-1"
-            color={iconColor(MENU_KEYS.conditional_discounts)}
-          />
-        ),
-        label: "تخفیف های شرطی",
-        onClick: () => router.push("/conditional_discounts"),
-      },
-      {
-        key: MENU_KEYS.gatherings,
-        onClick: () => router.push("/events"),
-        icon: (
-          <HandshakeOutlined
-            className="ml-1"
-            color={iconColor(MENU_KEYS.gatherings)}
-          />
-        ),
-        label: "دورهمی ها",
-      },
-      {
-        key: MENU_KEYS.menu,
-        label: "منو",
-        icon: (
-          <PicRightOutlinedIcon
-            className="ml-1"
-            color={iconColor(MENU_KEYS.menu)}
-          />
-        ),
-        children: [
-          {
-            key: MENU_KEYS.menu_children.categories,
-            label: "دسته بندی ها",
-            onClick: () => router.push("/menu/categories"),
-          },
-          {
-            key: MENU_KEYS.menu_children.items,
-            label: "آیتم ها",
-            onClick: () => router.push("/menu/items"),
-          },
-        ],
-      },
-      {
-        key: MENU_KEYS.customer_club,
-        icon: (
-          <PeopleOutlinedIcon
-            className="ml-1"
-            color={iconColor(MENU_KEYS.customer_club)}
-          />
-        ),
-        label: "باشگاه مشتریان",
-        children: [
-          {
-            key: MENU_KEYS.customer_club_children.customers,
-            label: "مشتریان",
-            onClick: () => router.push("/customer_club/customers"),
-          },
-        ],
-      },
-      {
-        key: MENU_KEYS.spaces,
-        icon: (
-          <SpacesOutlined
-            className="ml-1"
-            color={iconColor(MENU_KEYS.spaces)}
-          />
-        ),
-        label: "فضا ها",
-        children: [
-          {
-            key: MENU_KEYS.spaces_children.halls,
-            label: <Link href="/spaces/halls">سالن ها</Link>,
-          },
-          {
-            key: MENU_KEYS.spaces_children.tables,
-            label: <Link href="/spaces/tables">میز ها</Link>,
-          },
-        ],
-      },
-      {
-        key: MENU_KEYS.settings,
-        icon: (
-          <GearOutlined
-            className="ml-1"
-            color={iconColor(MENU_KEYS.settings)}
-          />
-        ),
-        label: "تنظیمات",
-        children: [
-          {
-            key: MENU_KEYS.settings_children.profile,
-            label: <Link href="/settings/profile">پروفایل</Link>,
-          },
-        ],
-      },
     ];
-    return items;
+    if (administrator)
+      return items.concat([
+        {
+          type: "group",
+          label: <div className="text-[.8rem]">کافه و رستوران</div>,
+        },
+        {
+          key: MENU_KEYS.administrator.cafe_restaurants,
+          label: (
+            <Link href="/administrator/cafe_restaurants">
+              کافه و رستوران ها
+            </Link>
+          ),
+        },
+        {
+          key: MENU_KEYS.administrator.categories,
+          label: <Link href="/administrator/categories">دسته بندی ها</Link>,
+        },
+        {
+          key: MENU_KEYS.administrator.items,
+          label: <Link href="/administrator/items">آیتم ها</Link>,
+        },
+        {
+          key: MENU_KEYS.administrator.events,
+          label: <Link href="/administrator/events">دورهمی ها</Link>,
+        },
+        {
+          type: "group",
+          label: <div className="text-[.8rem]">پلتفرم</div>,
+        },
+        {
+          key: MENU_KEYS.administrator.catalogs,
+          label: <Link href="/administrator/catalogs">کاتالوگ</Link>,
+        },
+        {
+          key: MENU_KEYS.administrator.users,
+          label: <Link href="/administrator/users">کاربران</Link>,
+        },
+      ]);
+    else
+      return items.concat([
+        {
+          key: MENU_KEYS.conditional_discounts,
+          icon: (
+            <DiscountOutlined
+              className="ml-1"
+              color={iconColor(MENU_KEYS.conditional_discounts)}
+            />
+          ),
+          label: "تخفیف های شرطی",
+          onClick: () => router.push("/conditional_discounts"),
+        },
+        {
+          key: MENU_KEYS.gatherings,
+          onClick: () => router.push("/events"),
+          icon: (
+            <HandshakeOutlined
+              className="ml-1"
+              color={iconColor(MENU_KEYS.gatherings)}
+            />
+          ),
+          label: "دورهمی ها",
+        },
+        {
+          key: MENU_KEYS.menu,
+          label: "منو",
+          icon: (
+            <PicRightOutlinedIcon
+              className="ml-1"
+              color={iconColor(MENU_KEYS.menu)}
+            />
+          ),
+          children: [
+            {
+              key: MENU_KEYS.menu_children.categories,
+              label: "دسته بندی ها",
+              onClick: () => router.push("/menu/categories"),
+            },
+            {
+              key: MENU_KEYS.menu_children.items,
+              label: "آیتم ها",
+              onClick: () => router.push("/menu/items"),
+            },
+          ],
+        },
+        {
+          key: MENU_KEYS.customer_club,
+          icon: (
+            <PeopleOutlinedIcon
+              className="ml-1"
+              color={iconColor(MENU_KEYS.customer_club)}
+            />
+          ),
+          label: "باشگاه مشتریان",
+          children: [
+            {
+              key: MENU_KEYS.customer_club_children.customers,
+              label: "مشتریان",
+              onClick: () => router.push("/customer_club/customers"),
+            },
+          ],
+        },
+        {
+          key: MENU_KEYS.spaces,
+          icon: (
+            <SpacesOutlined
+              className="ml-1"
+              color={iconColor(MENU_KEYS.spaces)}
+            />
+          ),
+          label: "فضا ها",
+          children: [
+            {
+              key: MENU_KEYS.spaces_children.halls,
+              label: <Link href="/spaces/halls">سالن ها</Link>,
+            },
+            {
+              key: MENU_KEYS.spaces_children.tables,
+              label: <Link href="/spaces/tables">میز ها</Link>,
+            },
+          ],
+        },
+        {
+          key: MENU_KEYS.settings,
+          icon: (
+            <GearOutlined
+              className="ml-1"
+              color={iconColor(MENU_KEYS.settings)}
+            />
+          ),
+          label: "تنظیمات",
+          children: [
+            {
+              key: MENU_KEYS.settings_children.profile,
+              label: <Link href="/settings/profile">پروفایل</Link>,
+            },
+          ],
+        },
+      ]);
   }, [selectedKeys]);
 
   return (
@@ -199,21 +243,31 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
                   )}
                 </Col>
                 <Col>
-                  <Logo className="text-[2rem]" />
+                  <Flex align="center" gap={16}>
+                    <Logo
+                      className="text-[2rem]"
+                      href={administrator ? "/administrator" : "/"}
+                    />
+                    {administrator && (
+                      <div className="text-typography/[.8]">(مدیریت)</div>
+                    )}
+                  </Flex>
                 </Col>
               </Flex>
             </Col>
             <Col>
               <Flex align="center" gap={"1rem"}>
-                <Col>
-                  <Badge className="" count={11}>
-                    <BellOutlined
-                      color={typographyColor}
-                      onClick={() => setRequestPagersDrawerOpen(true)}
-                      size={24}
-                    />
-                  </Badge>
-                </Col>
+                {!administrator && (
+                  <Col>
+                    <Badge className="" count={11}>
+                      <BellOutlined
+                        color={typographyColor}
+                        onClick={() => setRequestPagersDrawerOpen(true)}
+                        size={24}
+                      />
+                    </Badge>
+                  </Col>
+                )}
                 <Col>
                   <Flex align="center" gap={".75rem"}>
                     <Col>
@@ -279,18 +333,20 @@ const PanelTemplate: FC<PropsWithChildren> = ({ children }) => {
           </Layout>
         </Layout>
       </Layout>
-      <PagerRequestsDrawer
-        requests={[
-          {
-            id: 1,
-            status: "pending",
-            title: "میز 12",
-            descriptions: "لطفا یک لیوان آب هم بیارید، ممنون",
-          },
-        ]}
-        open={requestPagersDrawerOpen}
-        onClose={() => setRequestPagersDrawerOpen(false)}
-      />
+      {!administrator && (
+        <PagerRequestsDrawer
+          requests={[
+            {
+              id: 1,
+              status: "pending",
+              title: "میز 12",
+              descriptions: "لطفا یک لیوان آب هم بیارید، ممنون",
+            },
+          ]}
+          open={requestPagersDrawerOpen}
+          onClose={() => setRequestPagersDrawerOpen(false)}
+        />
+      )}
     </>
   );
 };
