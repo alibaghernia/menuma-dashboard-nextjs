@@ -265,7 +265,7 @@ const CafeRestaurantForm = () => {
                   <div className="rounded-[.5rem] h-[10rem] md:h-[20rem] relative">
                     {loaded ? (
                       <MapContainer
-                        className="w-full h-full"
+                        className="w-full h-full z-0"
                         center={selectedLocation || locationPoint}
                         zoom={13}
                       >
