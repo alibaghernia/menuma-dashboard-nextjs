@@ -64,5 +64,10 @@ export const MENU_KEYS = {
       list: "adm-itms-list",
       add: "adm-itms-add",
     },
+    events: "admin-events",
+    events_children: {
+      list: "adm-evnts-list",
+      add: "adm-evnts-add",
+    },
   },
 };

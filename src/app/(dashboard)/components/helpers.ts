@@ -23,6 +23,10 @@ export const setMenuKeys = ({
       setSelectedKeys([MENU_KEYS.dashboard]);
       break;
     }
+    case "/administrator": {
+      setSelectedKeys([MENU_KEYS.dashboard]);
+      break;
+    }
     case "/menu/categories": {
       setSelectedKeys([
         ...menu_categories,
@@ -161,6 +165,20 @@ export const setMenuKeys = ({
       setSelectedKeys([
         MENU_KEYS.administrator.items,
         MENU_KEYS.administrator.items_children.add,
+      ]);
+      break;
+    }
+    case "/administrator/events": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.events,
+        MENU_KEYS.administrator.events_children.list,
+      ]);
+      break;
+    }
+    case "/administrator/events/add": {
+      setSelectedKeys([
+        MENU_KEYS.administrator.events,
+        MENU_KEYS.administrator.events_children.add,
       ]);
       break;
     }
