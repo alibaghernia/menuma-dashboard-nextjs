@@ -44,9 +44,6 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
   administrator,
 }) => {
   const session = useSession();
-  console.log({
-    session,
-  });
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");

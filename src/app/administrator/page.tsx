@@ -1,4 +1,4 @@
-import { Card, Flex } from "antd/lib";
+import { Card } from "antd/lib";
 import { Row, Col } from "antd";
 import { Metadata } from "next";
 
