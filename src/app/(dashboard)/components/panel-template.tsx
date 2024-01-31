@@ -37,6 +37,7 @@ import DiscountOutlined from "@/icons/discount-outlined";
 import Link from "@/components/common/link/link";
 import PagerRequestsDrawer from "./pager-requests-drawer";
 import { useSession } from "next-auth/react";
+import User from "./user/user";
 
 const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
   children,
@@ -272,7 +273,9 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
                     </Badge>
                   </Col>
                 )}
-                <Col>{/* TODO: User */}</Col>
+                <Col>
+                  <User />
+                </Col>
               </Flex>
             </Col>
           </Flex>
