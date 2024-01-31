@@ -7,6 +7,7 @@ import { RouteChangeProvider } from "@/providers/routeChange/provider";
 import faIR from "antd/locale/fa_IR";
 import _ from "lodash";
 import LocaleProvider from "antd/lib/locale";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "داشبورد - منوما",
@@ -37,9 +38,11 @@ export default function RootLayout({
               }}
               locale={faIR}
             >
-              <RouteChangeProvider>
-                <GeneralProvider>{children}</GeneralProvider>
-              </RouteChangeProvider>
+              <SessionProvider>
+                <RouteChangeProvider>
+                  <GeneralProvider>{children}</GeneralProvider>
+                </RouteChangeProvider>
+              </SessionProvider>
             </ConfigProvider>
           </LocaleProvider>
         </AntdRegistry>

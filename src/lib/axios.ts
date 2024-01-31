@@ -1,6 +1,6 @@
 import axiosPkg from "axios";
 
-const baseURL = process.env.BACKEND_BASEURL;
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_BASEURL;
 if (!baseURL) {
   console.error("Check Backend Baseurl");
   process.exit(1);

@@ -7,6 +7,12 @@ import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-
 import { useRouter } from "next/navigation";
 import { useContext, useMemo } from "react";
 import resolveConfig from "tailwindcss/resolveConfig";
+
+export const useLoadings = () => {
+  const { addLoading, removeLoading } = useContext(GeneralProviderContext);
+  return [addLoading, removeLoading];
+};
+
 export const useTailwindColor = (color: string) => {
   const resolvedTailwindConfig = resolveConfig(tailwindConfig);
   //@ts-ignore

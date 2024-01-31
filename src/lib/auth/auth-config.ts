@@ -1,8 +1,10 @@
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig, Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import axios from "../axios";
 import { AxiosResponseType } from "./types";
+import { UsersService } from "@/services/users.service";
+import { User } from "@/services/types";
 
 export const authConfig = {
   pages: {
@@ -13,22 +15,42 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isAdministrator = auth?.user?.role == "admin";
       const isOnAuth = nextUrl.pathname.startsWith("/auth");
-      if (isOnAuth) {
-        if (isAdministrator)
-          return Response.redirect(new URL("/administrator", nextUrl));
-        else return Response.redirect(new URL("/", nextUrl));
-        // Redirect unauthenticated users to login page
-      } else {
-        if (!isLoggedIn) {
-          return Response.redirect(new URL("/auth/login", nextUrl));
+      if (
+        /(^(\/api|\/_next|\/static|\/_next|.*\.(jpg|png|jpeg)$))/.test(
+          nextUrl.pathname
+        )
+      )
+        return true;
+      if (isLoggedIn) {
+        if (isOnAuth) {
+          if (isAdministrator)
+            return Response.redirect(new URL("/administrator", nextUrl));
+          else return Response.redirect(new URL("/", nextUrl));
         }
+      } else {
+        if (!isOnAuth)
+          return Response.redirect(new URL("/auth/login", nextUrl));
       }
+
       return true;
     },
+    jwt({ account, token, user, session, profile, trigger }) {
+      return { ...token, ...user };
+    },
+    session({ session, token, user }: any): Session {
+      session.user = token;
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
   },
   providers: [
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
+        console.log({
+          credentials,
+        });
         const parsedCredentials = z
           .object({
             mobile: z.string().regex(/^(09)\d{9}$/),
@@ -37,13 +59,30 @@ export const authConfig = {
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
+          console.log("success");
           try {
-            const { data } = await axios
-              .post<AxiosResponseType>("/auth/login")
+            const {
+              data: { access_token },
+            } = await axios
+              .post<AxiosResponseType<{ access_token: string }>>(
+                "/auth/login",
+                {
+                  mobile: credentials.mobile,
+                  password: credentials.password,
+                }
+              )
               .then(({ data }) => data);
-          } catch (error) {}
+            axios.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+            const usersService = UsersService.init();
+            const { data } = await usersService.getMe();
+            return data;
+          } catch (error) {
+            console.error({
+              error,
+            });
+          }
         }
-        return {};
+        return null;
       },
     }),
   ],

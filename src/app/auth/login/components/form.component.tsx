@@ -1,29 +1,39 @@
 "use client";
 import LockOutlinedIcon from "@/icons/lock-outlined";
-import UserOutlinedIcon from "@/icons/user-outlined";
-import { useTailwindColor } from "@/utils/hooks";
+import { useLoadings, useTailwindColor } from "@/utils/hooks";
+import { MobileOutlined } from "@ant-design/icons";
 import { Button, Col, Flex, Form, Input } from "antd";
 import Link from "next/link";
 import React from "react";
+import { ILoginForm } from "./types";
+import { useFormState, useFormStatus } from "react-dom";
+import { submit } from "./actions";
 
-const LoginForm = () => {
+const LoginForm: ILoginForm = (props) => {
   const color = useTailwindColor("primary");
   const [form] = Form.useForm();
+  const [addL, removeL] = useLoadings();
+  const [formErrors, dispatch] = useFormState(submit, undefined);
+
   return (
-    <Form form={form}>
+    <Form form={form} onFinish={(data) => dispatch(data)}>
       <Form.Item
-        name="username"
+        name="mobile"
         rules={[
           {
             required: true,
-            message: "نام کاربری اجباری است!",
+            message: "شماره موبایل اجباری است!",
+          },
+          {
+            pattern: /^(09)\d{9}$/,
+            message: "شماره موبایل درست نیست!",
           },
         ]}
       >
         <Input
-          placeholder="نام کاربری"
+          placeholder="شماره موبایل"
           className="!rounded-[.63rem] placeholder:text-[.875rem]"
-          prefix={<UserOutlinedIcon color={color} />}
+          prefix={<MobileOutlined className="text-primary" />}
         />
       </Form.Item>
       <Form.Item
@@ -54,12 +64,25 @@ const LoginForm = () => {
         </Flex>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" size="large" block>
-          ورود
-        </Button>
+        <SubmitButton />
       </Form.Item>
     </Form>
   );
 };
 
 export default LoginForm;
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button
+      type="primary"
+      htmlType="submit"
+      size="large"
+      loading={pending}
+      block
+    >
+      ورود
+    </Button>
+  );
+}

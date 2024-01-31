@@ -12,6 +12,12 @@ export const GeneralProviderContext = createContext<IGeneralProviderContext>();
 export const GeneralProvider: IGeneralProvider = ({ children, ...props }) => {
   const [loadings, setLoadings] = useState<string[]>([LOADINGS.page]);
 
+  const addLoading = (loading_id: string) => {
+    setLoadings((loadings) => [...loadings, loading_id]);
+  };
+  const removeLoading = (loading_id: string) => {
+    setLoadings((loadings) => loadings.filter((item) => item != loading_id));
+  };
   useRouteChange({
     onRouteChangeStart: () => {
       setLoadings((loadings) =>
@@ -29,6 +35,8 @@ export const GeneralProvider: IGeneralProvider = ({ children, ...props }) => {
     <>
       <GeneralProviderContext.Provider
         value={{
+          addLoading,
+          removeLoading,
           loadings,
           setLoadings,
           ...props,

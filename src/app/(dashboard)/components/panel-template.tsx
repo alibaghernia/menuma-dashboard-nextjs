@@ -18,7 +18,6 @@ import React, {
 } from "react";
 import { twMerge } from "tailwind-merge";
 import { BellOutlined } from "@ant-design/icons";
-import userAvatar from "@/assets/images/user-avatar.png";
 import Sider from "antd/es/layout/Sider";
 import type { MenuProps } from "antd";
 import DashboardOutlinedIcon from "@/icons/dashboard-outlined";
@@ -37,11 +36,16 @@ import Breadcrumb from "./breadcrumb";
 import DiscountOutlined from "@/icons/discount-outlined";
 import Link from "@/components/common/link/link";
 import PagerRequestsDrawer from "./pager-requests-drawer";
+import { useSession } from "next-auth/react";
 
 const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
   children,
   administrator,
 }) => {
+  const session = useSession();
+  console.log({
+    session,
+  });
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
@@ -268,16 +272,7 @@ const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
                     </Badge>
                   </Col>
                 )}
-                <Col>
-                  <Flex align="center" gap={".75rem"}>
-                    <Col>
-                      <Typography>Abolfazl</Typography>
-                    </Col>
-                    <Col>
-                      <Avatar src={userAvatar.src} />
-                    </Col>
-                  </Flex>
-                </Col>
+                <Col>{/* TODO: User */}</Col>
               </Flex>
             </Col>
           </Flex>
