@@ -14,6 +14,7 @@
     "@ckeditor/ckeditor5-build-classic": "^41.0.0",
     "@ckeditor/ckeditor5-react": "^6.2.0",
     "antd": "^5.13.2",
+    "axios": "^1.6.7",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.10",
     "jalali-moment": "^3.3.11",
@@ -21,15 +22,18 @@
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "next": "14.1.0",
+    "next-auth": "5.0.0-beta.5",
     "react": "^18",
     "react-date-object": "^2.1.8",
     "react-dom": "^18",
     "react-leaflet": "^4.2.1",
     "react-multi-date-picker": "^4.4.1",
     "sass": "^1.70.0",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/classnames": "^2.3.1",
     "@types/leaflet": "^1.9.8",
     "@types/lodash": "^4.14.202",
