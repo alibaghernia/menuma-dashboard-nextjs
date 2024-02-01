@@ -15,7 +15,7 @@ import {
 } from "antd/lib";
 import React, { FC, useEffect, useState } from "react";
 import "react-multi-date-picker/styles/layouts/mobile.css";
-import ImageDisplayerWrapper from "./components/image-displayer";
+import ImageDisplayerWrapper from "../../../../../components/common/image-displayer";
 import Image from "next/image";
 import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
 import "leaflet/dist/leaflet.css";

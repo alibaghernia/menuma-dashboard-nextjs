@@ -7,6 +7,7 @@ import {
   useLoadings,
   useTailwindColor,
 } from "@/utils/hooks";
+import { uploadCustomRequest } from "@/utils/upload";
 import { InboxOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -128,18 +129,7 @@ const AddItemForm = () => {
             multiple={false}
             showUploadList
             accept=".png,.jpg,.jpeg"
-            customRequest={(options) => {
-              const { onSuccess, onError, file, onProgress } = options;
-              const filesService = FilesService.init();
-              return filesService
-                .uploadFile(file, (percent) => {
-                  onProgress!({ percent });
-                })
-                .then(({ data }) => {
-                  onSuccess!(data?.uuid);
-                  return data;
-                });
-            }}
+            customRequest={uploadCustomRequest}
             onChange={handleUploadOnChange}
             fileList={fileList}
             openFileDialogOnClick={!!!fileList.length}

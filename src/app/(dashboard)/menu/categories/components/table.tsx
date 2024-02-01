@@ -7,7 +7,9 @@ import {
 } from "@/services/dashboard/categories/types";
 import {
   useCurrentBreakpoints,
+  useCustomRouter,
   useLoadings,
+  useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
 import { Avatar, Table, TableProps } from "antd/lib";
@@ -19,8 +21,10 @@ export type CategoriesTableType = FC<{
 }>;
 
 const CategoriesTable: CategoriesTableType = (props) => {
+  const message = useMessage();
   const [addL, removeL] = useLoadings();
   const [items, setItems] = useState<Category[]>([]);
+  const router = useCustomRouter();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -51,14 +55,14 @@ const CategoriesTable: CategoriesTableType = (props) => {
       dataIndex: "title",
     },
     {
-      key: "slug",
-      title: "اسلاگ",
-      dataIndex: "slug",
+      key: "products_count",
+      title: "تعداد آیتم",
+      dataIndex: "products_count",
     },
     {
-      key: "image",
+      key: "image_url",
       title: "تصویر",
-      dataIndex: "image",
+      dataIndex: "image_url",
       render: renderImage,
       responsive: ["md"],
     },
@@ -74,19 +78,30 @@ const CategoriesTable: CategoriesTableType = (props) => {
             index={idx}
             onDelete={async () => {
               addL("delete-item");
-              businessService.categoriesService.delete(rec["uuid"]);
-              fetchItems();
-              removeL("delete-item");
+              businessService.categoriesService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("delete-item");
+                })
+                .catch(() => {
+                  message.error("حذف دسته بندی انجام نشد!");
+                })
+                .then(() => {
+                  message.success("دسته بندی با موفقیت حذف شد.");
+                  fetchItems();
+                });
             }}
-            seeAllExcludeFields={["uuid", "parent_uuid"]}
+            onEdit={() => {
+              router.push(`/menu/categories/${rec["uuid"]}`);
+            }}
+            seeAllExcludeFields={["uuid", "parent_uuid", "slug", "image"]}
             seeAllNames={{
               title: "عنوان",
-              slug: "اسلاگ",
-              image: "تصویر",
+              image_url: "تصویر",
               products_count: "تعداد آیتم ها",
             }}
             seeAllRender={{
-              image: renderImage,
+              image_url: renderImage,
             }}
             seeAll
           />

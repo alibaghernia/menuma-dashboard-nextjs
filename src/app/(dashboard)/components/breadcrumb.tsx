@@ -48,6 +48,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.menu_children.categories_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش دسته بندی",
+          });
+          break;
+        }
         case MENU_KEYS.customer_club_children.customers: {
           breadcrumbsItems.push({
             title: linking("مشتریان", "/customer_club/customers", idx),

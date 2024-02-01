@@ -6,6 +6,7 @@ export const MENU_KEYS = {
     categories_children: {
       list: "categories-list",
       add: "categories-add",
+      edit: "categories-edit",
     },
     items: "items",
     items_children: {

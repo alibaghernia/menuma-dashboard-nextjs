@@ -13,6 +13,11 @@ export const useLoadings = () => {
   return [addLoading, removeLoading];
 };
 
+export const useMessage = () => {
+  const { messageApi } = useContext(GeneralProviderContext);
+  return messageApi;
+};
+
 export const useTailwindColor = (color: string) => {
   const resolvedTailwindConfig = resolveConfig(tailwindConfig);
   //@ts-ignore

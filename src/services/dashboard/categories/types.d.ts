@@ -4,6 +4,7 @@ export interface Category {
   title: string;
   slug?: null;
   image: string;
+  image_url?: string;
   products_count: number;
 }
 

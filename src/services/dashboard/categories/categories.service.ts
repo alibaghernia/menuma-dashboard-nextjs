@@ -21,6 +21,11 @@ export class CategoriesService {
       })
       .then(({ data }) => data);
   }
+  async getItem(uuid: string) {
+    return this.businessService.axiosIns
+      .get<AxiosResponseType<Category>>(`/category/${uuid}`)
+      .then(({ data }) => data);
+  }
   async delete(id: string) {
     return this.businessService.axiosIns
       .delete<AxiosResponseType>(`/category/${id}`)
@@ -29,6 +34,11 @@ export class CategoriesService {
   async create(payload: unknown) {
     return this.businessService.axiosIns
       .post("/category", payload)
+      .then(({ data }) => data);
+  }
+  async update(uuid: string, payload: unknown) {
+    return this.businessService.axiosIns
+      .put(`/category/${uuid}`, payload)
       .then(({ data }) => data);
   }
 }

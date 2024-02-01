@@ -211,11 +211,10 @@ export const setMenuKeys = ({
       break;
     }
     default: {
-      if (comparePatternWithPathname(pathname, "/menu/categories/[add]")) {
+      if (comparePatternWithPathname(pathname, "/menu/categories/[uuid]")) {
         setSelectedKeys([
-          MENU_KEYS.menu,
-          MENU_KEYS.menu_children.categories,
-          MENU_KEYS.menu_children.categories_children.add,
+          ...menu_categories,
+          MENU_KEYS.menu_children.categories_children.edit,
         ]);
         break;
       }
