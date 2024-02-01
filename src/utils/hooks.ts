@@ -23,6 +23,10 @@ export const useMessage = () => {
   const { messageApi } = useContext(GeneralProviderContext);
   return messageApi;
 };
+export const useNotification = () => {
+  const { notificationApi } = useContext(GeneralProviderContext);
+  return notificationApi;
+};
 
 export const useTailwindColor = (color: string) => {
   const resolvedTailwindConfig = resolveConfig(tailwindConfig);

@@ -5,7 +5,7 @@ import { LOADINGS } from "./constants";
 import { IGeneralProvider, IGeneralProviderContext } from "./types";
 import { Loading } from "@/components/common/loading/loading";
 import useRouteChange from "../routeChange/hooks";
-import { message } from "antd/lib";
+import { message, notification } from "antd/lib";
 
 //@ts-ignore
 export const GeneralProviderContext = createContext<IGeneralProviderContext>();
@@ -13,6 +13,8 @@ export const GeneralProviderContext = createContext<IGeneralProviderContext>();
 export const GeneralProvider: IGeneralProvider = ({ children, ...props }) => {
   const [loadings, setLoadings] = useState<string[]>([LOADINGS.page]);
   const [messageApi, contextHolder] = message.useMessage();
+  const [notificationApi, notificationContextHolder] =
+    notification.useNotification();
 
   const addLoading = (loading_id: string) => {
     setLoadings((loadings) => [...loadings, loading_id]);
@@ -42,13 +44,14 @@ export const GeneralProvider: IGeneralProvider = ({ children, ...props }) => {
           loadings,
           setLoadings,
           messageApi,
-
+          notificationApi,
           ...props,
         }}
       >
         {children}
       </GeneralProviderContext.Provider>
       {contextHolder}
+      {notificationContextHolder}
       {!!loadings.filter((load) => !load.endsWith("-noall")).length && (
         <Loading />
       )}

@@ -8,6 +8,10 @@
 
 # testing
 /coverage
+# all other ignore list
+/public/sw.*
+/public/workbox-*
+/public/swe-worker-*
 
 # next.js
 /.next/

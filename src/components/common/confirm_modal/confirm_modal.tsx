@@ -30,7 +30,7 @@ export const ConfirmModal: IConfirmModal = ({
         <Container
           position="fixed"
           center
-          className="z-[52] p-4 max-w-xs w-full bg-white rounded-[2rem]"
+          className="z-[1002] p-4 max-w-xs w-full bg-white rounded-[2rem]"
         >
           <FlexBox direction="column" className="gap-6">
             {title && (
@@ -80,7 +80,7 @@ export const ConfirmModal: IConfirmModal = ({
       <Container
         position="fixed"
         className={classNames(
-          "inset-0 bg-black/[.2] z-[51] transition-all duration-[.2s]",
+          "inset-0 bg-black/[.2] transition-all duration-[.2s] z-[1001]",
           {
             "opacity-0 pointer-events-none": !open,
           }

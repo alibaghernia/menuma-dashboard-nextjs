@@ -1,6 +1,6 @@
 export interface Request {
   uuid: string;
-  status: "TODO" | "DOING" | "DONE";
+  status: "TODO" | "DOING" | "DONE" | "CANCELED";
   createdAt: string;
   updatedAt: string;
   business_uuid: string;
@@ -19,7 +19,7 @@ export interface Table {
 }
 
 export interface IGetRequestFilters {
-  status?: ("TODO" | "DOING" | "DONE")[];
+  status?: Request["status"][];
   page?: number;
   limit?: number;
 }

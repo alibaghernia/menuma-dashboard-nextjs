@@ -1,6 +1,7 @@
 import { AxiosResponseType } from "@/lib/auth/types";
 import { BusinessService } from "../business.service";
 import { IGetRequestFilters, Request } from "./types";
+import { io } from "socket.io-client";
 
 export class PagerService {
   static init(businessService: BusinessService) {
@@ -31,9 +32,41 @@ export class PagerService {
       .delete<AxiosResponseType>(`/pager-requests/${uuid}`)
       .then(({ data }) => data);
   }
-  async update(uuid: string, payload: { status: "TODO" | "DOING" | "DONE" }) {
+  async update(uuid: string, payload: Pick<Request, "status">) {
     return this.businessService.axiosIns
       .put(`/pager-requests/${uuid}`, payload)
       .then(({ data }) => data);
+  }
+  get socket() {
+    return {
+      connect: (business_uuid: string) => {
+        const host = process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_HOST;
+        const port = +(
+          process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_PORT || 3001
+        );
+        const portSSL = +(
+          process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_PORT_SSL || 3001
+        );
+        return io(
+          `${
+            !!process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE
+              ? "wss"
+              : "ws"
+          }://${host}:${
+            !!process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE
+              ? portSSL
+              : port
+          }/pager_requests`,
+          {
+            host,
+            port,
+            path: "/socket.io",
+            query: {
+              business_uuid,
+            },
+          }
+        );
+      },
+    };
   }
 }
