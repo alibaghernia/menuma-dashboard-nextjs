@@ -22,6 +22,7 @@ export const authConfig = {
       )
         return true;
       if (isLoggedIn) {
+        axios.defaults.headers.common.Authorization = `Bearer ${auth.user?.access_token}`;
         if (isOnAuth) {
           if (isAdministrator)
             return Response.redirect(new URL("/administrator", nextUrl));
@@ -34,10 +35,10 @@ export const authConfig = {
 
       return true;
     },
-    jwt({ account, token, user, session, profile, trigger }) {
+    jwt({ token, user }) {
       return { ...token, ...user };
     },
-    session({ session, token, user }: any): Session {
+    session({ session, token }: any): Session {
       session.user = token;
       return session;
     },
@@ -75,7 +76,7 @@ export const authConfig = {
             axios.defaults.headers.common.Authorization = `Bearer ${access_token}`;
             const usersService = UsersService.init();
             const { data } = await usersService.getMe();
-            return data;
+            return { ...data, access_token };
           } catch (error) {
             console.error({
               error,

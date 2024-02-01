@@ -11,8 +11,8 @@ const DashboardLayout: FC<PropsWithChildren> = async ({ children }) => {
   const business = session?.user?.businesses?.[0];
   if (!business) return <NoBusinessError />;
   return (
-    <BusinessProvider business={business}>
-      <PanelTemplate>{children}</PanelTemplate>
+    <BusinessProvider session={session} business={business}>
+      <PanelTemplate session={session}>{children}</PanelTemplate>
     </BusinessProvider>
   );
 };

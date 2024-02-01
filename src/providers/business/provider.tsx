@@ -3,6 +3,7 @@
 import React, { createContext } from "react";
 import { IBusinessProvider, IBusinessProviderContext } from "./types";
 import { BusinessService } from "@/services/dashboard/business.service";
+import axios from "@/lib/axios";
 
 //@ts-ignore
 export const BusinessProviderContext =
@@ -12,8 +13,10 @@ export const BusinessProviderContext =
 export const BusinessProvider: IBusinessProvider = ({
   children,
   business,
+  session,
   ...props
 }) => {
+  axios.defaults.headers.common.Authorization = `Bearer ${session.user?.access_token}`;
   const businessService = BusinessService.init(business.uuid);
 
   return (

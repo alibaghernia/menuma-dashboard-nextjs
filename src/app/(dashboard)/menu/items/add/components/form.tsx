@@ -1,6 +1,12 @@
 "use client";
 import TrashOutlined from "@/icons/trash-outlined";
-import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
+import { BusinessProviderContext } from "@/providers/business/provider";
+import { FilesService } from "@/services/file/file.service";
+import {
+  useCurrentBreakpoints,
+  useLoadings,
+  useTailwindColor,
+} from "@/utils/hooks";
 import { InboxOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -17,20 +23,51 @@ import {
   UploadFile,
 } from "antd/lib";
 import classNames from "classnames";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 const AddItemForm = () => {
+  const [addL, removeL] = useLoadings();
   const [form] = Form.useForm();
   const breakpoints = useCurrentBreakpoints();
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
   const redColor = useTailwindColor("red");
+
+  const { businessService } = useContext(BusinessProviderContext);
+
+  async function onFinish(values: unknown) {
+    console.log({ values });
+    addL("create-item");
+    // await businessService.itemsService.create(values);
+    removeL("create-item");
+  }
+
+  const handleUploadOnChange = (info: any) => {
+    setFileList(info.fileList);
+    if (info.file.status === "uploading") {
+      addL("upload-image");
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+      form.setFieldValue("image", info.file.response);
+    }
+  };
+
   return (
     <Card className="w-full">
       <Form
         form={form}
         layout="vertical"
         className="w-full"
+        onFinish={(values) => {
+          onFinish(values);
+        }}
+        onFinishFailed={(error) => {
+          console.log({
+            error,
+          });
+        }}
         initialValues={{
           prices: [
             {
@@ -58,7 +95,7 @@ const AddItemForm = () => {
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item
-              name="category"
+              name="categories"
               label="دسته بندی"
               rules={[
                 {
@@ -67,7 +104,17 @@ const AddItemForm = () => {
                 },
               ]}
             >
-              <Select size="large" placeholder="انتخاب دسته بندی..." />
+              <Select
+                options={[
+                  {
+                    label: "test",
+                    value: "testic",
+                  },
+                ]}
+                mode="multiple"
+                size="large"
+                placeholder="انتخاب دسته بندی..."
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -75,15 +122,25 @@ const AddItemForm = () => {
           <Input.TextArea placeholder="توضیحات آیتم" />
         </Form.Item>
 
-        <Form.Item label="تصویر" name="image">
+        <Form.Item label="تصویر" name="image" valuePropName="">
           <Upload.Dragger
             listType="picture"
             multiple={false}
             showUploadList
             accept=".png,.jpg,.jpeg"
-            onChange={(info) => {
-              setFileList(info.fileList);
+            customRequest={(options) => {
+              const { onSuccess, onError, file, onProgress } = options;
+              const filesService = FilesService.init();
+              return filesService
+                .uploadFile(file, (percent) => {
+                  onProgress!({ percent });
+                })
+                .then(({ data }) => {
+                  onSuccess!(data?.uuid);
+                  return data;
+                });
             }}
+            onChange={handleUploadOnChange}
             fileList={fileList}
             openFileDialogOnClick={!!!fileList.length}
           >
@@ -106,7 +163,7 @@ const AddItemForm = () => {
             name="prices"
             rules={[
               {
-                validator(rule, value, callback) {
+                async validator(rule, value, callback) {
                   if (!value || value.length < 1) {
                     return Promise.reject(
                       new Error("حداقل 1 قیمت باید وارد کنید!")
@@ -133,7 +190,7 @@ const AddItemForm = () => {
                             name={[name, "title"]}
                             rules={[
                               {
-                                required: !!fields.length,
+                                required: fields.length > 1,
                                 message: "عنوان قیمت اجباری است.",
                               },
                             ]}
@@ -144,7 +201,7 @@ const AddItemForm = () => {
                         <Col xs={24} md={11}>
                           <Form.Item
                             label="قیمت"
-                            name={[name, "price"]}
+                            name={[name, "value"]}
                             rules={[
                               {
                                 required: true,
@@ -197,7 +254,7 @@ const AddItemForm = () => {
             )}
           </Form.List>
         </Form.Item>
-        <Form.Item label="تگ ها" name="tags">
+        <Form.Item label="تگ ها" name={"tags"}>
           <Checkbox.Group>
             <Checkbox value="new">جدید</Checkbox>
             <Checkbox value="sold-out">تمام شده</Checkbox>

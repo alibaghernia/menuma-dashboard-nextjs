@@ -38,12 +38,13 @@ import Link from "@/components/common/link/link";
 import PagerRequestsDrawer from "./pager-requests-drawer";
 import { useSession } from "next-auth/react";
 import User from "./user/user";
+import auth from "@/middleware";
+import { Session } from "next-auth";
+import axios from "@/lib/axios";
 
-const PanelTemplate: FC<PropsWithChildren<{ administrator?: boolean }>> = ({
-  children,
-  administrator,
-}) => {
-  const session = useSession();
+const PanelTemplate: FC<
+  PropsWithChildren<{ administrator?: boolean; session: Session }>
+> = ({ children, administrator, session }) => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");

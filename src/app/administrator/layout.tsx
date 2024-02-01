@@ -7,7 +7,11 @@ import Forbidden from "./components/forbidden";
 const DashboardLayout: FC<PropsWithChildren> = async ({ children }) => {
   const session = await auth();
   if (session?.user?.role != "admin") return <Forbidden />;
-  return <PanelTemplate administrator>{children}</PanelTemplate>;
+  return (
+    <PanelTemplate session={session} administrator>
+      {children}
+    </PanelTemplate>
+  );
 };
 
 export default DashboardLayout;

@@ -5,18 +5,26 @@ import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Col, Drawer, Flex, Popover, Table } from "antd/lib";
 import React, { useCallback, useMemo, useState } from "react";
 import { ITableActions } from "./types";
+import ConfirmModal from "../confirm_modal/confirm_modal";
 
 const TableActions: ITableActions = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [seeAllOpen, setSeeAllOpen] = useState(false);
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
 
   const getRecords = useCallback(() => {
-    return Object.entries(props.record as any).map(([k, v]) => ({
-      name: props.seeAllNames?.[k] || k,
-      value: props.seeAllRender?.[k]?.(v, props.record, props.index) || v,
-    }));
+    return Object.entries(props.record as any)
+      .filter(([k]) =>
+        props.seeAllExcludeFields
+          ? !props.seeAllExcludeFields.includes(k)
+          : true
+      )
+      .map(([k, v]) => ({
+        name: props.seeAllNames?.[k] || k,
+        value: props.seeAllRender?.[k]?.(v, props.record, props.index) || v,
+      }));
   }, [props.record, props.seeAllNames, props.seeAllRender]);
 
   const otherActions = useMemo(() => {
@@ -46,12 +54,25 @@ const TableActions: ITableActions = (props) => {
             gap={10}
           >
             <Col>
-              <Button icon={<EditOutlined />} color={primaryColor} type="link">
+              <Button
+                icon={<EditOutlined />}
+                color={primaryColor}
+                type="link"
+                onClick={() => props.onEdit?.(props.record)}
+              >
                 ویرایش
               </Button>
             </Col>
             <Col>
-              <Button icon={<EditOutlined />} danger type="text">
+              <Button
+                icon={<EditOutlined />}
+                danger
+                type="text"
+                onClick={() => {
+                  setDeleteModal(true);
+                  setIsOpen(false);
+                }}
+              >
                 حذف
               </Button>
             </Col>
@@ -110,6 +131,22 @@ const TableActions: ITableActions = (props) => {
           </Button>
         </Flex>
       </Drawer>
+      {deleteModal && (
+        <ConfirmModal
+          open
+          title="حذف"
+          onClose={() => setDeleteModal(false)}
+          onConfirm={() => {
+            props.onDelete?.(props.record);
+            setDeleteModal(false);
+          }}
+          dangerConfirm
+        >
+          <div className="text-center text-typography text-[.9rem]">
+            آیا از حذف این مورد اطمینان دارید؟
+          </div>
+        </ConfirmModal>
+      )}
     </>
   );
 };

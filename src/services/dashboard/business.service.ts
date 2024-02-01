@@ -1,19 +1,24 @@
 import { AxiosResponseType } from "@/lib/auth/types";
 import type { AxiosInstance } from "axios";
 import { recreateServiceAxiosIns } from "@/services/helpers";
+import { ItemsService } from "./items/items.service";
+import { CategoriesService } from "./categories/categories.service";
 
 export class BusinessService {
   static init(business_uuid: string) {
     return new BusinessService(business_uuid);
   }
 
-  private axiosIns: AxiosInstance;
+  public axiosIns: AxiosInstance;
 
   constructor(business_uuid: string) {
     this.axiosIns = recreateServiceAxiosIns(`/panel/business/${business_uuid}`);
   }
 
-  getMe() {
-    return this.axiosIns.get<AxiosResponseType>(`/me`).then(({ data }) => data);
+  get itemsService() {
+    return ItemsService.init(this);
+  }
+  get categoriesService() {
+    return CategoriesService.init(this);
   }
 }

@@ -1,11 +1,14 @@
+"use client";
 import { Card, Col, Flex, Row } from "antd";
 import Search from "antd/lib/input/Search";
-import React from "react";
+import React, { useState } from "react";
 import ItemsTable from "./components/table";
 import { Button } from "antd/lib";
 import Link from "@/components/common/link/link";
+import _ from "lodash";
 
 const ItemsPage = () => {
+  const [search, setSearch] = useState();
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -26,7 +29,14 @@ const ItemsPage = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={_.debounce(
+                      ({ target: { value } }) => setSearch(value),
+                      500
+                    )}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
                   <Button ghost type="primary">
@@ -36,7 +46,7 @@ const ItemsPage = () => {
               </Flex>
             </Row>
             <Row>
-              <ItemsTable />
+              <ItemsTable search={search} />
             </Row>
           </Flex>
         </Card>

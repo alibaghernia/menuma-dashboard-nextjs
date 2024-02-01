@@ -18,7 +18,10 @@ declare interface ITableActionsProps {
   seeAll?: boolean;
   seeAllNames?: Record<string, string>;
   seeAllRender?: Record<string, ColumnProps<unknown>["render"]>;
+  seeAllExcludeFields?: string[];
   otherActions?: Action[];
+  onEdit?: (item: unknown) => void;
+  onDelete?: (item: unknown) => void;
 }
 
 declare type ITableActions = FC<ITableActionsProps>;

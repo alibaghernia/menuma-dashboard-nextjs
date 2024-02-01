@@ -9,6 +9,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   businesses?: BusinessesEntity[] | null;
+  access_token: string;
 }
 export interface BusinessesEntity {
   uuid: string;
