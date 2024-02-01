@@ -218,6 +218,13 @@ export const setMenuKeys = ({
         ]);
         break;
       }
+      if (comparePatternWithPathname(pathname, "/menu/items/[uuid]")) {
+        setSelectedKeys([
+          ...menu_items,
+          MENU_KEYS.menu_children.items_children.edit,
+        ]);
+        break;
+      }
     }
   }
 };

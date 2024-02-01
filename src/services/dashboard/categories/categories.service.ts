@@ -9,7 +9,7 @@ export class CategoriesService {
 
   constructor(private businessService: BusinessService) {}
 
-  async getItems(filter: IGetItemsFilters) {
+  async getItems(filter: IGetItemsFilters = {}) {
     return this.businessService.axiosIns
       .get<
         AxiosResponseType<{

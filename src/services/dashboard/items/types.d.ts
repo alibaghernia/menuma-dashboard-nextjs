@@ -2,11 +2,11 @@ export interface Product {
   uuid: string;
   title: string;
   description: string;
-  metadata?: string[] | null;
-  prices?: PricesEntity[] | null;
+  metadata?: string[];
+  prices?: PricesEntity[];
   createdAt: string;
   updatedAt: string;
-  categories?: CategoriesEntity[] | null;
+  categories?: CategoriesEntity[];
 }
 export interface PricesEntity {
   title: string;
@@ -23,5 +23,5 @@ export interface CategoriesEntity {
 export interface IGetProductFilters {
   page: number;
   limit: number;
-  name?: string;
+  title?: string;
 }

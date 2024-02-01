@@ -9,7 +9,7 @@ export interface Category {
 }
 
 export interface IGetItemsFilters {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
   name?: string;
 }

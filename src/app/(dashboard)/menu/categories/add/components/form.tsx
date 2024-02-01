@@ -1,6 +1,7 @@
 "use client";
 import ImageDisplayerWrapper from "@/components/common/image-displayer";
 import { BusinessProviderContext } from "@/providers/business/provider";
+import { FormType } from "@/types";
 import { useCustomRouter, useLoadings, useMessage } from "@/utils/hooks";
 import { uploadCustomRequest } from "@/utils/upload";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
@@ -10,7 +11,6 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { FC, useContext, useEffect, useState } from "react";
 
-export type FormType = FC<{ isEdit?: boolean }>;
 // TODO: fix upload image and display it
 const AddCategoryForm: FormType = (props) => {
   const params = useParams();

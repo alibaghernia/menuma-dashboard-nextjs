@@ -19,4 +19,9 @@ export class UsersService {
       .get<AxiosResponseType<User>>(`/me`)
       .then(({ data }) => data);
   }
+  updateProfile(payload: unknown) {
+    return this.axiosIns
+      .put<AxiosResponseType>(`/`, payload)
+      .then(({ data }) => data);
+  }
 }

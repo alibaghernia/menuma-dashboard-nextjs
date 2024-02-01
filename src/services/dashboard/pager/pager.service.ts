@@ -1,44 +1,39 @@
 import { AxiosResponseType } from "@/lib/auth/types";
 import { BusinessService } from "../business.service";
-import { IGetProductFilters, Product } from "./types";
+import { IGetRequestFilters, Request } from "./types";
 
-export class ItemsService {
+export class PagerService {
   static init(businessService: BusinessService) {
-    return new ItemsService(businessService);
+    return new PagerService(businessService);
   }
 
   constructor(private businessService: BusinessService) {}
 
-  async getItems(filter: IGetProductFilters) {
+  async getItems(filter: IGetRequestFilters) {
     return this.businessService.axiosIns
       .get<
         AxiosResponseType<{
           total: number;
-          products: Product[];
+          requests: Request[];
         }>
-      >("/product", {
+      >("/pager-requests", {
         params: filter,
       })
       .then(({ data }) => data);
   }
   async getItem(uuid: string) {
     return this.businessService.axiosIns
-      .get<AxiosResponseType<Product>>(`/product/${uuid}`)
+      .get<AxiosResponseType<Request>>(`/pager-requests/${uuid}`)
       .then(({ data }) => data);
   }
-  async delete(id: string) {
+  async delete(uuid: string) {
     return this.businessService.axiosIns
-      .delete<AxiosResponseType>(`/product/${id}`)
+      .delete<AxiosResponseType>(`/pager-requests/${uuid}`)
       .then(({ data }) => data);
   }
-  async create(payload: unknown) {
+  async update(uuid: string, payload: { status: "TODO" | "DOING" | "DONE" }) {
     return this.businessService.axiosIns
-      .post("/product", payload)
-      .then(({ data }) => data);
-  }
-  async update(uuid: string, payload: unknown) {
-    return this.businessService.axiosIns
-      .put(`/product/${uuid}`, payload)
+      .put(`/pager-requests/${uuid}`, payload)
       .then(({ data }) => data);
   }
 }

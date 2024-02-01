@@ -4,20 +4,23 @@ import MenuBarsIcon from "@/icons/menu-bars";
 import {
   useCurrentBreakpoints,
   useCustomRouter,
+  useLoadings,
+  useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
-import { Avatar, Badge, Col, Flex, Layout, Menu, Typography } from "antd";
+import { Badge, Col, Flex, Layout, Menu } from "antd";
 import { Header } from "antd/es/layout/layout";
 import classNames from "classnames";
 import React, {
   FC,
   PropsWithChildren,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
-import { BellOutlined } from "@ant-design/icons";
+import { BellOutlined, LoadingOutlined } from "@ant-design/icons";
 import Sider from "antd/es/layout/Sider";
 import type { MenuProps } from "antd";
 import DashboardOutlinedIcon from "@/icons/dashboard-outlined";
@@ -36,15 +39,17 @@ import Breadcrumb from "./breadcrumb";
 import DiscountOutlined from "@/icons/discount-outlined";
 import Link from "@/components/common/link/link";
 import PagerRequestsDrawer from "./pager-requests-drawer";
-import { useSession } from "next-auth/react";
 import User from "./user/user";
-import auth from "@/middleware";
 import { Session } from "next-auth";
-import axios from "@/lib/axios";
+import { BusinessProviderContext } from "@/providers/business/provider";
+import { Request } from "@/services/dashboard/pager/types";
 
 const PanelTemplate: FC<
   PropsWithChildren<{ administrator?: boolean; session: Session }>
 > = ({ children, administrator, session }) => {
+  const [addL, remvoeL, hasL] = useLoadings();
+  const message = useMessage();
+  const [requests, setRequests] = useState<Request[]>([]);
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
@@ -53,6 +58,7 @@ const PanelTemplate: FC<
   const [selectedKeys, setSelectedKeys] = useState<string[]>(["dashboard"]);
   const pathname = usePathname();
   const [requestPagersDrawerOpen, setRequestPagersDrawerOpen] = useState(false);
+  const { businessService } = useContext(BusinessProviderContext);
 
   useEffect(() => {
     setMenuKeys({ pathname, setSelectedKeys });
@@ -216,6 +222,25 @@ const PanelTemplate: FC<
       ]);
   }, [selectedKeys]);
 
+  useEffect(() => {
+    if (!administrator) {
+      addL("load-pager-requests-noall");
+      businessService.pagerService
+        .getItems({
+          status: ["DOING", "TODO"],
+        })
+        .finally(() => {
+          remvoeL("load-pager-requests-noall");
+        })
+        .then((data) => {
+          setRequests(data.data.requests);
+        })
+        .catch(() => {
+          message.error("دریافت اطلاعات پیجر با مشکل مواجه شد.");
+        });
+    }
+  }, []);
+
   return (
     <>
       <Layout>
@@ -262,13 +287,21 @@ const PanelTemplate: FC<
               <Flex align="center" gap={"1rem"}>
                 {!administrator && (
                   <Col>
-                    <Badge className="" count={11}>
-                      <BellOutlined
+                    {!!hasL("load-pager-requests-noall") ? (
+                      <LoadingOutlined
                         color={typographyColor}
                         onClick={() => setRequestPagersDrawerOpen(true)}
                         size={24}
                       />
-                    </Badge>
+                    ) : (
+                      <Badge className="" count={requests.length}>
+                        <BellOutlined
+                          color={typographyColor}
+                          onClick={() => setRequestPagersDrawerOpen(true)}
+                          size={24}
+                        />
+                      </Badge>
+                    )}
                   </Col>
                 )}
                 <Col>
@@ -331,14 +364,7 @@ const PanelTemplate: FC<
       </Layout>
       {!administrator && (
         <PagerRequestsDrawer
-          requests={[
-            {
-              id: 1,
-              status: "pending",
-              title: "میز 12",
-              descriptions: "لطفا یک لیوان آب هم بیارید، ممنون",
-            },
-          ]}
+          requests={requests}
           open={requestPagersDrawerOpen}
           onClose={() => setRequestPagersDrawerOpen(false)}
         />

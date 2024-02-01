@@ -1,8 +1,9 @@
 import { Flex, Row, Col, Card, Button } from "antd";
 import Search from "antd/lib/input/Search";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import React from "react";
-import ProfileForm from "./components/form";
+const ProfileForm = dynamic(() => import("./components/form"), { ssr: false });
 
 const ProfilePage = () => {
   return (

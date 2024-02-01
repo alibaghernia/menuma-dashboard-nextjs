@@ -12,6 +12,7 @@ export const MENU_KEYS = {
     items_children: {
       list: "items-list",
       add: "items-add",
+      edit: "items-edit",
     },
   },
   conditional_discounts: "conditional-discounts",

@@ -1,10 +1,15 @@
 "use client";
 import TrashOutlined from "@/icons/trash-outlined";
 import { BusinessProviderContext } from "@/providers/business/provider";
+import { Category } from "@/services/dashboard/categories/types";
+import { Product } from "@/services/dashboard/items/types";
 import { FilesService } from "@/services/file/file.service";
+import { FormType } from "@/types";
 import {
   useCurrentBreakpoints,
+  useCustomRouter,
   useLoadings,
+  useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
 import { uploadCustomRequest } from "@/utils/upload";
@@ -24,36 +29,119 @@ import {
   UploadFile,
 } from "antd/lib";
 import classNames from "classnames";
-import React, { useContext, useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useContext, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-const AddItemForm = () => {
+const AddItemForm: FormType = (props) => {
+  const params = useParams();
   const [addL, removeL] = useLoadings();
-  const [form] = Form.useForm();
+  const message = useMessage();
+  const router = useCustomRouter();
+  const [form] = Form.useForm<
+    Omit<Product, "categories"> & { categories: string }
+  >();
   const breakpoints = useCurrentBreakpoints();
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | undefined>();
   const redColor = useTailwindColor("red");
+
+  // private implementations
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const { businessService } = useContext(BusinessProviderContext);
 
   async function onFinish(values: unknown) {
     console.log({ values });
     addL("create-item");
-    // await businessService.itemsService.create(values);
-    removeL("create-item");
+    if (props.isEdit) {
+      businessService.itemsService
+        .update(params.uuid as string, values)
+        .finally(() => {
+          removeL("create-item");
+        })
+        .then(() => {
+          message.success("آیتم با موفقیت بروزرسانی شد.");
+          router.push("/menu/items");
+        });
+    } else {
+      businessService.itemsService
+        .create(values)
+        .finally(() => {
+          removeL("create-item");
+        })
+        .then(() => {
+          message.success("آیتم با موفقیت ساخته شد.");
+          router.push("/menu/items");
+        });
+    }
   }
 
-  const handleUploadOnChange = (info: any) => {
-    setFileList(info.fileList);
-    if (info.file.status === "uploading") {
+  const handleUploadOnChange = async (info: any) => {
+    if (info.file.status == "uploading") {
       addL("upload-image");
       return;
+    } else if (info.file.status == "done") {
+      removeL("upload-image");
     }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      form.setFieldValue("image", info.file.response);
+
+    const arrayBuffer = await info.file.originFileObj?.arrayBuffer();
+    if (arrayBuffer) {
+      var arrayBufferView = new Uint8Array(arrayBuffer);
+      var blob = new Blob([arrayBufferView], {
+        type: info.file.type,
+      });
+      const url = window.URL.createObjectURL(blob);
+      setImagePreviewUrl(url);
+    } else {
+      setImagePreviewUrl(undefined);
     }
+    setFileList(info.fileList);
   };
+  function fetchItem() {
+    addL("load-item");
+    businessService.itemsService
+      .getItem(params.uuid as string)
+      .finally(() => {
+        removeL("load-item");
+      })
+      .then((data) => {
+        form.setFieldsValue({
+          title: data.data.title,
+          prices: data.data.prices,
+          categories: data.data.categories?.[0]?.uuid,
+          description: data.data.description,
+          metadata: data.data.metadata,
+          // image: data.data.image,
+        });
+        // setImagePreviewUrl(data.data.image_url);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت اطلاعات وجود دارد!");
+      });
+  }
+  function fetchCategories() {
+    addL("load-categories");
+    businessService.categoriesService
+      .getItems()
+      .finally(() => {
+        removeL("load-categories");
+      })
+      .then((data) => {
+        setCategories(data.data.categories);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت لیست دسته بندی ها وجود دارد!");
+      });
+  }
+
+  useEffect(() => {
+    fetchCategories();
+    if (props.isEdit) {
+      fetchItem();
+    }
+    fetchCategories();
+  }, []);
 
   return (
     <Card className="w-full">
@@ -73,7 +161,7 @@ const AddItemForm = () => {
           prices: [
             {
               title: "",
-              price: null,
+              value: null,
             },
           ],
         }}
@@ -81,17 +169,17 @@ const AddItemForm = () => {
         <Row gutter={16}>
           <Col xs={24} sm={12}>
             <Form.Item
-              name="name"
-              label="نام"
+              name="title"
+              label="عنوان"
               rules={[
                 {
                   required: true,
-                  message: "نام آیتم اجباری است!",
+                  message: "عنوان آیتم اجباری است!",
                 },
               ]}
               extra="مثلا: اسپرسو"
             >
-              <Input size="large" placeholder="نام آیتم..." />
+              <Input size="large" placeholder="عنوان آیتم..." />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
@@ -106,20 +194,17 @@ const AddItemForm = () => {
               ]}
             >
               <Select
-                options={[
-                  {
-                    label: "test",
-                    value: "testic",
-                  },
-                ]}
-                mode="multiple"
+                options={categories.map((cat) => ({
+                  label: cat.title,
+                  value: cat.uuid,
+                }))}
                 size="large"
                 placeholder="انتخاب دسته بندی..."
               />
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item name="descriptions" label="توضیحات">
+        <Form.Item name="description" label="توضیحات">
           <Input.TextArea placeholder="توضیحات آیتم" />
         </Form.Item>
 
@@ -231,7 +316,7 @@ const AddItemForm = () => {
                   </Flex>
                 </Row>
                 <Row>
-                  <Button ghost type="primary" block onClick={add}>
+                  <Button ghost type="primary" block onClick={() => add()}>
                     افزودن قیمت
                   </Button>
                 </Row>
@@ -244,7 +329,7 @@ const AddItemForm = () => {
             )}
           </Form.List>
         </Form.Item>
-        <Form.Item label="تگ ها" name={"tags"}>
+        <Form.Item label="تگ ها" name={"metadata"}>
           <Checkbox.Group>
             <Checkbox value="new">جدید</Checkbox>
             <Checkbox value="sold-out">تمام شده</Checkbox>

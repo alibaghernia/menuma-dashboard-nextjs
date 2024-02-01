@@ -4,7 +4,9 @@ import { BusinessProviderContext } from "@/providers/business/provider";
 import { IGetProductFilters, Product } from "@/services/dashboard/items/types";
 import {
   useCurrentBreakpoints,
+  useCustomRouter,
   useLoadings,
+  useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
 import { EditOutlined } from "@ant-design/icons";
@@ -19,8 +21,10 @@ export type ItemsTableType = FC<{
 }>;
 
 const ItemsTable: ItemsTableType = (props) => {
-  const [addL, removeL] = useLoadings();
+  const message = useMessage();
+  const [addL, removeL, hasL] = useLoadings();
   const [items, setItems] = useState<Product[]>([]);
+  const router = useCustomRouter();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -61,10 +65,22 @@ const ItemsTable: ItemsTableType = (props) => {
             record={rec}
             index={idx}
             onDelete={async () => {
-              addL("delete-item");
-              businessService.itemsService.delete(rec["uuid"]);
-              fetchItems();
-              removeL("delete-item");
+              addL("delete-item-noall");
+              businessService.itemsService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("delete-item-noall");
+                })
+                .then(() => {
+                  message.success("آیتم مورد نظر با موفقیت حذف شد.");
+                  fetchItems();
+                })
+                .catch(() => {
+                  message.error("مشکلی در حذف آیتم وجود دارد.");
+                });
+            }}
+            onEdit={() => {
+              router.push(`/menu/items/${rec["uuid"]}`);
             }}
             seeAllNames={{
               title: "عنوان",
@@ -73,7 +89,7 @@ const ItemsTable: ItemsTableType = (props) => {
               createdAt: "زمان ایجاد",
               updatedAt: "آخرین بروزرسانی",
             }}
-            seeAllExcludeFields={["uuid", "prices", "metadata"]}
+            seeAllExcludeFields={["uuid", "prices", "metadata", "images"]}
             seeAllRender={{
               categories: renderCategories,
               createdAt: renderTime,
@@ -90,6 +106,7 @@ const ItemsTable: ItemsTableType = (props) => {
     filters: IGetProductFilters = { page: currentPage, limit: pageSize }
   ) {
     try {
+      addL("fetch-items-noall");
       const { data } = await businessService.itemsService.getItems(filters);
       setTotal(data.total);
       setItems(data.products);
@@ -98,15 +115,27 @@ const ItemsTable: ItemsTableType = (props) => {
         error,
       });
     }
+
+    removeL("fetch-items-noall");
   }
 
   useEffect(() => {
     fetchItems({
       page: currentPage,
       limit: pageSize,
-      name: props.search,
+      title: props.search,
     });
-  }, [props.search, currentPage, pageSize]);
+  }, [currentPage, pageSize]);
+  useEffect(
+    _.debounce(() => {
+      fetchItems({
+        page: currentPage,
+        limit: pageSize,
+        title: props.search,
+      });
+    }, 500),
+    [props.search]
+  );
 
   const tablePaginationOnChange = (current: number, pageSize: number) => {
     setCurrentPage(current);
@@ -118,6 +147,7 @@ const ItemsTable: ItemsTableType = (props) => {
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
       columns={columns}
+      loading={!!hasL("fetch-items-noall", "delete-item-noall")}
       pagination={{
         current: currentPage,
         pageSize,

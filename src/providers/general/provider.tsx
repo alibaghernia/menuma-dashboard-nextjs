@@ -49,7 +49,9 @@ export const GeneralProvider: IGeneralProvider = ({ children, ...props }) => {
         {children}
       </GeneralProviderContext.Provider>
       {contextHolder}
-      {!!loadings.length && <Loading />}
+      {!!loadings.filter((load) => !load.endsWith("-noall")).length && (
+        <Loading />
+      )}
     </>
   );
 };

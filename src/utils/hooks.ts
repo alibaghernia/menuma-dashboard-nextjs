@@ -5,12 +5,18 @@ import { useRouteChangeContext } from "@/providers/routeChange/provider";
 import { Grid } from "antd";
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import resolveConfig from "tailwindcss/resolveConfig";
 
 export const useLoadings = () => {
-  const { addLoading, removeLoading } = useContext(GeneralProviderContext);
-  return [addLoading, removeLoading];
+  const { addLoading, removeLoading, loadings } = useContext(
+    GeneralProviderContext
+  );
+  const hasLoading = useCallback(
+    (...id: string[]) => loadings.some((load) => id.includes(load)),
+    [loadings]
+  );
+  return [addLoading, removeLoading, hasLoading];
 };
 
 export const useMessage = () => {

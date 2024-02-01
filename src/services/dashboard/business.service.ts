@@ -3,6 +3,7 @@ import type { AxiosInstance } from "axios";
 import { recreateServiceAxiosIns } from "@/services/helpers";
 import { ItemsService } from "./items/items.service";
 import { CategoriesService } from "./categories/categories.service";
+import { PagerService } from "./pager/pager.service";
 
 export class BusinessService {
   static init(business_uuid: string) {
@@ -20,5 +21,8 @@ export class BusinessService {
   }
   get categoriesService() {
     return CategoriesService.init(this);
+  }
+  get pagerService() {
+    return PagerService.init(this);
   }
 }
