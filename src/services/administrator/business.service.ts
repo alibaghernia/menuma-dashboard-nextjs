@@ -24,4 +24,19 @@ export class BusinessService {
       >("/", { params: filters })
       .then(({ data }) => data);
   }
+  get(uuid: string) {
+    return this.axiosIns
+      .get<AxiosResponseType<Business>>(`/${uuid}`)
+      .then(({ data }) => data);
+  }
+  create(payload: unknown) {
+    return this.axiosIns
+      .post<AxiosResponseType>("", payload)
+      .then(({ data }) => data);
+  }
+  update(uuid: string, payload: unknown) {
+    return this.axiosIns
+      .put<AxiosResponseType>(`/${uuid}`, payload)
+      .then(({ data }) => data);
+  }
 }

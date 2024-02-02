@@ -1,4 +1,5 @@
 "use client";
+import ImageDisplayerWrapper from "@/components/common/image-displayer";
 import TrashOutlined from "@/icons/trash-outlined";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { Category } from "@/services/dashboard/categories/types";
@@ -29,6 +30,7 @@ import {
   UploadFile,
 } from "antd/lib";
 import classNames from "classnames";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -39,7 +41,7 @@ const AddItemForm: FormType = (props) => {
   const message = useMessage();
   const router = useCustomRouter();
   const [form] = Form.useForm<
-    Omit<Product, "categories"> & { categories: string }
+    Omit<Product, "categories"> & { categories: string; image: string }
   >();
   const breakpoints = useCurrentBreakpoints();
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
@@ -78,13 +80,6 @@ const AddItemForm: FormType = (props) => {
   }
 
   const handleUploadOnChange = async (info: any) => {
-    if (info.file.status == "uploading") {
-      addL("upload-image");
-      return;
-    } else if (info.file.status == "done") {
-      removeL("upload-image");
-    }
-
     const arrayBuffer = await info.file.originFileObj?.arrayBuffer();
     if (arrayBuffer) {
       var arrayBufferView = new Uint8Array(arrayBuffer);
@@ -112,9 +107,9 @@ const AddItemForm: FormType = (props) => {
           categories: data.data.categories?.[0]?.uuid,
           description: data.data.description,
           metadata: data.data.metadata,
-          // image: data.data.image,
+          image: data.data.images?.[0]?.uuid,
         });
-        // setImagePreviewUrl(data.data.image_url);
+        setImagePreviewUrl(data.data.image_url);
       })
       .catch(() => {
         message.error("مشکلی در دریافت اطلاعات وجود دارد!");
@@ -207,13 +202,24 @@ const AddItemForm: FormType = (props) => {
           <Input.TextArea placeholder="توضیحات آیتم" />
         </Form.Item>
 
-        <Form.Item label="تصویر" name="image" valuePropName="">
+        <Form.Item label="تصویر" name="image">
           <Upload.Dragger
-            listType="picture"
             multiple={false}
-            showUploadList
+            showUploadList={false}
             accept=".png,.jpg,.jpeg"
-            customRequest={uploadCustomRequest}
+            customRequest={(options) => {
+              addL("upload-image");
+              return uploadCustomRequest(options)
+                .finally(() => {
+                  removeL("upload-image");
+                })
+                .then((data) => {
+                  console.log({
+                    data,
+                  });
+                  form.setFieldValue("image", data.uuid);
+                });
+            }}
             onChange={handleUploadOnChange}
             fileList={fileList}
             openFileDialogOnClick={!!!fileList.length}
@@ -231,6 +237,19 @@ const AddItemForm: FormType = (props) => {
               </>
             )}
           </Upload.Dragger>
+          {!!imagePreviewUrl && (
+            <ImageDisplayerWrapper
+              onRemove={() => {
+                setFileList([]);
+                setImagePreviewUrl(undefined);
+                form.setFieldValue("image", null);
+              }}
+              className="mx-auto"
+              imageRootClassName="relative w-[5rem] h-[5rem] border"
+            >
+              <Image fill src={imagePreviewUrl} alt="logo" />
+            </ImageDisplayerWrapper>
+          )}
         </Form.Item>
         <Form.Item>
           <Form.List

@@ -1,5 +1,7 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import { BusinessService } from "@/services/administrator/business.service";
+import { Business, GetAllItemsFilter } from "@/services/administrator/types";
 import {
   useCurrentBreakpoints,
   useCustomRouter,
@@ -7,20 +9,27 @@ import {
   useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
+import { renderTime } from "@/utils/tables";
 import { EditOutlined } from "@ant-design/icons";
 import { Avatar, Button, Col, Flex, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
-import React, { useState } from "react";
+import _ from "lodash";
+import React, { FC, useEffect, useState } from "react";
 
-const CafeRestaurantsTable = () => {
+type ICafeRestaurantsTable = FC<{
+  search: string;
+}>;
+
+const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
   const message = useMessage();
   const [addL, removeL, hasL] = useLoadings();
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<Business[]>([]);
   const router = useCustomRouter();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
+  const businessService = BusinessService.init();
 
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
@@ -35,18 +44,18 @@ const CafeRestaurantsTable = () => {
       );
     return (
       <div className="text-typography py-2 px-4 bg-typography/[.1] rounded-[1rem] w-fit">
-        بدون لوگو
+        بدون تصویر
       </div>
     );
   };
   const columns: TableProps["columns"] = [
     {
       title: "عنوان",
-      dataIndex: "title",
+      dataIndex: "name",
     },
     {
       title: "لوگو",
-      dataIndex: "logo",
+      dataIndex: "logo_url",
       render: renderLogo,
     },
     {
@@ -69,14 +78,43 @@ const CafeRestaurantsTable = () => {
             value={value}
             record={rec}
             index={idx}
+            onEdit={() => {
+              router.push(`/administrator/cafe_restaurants/${rec["uuid"]}`);
+            }}
+            seeAllExcludeFields={[
+              "uuid",
+              "working_hours",
+              "socials",
+              "location_lat",
+              "location_long",
+              "public",
+              "deletedAt",
+              "logo",
+              "banner",
+            ]}
             seeAllNames={{
-              title: "نام",
+              name: "نام",
               logo: "لوگو",
               slug: "اسلاگ",
               status: "وضعیت",
+              address: "آدرس",
+              description: "توضیحات",
+              phone_number: "شماره تماس",
+              customer_club: "باشگاه مشتریان",
+              email: "ایمیل",
+              banner: "عکس بنر",
+              pager: "دارای پیجر",
+              createdAt: "زمان ایجاد",
+              updatedAt: "آخرین بروزرسانی",
+              domain: "دامنه",
+              logo_url: "لوگو",
+              banner_url: "بنر",
             }}
             seeAllRender={{
-              logo: renderLogo,
+              logo_url: renderLogo,
+              banner_url: renderLogo,
+              createdAt: renderTime,
+              updatedAt: renderTime,
             }}
             seeAll
           />
@@ -84,15 +122,41 @@ const CafeRestaurantsTable = () => {
       },
     },
   ];
-  const dataSource = [
-    {
-      title: "test",
-      logo: "https://panel.menuma.online/storage/jKL32G6YpOTravreh47gyNMDh2shuC-metaRmtKUWltVlJueERZc0NyQ1N0WHEzS2JMcDlvRGVtLW1ldGFVMk55WldWdWMyaHZkQ0F5TURJekxURXlMVEF6SURFNU16VXlPUzV3Ym1jPS0ucG5n-.png",
-      slug: "demo",
-      status: "active",
-    },
-  ];
 
+  async function fetchItems(
+    filters: GetAllItemsFilter = { page: currentPage, limit: pageSize }
+  ) {
+    try {
+      addL("fetch-items-noall");
+      const { data } = await businessService.getAll(filters);
+      setTotal(data.total);
+      setItems(data.businesses);
+    } catch (error) {
+      console.log({
+        error,
+      });
+    }
+
+    removeL("fetch-items-noall");
+  }
+
+  useEffect(() => {
+    fetchItems({
+      page: currentPage,
+      limit: pageSize,
+      name: props.search,
+    });
+  }, [currentPage, pageSize]);
+  useEffect(
+    _.debounce(() => {
+      fetchItems({
+        page: currentPage,
+        limit: pageSize,
+        name: props.search,
+      });
+    }, 500),
+    [props.search]
+  );
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
@@ -100,7 +164,7 @@ const CafeRestaurantsTable = () => {
         emptyText: "داده ای وجود ندارد",
       }}
       columns={columns}
-      dataSource={dataSource}
+      dataSource={items}
     />
   );
 };

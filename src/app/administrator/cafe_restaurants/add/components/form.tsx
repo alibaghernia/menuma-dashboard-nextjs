@@ -4,7 +4,7 @@ import {
   MinusCircleOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Checkbox, Spin } from "antd";
+import { Button, Checkbox, Spin, TimePicker } from "antd";
 import {
   Card,
   Col,
@@ -14,7 +14,7 @@ import {
   Radio,
   Row,
   Select,
-  TimePicker,
+  Switch,
   Upload,
   UploadFile,
 } from "antd/lib";
@@ -26,12 +26,28 @@ import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import mapMarker from "@/assets/images/map-marker.png";
 import L from "leaflet";
-import { useCurrentBreakpoints } from "@/utils/hooks";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useLoadings,
+  useMessage,
+} from "@/utils/hooks";
 import dayjs from "dayjs";
 import classNames from "classnames";
+import { FormType } from "@/types";
+import { useParams } from "next/navigation";
+import { BusinessService } from "@/services/administrator/business.service";
+import { uploadCustomRequest } from "@/utils/upload";
+import { UsersService } from "@/services/administrator/users/users.service";
+import { User } from "@/services/dashboard/users/types";
+import _ from "lodash";
 
-const CafeRestaurantForm = () => {
+const CafeRestaurantForm: FormType = (props) => {
   const [form] = Form.useForm();
+  const params = useParams();
+  const [addL, removeL, hasL] = useLoadings();
+  const message = useMessage();
+  const router = useCustomRouter();
   const breakpoints = useCurrentBreakpoints();
   const [logoFileList, setLogoFileList] = useState<UploadFile<any>[]>([]);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string>();
@@ -39,17 +55,108 @@ const CafeRestaurantForm = () => {
   const [bannerFileList, setBannerFileList] = useState<UploadFile<any>[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<[number, number]>();
   const [loaded, setLoaded] = useState(false);
+  const businessService = BusinessService.init();
+  const usersService = UsersService.init();
+  const [users, setUsers] = useState<User[]>([]);
+
   function formFinishHandler(values: any) {
-    console.log({
-      values,
-    });
+    addL("save-data");
+    if (props.isEdit)
+      businessService
+        .update(params.uuid as string, values)
+        .finally(() => {
+          removeL("save-data");
+        })
+        .catch(() => {
+          message.error("خطایی در ذخیره اطلاعات رخ داد.");
+        })
+        .then(() => {
+          message.success("اطلاعات با موفقیت ذخیره شد.");
+          router.push("/administrator/cafe_restaurants");
+        });
+    else
+      businessService
+        .create(values)
+        .finally(() => {
+          removeL("save-data");
+        })
+        .catch(() => {
+          message.error("خطایی در ذخیره اطلاعات رخ داد.");
+        })
+        .then(() => {
+          message.success("اطلاعات با موفقیت ذخیره شد.");
+          router.push("/administrator/cafe_restaurants");
+        });
   }
   const locationPoint: [number, number] = [
-    parseFloat(form.getFieldValue("lat") || 0),
-    parseFloat(form.getFieldValue("long") || 0),
+    parseFloat(form.getFieldValue("location_lat") || 0),
+    parseFloat(form.getFieldValue("location_long") || 0),
   ];
+  function fetchItem() {
+    addL("load-item");
+    businessService
+      .get(params.uuid as string)
+      .finally(() => {
+        removeL("load-item");
+      })
+      .then((data) => {
+        form.setFieldsValue({
+          name: data.data.name,
+          address: data.data.address,
+          phone_number: data.data.phone_number,
+          banner: data.data.banner,
+          description: data.data.description,
+          email: data.data.email,
+          location_lat: data.data.location_lat,
+          location_long: data.data.location_long,
+          logo: data.data.logo,
+          slug: data.data.slug,
+          domain: data.data.domain,
+          working_hours: data.data.working_hours?.map((wh) => ({
+            ...wh,
+            from: dayjs(wh.from),
+            to: dayjs(wh.to),
+          })),
+          instagram: data.data.socials?.find((soc) => soc.type == "instagram")
+            ?.link,
+          telegram: data.data.socials?.find((soc) => soc.type == "telegram")
+            ?.link,
+          twitter_x: data.data.socials?.find((soc) => soc.type == "twitter_x")
+            ?.link,
+          whatsapp: data.data.socials?.find((soc) => soc.type == "whatsapp")
+            ?.link,
+          status: data.data.status == "1" ? "active" : "deactive",
+          manager: data.data.users?.[0]?.uuid,
+          pager: data.data.pager,
+          customer_club: data.data.customer_club,
+        });
+        setLogoPreviewUrl(data.data.logo_url);
+        setBannerPreviewUrl(data.data.banner_url);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت اطلاعات وجود دارد!");
+      });
+  }
+  function fetchUsers() {
+    addL("fetch-users");
+    usersService
+      .getManagers({ no_business: !props.isEdit })
+      .finally(() => {
+        removeL("fetch-users");
+      })
+      .then((data) => {
+        setUsers(data.data);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت اطلاعات رخ داد");
+      });
+  }
   useEffect(() => {
     setLoaded(true);
+    fetchUsers();
+    if (props.isEdit) {
+      fetchItem();
+    }
   }, []);
 
   const socialLinkRules = [
@@ -67,8 +174,8 @@ const CafeRestaurantForm = () => {
         className="w-full"
         onFinish={formFinishHandler}
         initialValues={{
-          lat: 31.876,
-          long: 54.34,
+          location_lat: "31.876",
+          location_long: "54.34",
           working_hours: [
             {
               from: null,
@@ -90,14 +197,22 @@ const CafeRestaurantForm = () => {
                 },
               ]}
             >
-              <Select placeholder="انتخاب مدیر..." />
+              <Select
+                options={users.map((user) => ({
+                  label: [user.first_name, user.last_name]
+                    .filter(Boolean)
+                    .join(" "),
+                  value: user.uuid,
+                }))}
+                placeholder="انتخاب مدیر..."
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item
-              name="title"
+              name="name"
               label="عنوان"
               rules={[
                 {
@@ -150,6 +265,16 @@ const CafeRestaurantForm = () => {
                       }
                       setLogoFileList(info.fileList);
                     }}
+                    customRequest={(options) => {
+                      addL("upload-image");
+                      return uploadCustomRequest(options)
+                        .finally(() => {
+                          removeL("upload-image");
+                        })
+                        .then((data) => {
+                          form.setFieldValue("logo", data.uuid);
+                        });
+                    }}
                     fileList={logoFileList}
                     openFileDialogOnClick={!!!logoFileList.length}
                   >
@@ -166,10 +291,14 @@ const CafeRestaurantForm = () => {
                       </>
                     )}
                   </Upload.Dragger>
-                  {Boolean(logoFileList.length) && (
+                  {!!logoPreviewUrl && (
                     <ImageDisplayerWrapper
                       avatar
-                      onRemove={() => setLogoFileList([])}
+                      onRemove={() => {
+                        setLogoFileList([]);
+                        setLogoPreviewUrl(undefined);
+                        form.setFieldValue("logo", undefined);
+                      }}
                       className="mx-auto"
                       imageRootClassName="relative w-[5rem] h-[5rem] border"
                     >
@@ -202,8 +331,18 @@ const CafeRestaurantForm = () => {
                       }
                       setBannerFileList(info.fileList);
                     }}
+                    customRequest={(options) => {
+                      addL("upload-image");
+                      return uploadCustomRequest(options)
+                        .finally(() => {
+                          removeL("upload-image");
+                        })
+                        .then((data) => {
+                          form.setFieldValue("banner", data.uuid);
+                        });
+                    }}
                     fileList={bannerFileList}
-                    openFileDialogOnClick={!!!logoFileList.length}
+                    openFileDialogOnClick={!!!bannerFileList.length}
                   >
                     {Boolean(bannerFileList.length) ? (
                       <p className="ant-upload-text">تصویر انتخاب شد</p>
@@ -219,9 +358,13 @@ const CafeRestaurantForm = () => {
                     )}
                   </Upload.Dragger>
 
-                  {Boolean(bannerFileList.length) && (
+                  {!!bannerPreviewUrl && (
                     <ImageDisplayerWrapper
-                      onRemove={() => setBannerFileList([])}
+                      onRemove={() => {
+                        setBannerFileList([]);
+                        setBannerPreviewUrl(undefined);
+                        form.setFieldValue("banner", undefined);
+                      }}
                       className="mx-auto"
                       imageRootClassName="relative w-[10rem] h-[5rem] border"
                     >
@@ -249,7 +392,7 @@ const CafeRestaurantForm = () => {
               </Col>
               <Col xs={24} md={12}>
                 <Form.Item
-                  name="mobile"
+                  name="phone_number"
                   label="شماره تماس"
                   rules={[
                     {
@@ -290,8 +433,14 @@ const CafeRestaurantForm = () => {
                           position={selectedLocation || locationPoint}
                           setPosition={(position) => {
                             setSelectedLocation(position);
-                            form.setFieldValue("lat", position[0]);
-                            form.setFieldValue("long", position[1]);
+                            form.setFieldValue(
+                              "location_lat",
+                              position[0].toString()
+                            );
+                            form.setFieldValue(
+                              "location_long",
+                              position[1].toString()
+                            );
                           }}
                         />
                       </MapContainer>
@@ -303,12 +452,12 @@ const CafeRestaurantForm = () => {
                   </div>
                   <Row gutter={24}>
                     <Col xs={24} sm={12}>
-                      <Form.Item name="lat" label="طول جغرافیایی">
+                      <Form.Item name="location_lat" label="طول جغرافیایی">
                         <Input />
                       </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>
-                      <Form.Item name="long" label="عرض جغرافیایی">
+                      <Form.Item name="location_long" label="عرض جغرافیایی">
                         <Input />
                       </Form.Item>
                     </Col>
@@ -329,7 +478,7 @@ const CafeRestaurantForm = () => {
                         key={key}
                         vertical={breakpoints.isXs || breakpoints.last == "sm"}
                         justify="space-between"
-                        align="center"
+                        align="start"
                         gap={8}
                       >
                         <Row gutter={8} className="w-full">
@@ -392,10 +541,6 @@ const CafeRestaurantForm = () => {
                                   message: "ساعت شروع اجباری است",
                                 },
                               ]}
-                              //@ts-ignore
-                              getValueProps={(value) => {
-                                return dayjs(value);
-                              }}
                             >
                               <TimePicker
                                 className="w-full"
@@ -403,48 +548,17 @@ const CafeRestaurantForm = () => {
                                 showNow={false}
                                 format={"HH:mm"}
                                 placeholder="انتخاب زمان"
-                                onChange={(e) => {
-                                  form.setFieldValue(
-                                    [name, "from"],
-                                    e?.format("HH:mm")
-                                  );
-                                }}
-                                onSelect={(e) => {
-                                  form.setFieldValue(
-                                    [name, "from"],
-                                    e?.format("HH:mm")
-                                  );
-                                }}
                               />
                             </Form.Item>
                           </Col>
                           <Col xs={24} md={10}>
-                            <Form.Item
-                              className={"m-0"}
-                              name={[name, "to"]}
-                              //@ts-ignore
-                              getValueProps={(value) => {
-                                return dayjs(value);
-                              }}
-                            >
+                            <Form.Item className={"m-0"} name={[name, "to"]}>
                               <TimePicker
                                 className="w-full"
                                 showSecond={false}
                                 showNow={false}
                                 format={"HH:mm"}
                                 placeholder="انتخاب زمان"
-                                onChange={(e) => {
-                                  form.setFieldValue(
-                                    [name, "to"],
-                                    e?.format("HH:mm")
-                                  );
-                                }}
-                                onSelect={(e) => {
-                                  form.setFieldValue(
-                                    [name, "to"],
-                                    e?.format("HH:mm")
-                                  );
-                                }}
                               />
                             </Form.Item>
                           </Col>
@@ -541,7 +655,7 @@ const CafeRestaurantForm = () => {
         <Form.Item name="domain" label="آدرس دامنه">
           <Input placeholder="آدرس دامنه..." />
         </Form.Item>
-        <Form.Item name="descriptions" label="توضیحات">
+        <Form.Item name="description" label="توضیحات">
           <Input.TextArea placeholder="توضیحات..." />
         </Form.Item>
         <Form.Item name="status" label="وضعیت">
@@ -550,11 +664,18 @@ const CafeRestaurantForm = () => {
             <Radio.Button value="inactive">غیر فعال</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="settings" label="تنظیمات دیگر">
-          <Checkbox.Group>
-            <Checkbox value="customer_club">باشگاه مشتریان</Checkbox>
-          </Checkbox.Group>
-        </Form.Item>
+        <Row gutter={8}>
+          <Col xs={12} md={8}>
+            <Form.Item name="pager" label="پیجر">
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col xs={12} md={8}>
+            <Form.Item name="customer_club" label="باشگاه مشتریان">
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             ذخیره

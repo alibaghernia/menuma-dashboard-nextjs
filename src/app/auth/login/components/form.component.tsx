@@ -51,18 +51,18 @@ const LoginForm: ILoginForm = (props) => {
           prefix={<LockOutlinedIcon color={color} />}
         />
       </Form.Item>
-      <Form.Item>
+      {/* <Form.Item>
         <Flex justify="space-between" align="center">
-          {/* <Col>
+          <Col>
             <Form.Item name="remember" valuePropName="checked" className="!m-0">
               <Checkbox>ماندن در سیستم</Checkbox>
             </Form.Item>
-          </Col> */}
+          </Col>
           <Col>
             <Link href="#">فراموشی کلمه عبور</Link>
           </Col>
         </Flex>
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item>
         <SubmitButton />
       </Form.Item>

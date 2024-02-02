@@ -11,3 +11,7 @@ declare interface CreateUserPayload {
   role: string;
   password: string;
 }
+
+declare interface GetManagersFilters {
+  no_business?: boolean;
+}

@@ -86,6 +86,7 @@ const UserForm: FormType = (props) => {
           last_name: data.data.last_name,
           mobile: data.data.mobile,
           role: data.data.role,
+          business_uuid: data.data.businesses?.[0]?.uuid,
         });
       })
       .catch(() => {
@@ -137,7 +138,16 @@ const UserForm: FormType = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item name="last_name" label="نام خانوادگی">
+            <Form.Item
+              name="last_name"
+              label="نام خانوادگی"
+              rules={[
+                {
+                  required: true,
+                  message: "نام خانوادگی اجباری است",
+                },
+              ]}
+            >
               <Input placeholder="نام خانوادگی..." />
             </Form.Item>
           </Col>
@@ -187,16 +197,7 @@ const UserForm: FormType = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item
-              name="business_uuid"
-              label="کافه یا رستوران"
-              rules={[
-                {
-                  required: true,
-                  message: "انتخاب کافه یا رستوران اجباری است",
-                },
-              ]}
-            >
+            <Form.Item name="business_uuid" label="کافه یا رستوران">
               <Select
                 placeholder="انتخاب کافه یا رستوران..."
                 options={businesses.map((bus) => ({

@@ -1,6 +1,19 @@
 import withSerwistInit from "@serwist/next";
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
+};
 
 export default withSerwistInit({
   swSrc: "src/app/sw.ts",

@@ -1,7 +1,9 @@
+import { User } from "../dashboard/users/types";
+
 declare interface GetAllItemsFilter {
   page?: number;
   limit?: number;
-  title?: string;
+  name?: string;
 }
 export interface Business {
   uuid: string;
@@ -13,16 +15,21 @@ export interface Business {
   location_lat: string;
   location_long: string;
   phone_number: string;
+  domain: string;
   email: string;
   working_hours?: WorkingHoursEntity[] | null;
   logo: string;
+  logo_url?: string;
   banner: string;
+  banner_url?: string;
   pager: boolean;
+  customer_club: boolean;
   public: boolean;
   createdAt: string;
   updatedAt: string;
   deletedAt?: null;
   socials?: SocialsEntity[] | null;
+  users?: Pick<User, "uuid">[];
 }
 export interface WorkingHoursEntity {
   from: string;

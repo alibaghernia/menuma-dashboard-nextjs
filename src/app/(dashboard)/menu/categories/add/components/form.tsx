@@ -48,13 +48,6 @@ const AddCategoryForm: FormType = (props) => {
     }
   }
   const handleUploadOnChange = async (info: any) => {
-    if (info.file.status == "uploading") {
-      addL("upload-image");
-      return;
-    } else if (info.file.status == "done") {
-      removeL("upload-image");
-    }
-
     const arrayBuffer = await info.file.originFileObj?.arrayBuffer();
     if (arrayBuffer) {
       var arrayBufferView = new Uint8Array(arrayBuffer);
@@ -119,15 +112,27 @@ const AddCategoryForm: FormType = (props) => {
         >
           <Input size="large" placeholder="عنوان دسته بندی..." />
         </Form.Item>
-        <Form.Item label="تصویر دسته بندی" name="picture">
+        <Form.Item label="تصویر دسته بندی" name="image">
           <Upload.Dragger
-            name="logo"
+            name="image"
             listType="picture-circle"
             multiple={false}
             showUploadList={false}
             accept=".png,.jpg,.jpeg"
             onChange={handleUploadOnChange}
-            customRequest={uploadCustomRequest}
+            customRequest={(options) => {
+              addL("load-item");
+              return uploadCustomRequest(options)
+                .finally(() => {
+                  removeL("load-item");
+                })
+                .then((data) => {
+                  console.log({
+                    data,
+                  });
+                  form.setFieldValue("image", data.uuid);
+                });
+            }}
             fileList={fileList}
             openFileDialogOnClick={!!!fileList.length}
           >
@@ -149,6 +154,7 @@ const AddCategoryForm: FormType = (props) => {
               avatar
               onRemove={() => {
                 setFileList([]);
+                form.setFieldValue("image", null);
               }}
               className="mx-auto"
               imageRootClassName="relative w-[5rem] h-[5rem] border"

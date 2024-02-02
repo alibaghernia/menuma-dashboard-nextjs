@@ -26,9 +26,11 @@ export class UsersService {
       .get<AxiosResponseType<User>>(`/${uuid}`)
       .then(({ data }) => data);
   }
-  getManagers() {
+  getManagers(filters: GetManagersFilters = {}) {
     return this.axiosIns
-      .get<AxiosResponseType<{ total: number; users: User[] }>>("/managaers")
+      .get<AxiosResponseType<User[]>>("/managers", {
+        params: filters,
+      })
       .then(({ data }) => data);
   }
   create(payload: CreateUserPayload) {
