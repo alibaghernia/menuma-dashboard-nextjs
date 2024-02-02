@@ -140,7 +140,6 @@ const AddItemForm: FormType = (props) => {
     if (props.isEdit) {
       fetchItem();
     }
-    fetchCategories();
   }, []);
 
   return (

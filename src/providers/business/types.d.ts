@@ -1,5 +1,5 @@
 import { BusinessService } from "@/services/dashboard/business.service";
-import { BusinessesEntity } from "@/services/types";
+import { BusinessesEntity } from "@/services/dashboard/users/types";
 import { Session } from "next-auth";
 import { FC, PropsWithChildren } from "react";
 

@@ -17,7 +17,7 @@ export const BusinessProvider: IBusinessProvider = ({
   ...props
 }) => {
   axios.defaults.headers.common.Authorization = `Bearer ${session.user?.access_token}`;
-  const businessService = BusinessService.init(business.uuid);
+  const businessService: BusinessService = BusinessService.init(business.uuid);
 
   return (
     <>

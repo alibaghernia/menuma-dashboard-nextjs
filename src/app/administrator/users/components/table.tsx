@@ -1,10 +1,33 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
-import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
+import { UsersService } from "@/services/administrator/users/users.service";
+import { User } from "@/services/dashboard/users/types";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useLoadings,
+  useMessage,
+  useTailwindColor,
+} from "@/utils/hooks";
+import { renderTime } from "@/utils/tables";
 import { Table, TableProps } from "antd/lib";
-import React from "react";
+import _ from "lodash";
+import React, { FC, useEffect, useState } from "react";
 
-const EventsTable = () => {
+export type UsersTableType = FC<{
+  search?: string;
+}>;
+const UsersTable: UsersTableType = (props) => {
+  const message = useMessage();
+  const [addL, removeL, hasL] = useLoadings();
+  const [items, setItems] = useState<User[]>([]);
+  const router = useCustomRouter();
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const usersService = UsersService.init();
+
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
   const columns: TableProps["columns"] = [
@@ -31,10 +54,22 @@ const EventsTable = () => {
             value={value}
             record={rec}
             index={idx}
+            onEdit={() => {
+              router.push(`/administrator/users/${rec["uuid"]}`);
+            }}
+            seeAllExcludeFields={["uuid", "username"]}
+            seeAllRender={{
+              createdAt: renderTime,
+              updatedAt: renderTime,
+            }}
             seeAllNames={{
               first_name: "نام",
               last_name: "نام خانوادگی",
               mobile: "موبایل",
+              email: "ایمیل",
+              role: "نقش",
+              createdAt: "زمان ساخت",
+              updatedAt: "آخرین بروزرسانی",
             }}
             seeAll
           />
@@ -42,13 +77,41 @@ const EventsTable = () => {
       },
     },
   ];
-  const dataSource = [
-    {
-      first_name: "name test",
-      last_name: "family test",
-      mobile: "09000000000",
-    },
-  ];
+
+  async function fetchItems(
+    filters: GetItemsFilters = { page: currentPage, limit: pageSize }
+  ) {
+    try {
+      addL("fetch-items-noall");
+      const { data } = await usersService.getAll(filters);
+      setTotal(data.total);
+      setItems(data.users);
+    } catch (error) {
+      console.log({
+        error,
+      });
+    }
+
+    removeL("fetch-items-noall");
+  }
+
+  useEffect(() => {
+    fetchItems({
+      page: currentPage,
+      limit: pageSize,
+      search: props.search,
+    });
+  }, [currentPage, pageSize]);
+  useEffect(
+    _.debounce(() => {
+      fetchItems({
+        page: currentPage,
+        limit: pageSize,
+        search: props.search,
+      });
+    }, 500),
+    [props.search]
+  );
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
@@ -56,9 +119,9 @@ const EventsTable = () => {
         emptyText: "داده ای وجود ندارد",
       }}
       columns={columns}
-      dataSource={dataSource}
+      dataSource={items}
     />
   );
 };
 
-export default EventsTable;
+export default UsersTable;

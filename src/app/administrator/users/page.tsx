@@ -1,10 +1,22 @@
+"use client";
 import { Button, Card, Col, Flex, Row } from "antd/lib";
 import Search from "antd/lib/input/Search";
-import React from "react";
-import EventsTable from "./components/table";
+import React, { useMemo, useState } from "react";
+import UsersTable from "./components/table";
 import Link from "@/components/common/link/link";
+import _ from "lodash";
 
 const Users = () => {
+  const [search, setSearch] = useState<string>();
+  const [searchingText, _setSearchingText] = useState<string>();
+
+  const setSearchingText = useMemo(
+    () =>
+      _.debounce((value) => {
+        _setSearchingText(value);
+      }, 200),
+    []
+  );
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -25,7 +37,14 @@ const Users = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      setSearchingText(value);
+                    }}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
                   <Button type="primary" ghost>
@@ -35,7 +54,7 @@ const Users = () => {
               </Flex>
             </Row>
             <Row>
-              <EventsTable />
+              <UsersTable search={searchingText} />
             </Row>
           </Flex>
         </Card>

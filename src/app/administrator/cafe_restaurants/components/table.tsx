@@ -1,12 +1,27 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
-import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useLoadings,
+  useMessage,
+  useTailwindColor,
+} from "@/utils/hooks";
 import { EditOutlined } from "@ant-design/icons";
 import { Avatar, Button, Col, Flex, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
-import React from "react";
+import React, { useState } from "react";
 
 const CafeRestaurantsTable = () => {
+  const message = useMessage();
+  const [addL, removeL, hasL] = useLoadings();
+  const [items, setItems] = useState<any[]>([]);
+  const router = useCustomRouter();
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
   const renderLogo: ColumnProps<unknown>["render"] = (value, rec, idx) => {
@@ -77,6 +92,7 @@ const CafeRestaurantsTable = () => {
       status: "active",
     },
   ];
+
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"

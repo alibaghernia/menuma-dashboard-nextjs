@@ -6,6 +6,7 @@ import {
   useCurrentBreakpoints,
   useLoadings,
   useMessage,
+  useNotification,
   useTailwindColor,
 } from "@/utils/hooks";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
@@ -31,10 +32,13 @@ import React, {
 import moment, { Moment } from "jalali-moment";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import ConfirmModal from "@/components/common/confirm_modal/confirm_modal";
+import axios from "@/lib/axios";
+import { Howl } from "howler";
 
 export type PagerRequest = Request;
 interface IPagerRequestsDrawer extends DrawerProps {
-  requests: PagerRequest[];
+  setRequestPagersDrawerOpen: (status: boolean) => void;
+  setRequestsCount: (count: number) => void;
 }
 
 const RequestItem: FC<{ request: Request }> = ({ request }) => {
@@ -189,18 +193,100 @@ const RequestItem: FC<{ request: Request }> = ({ request }) => {
 const PagerRequestsDrawer: FC<IPagerRequestsDrawer> = ({ ...props }) => {
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
-  const [loadings, setLoadings] = useState<PagerRequest["uuid"][]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
+  const { businessService, business } = useContext(BusinessProviderContext);
+  const [addL, remvoeL, hasL] = useLoadings();
+  const message = useMessage();
+  const notification = useNotification();
+
+  function fetchPagerRequests() {
+    addL("load-pager-requests-noall");
+    businessService.pagerService
+      .getItems({
+        status: ["DOING", "TODO"],
+      })
+      .finally(() => {
+        remvoeL("load-pager-requests-noall");
+      })
+      .then((data) => {
+        setRequests(data.data.requests);
+      })
+      .catch(() => {
+        message.error("دریافت اطلاعات پیجر با مشکل مواجه شد.");
+      });
+  }
+
+  useEffect(() => {
+    props.setRequestsCount(
+      requests.filter((req) => req.status == "TODO").length
+    );
+  }, [requests]);
+
+  useEffect(() => {
+    const notifiationSound = new Howl({
+      src: "/sounds/notification_sound.mp3",
+      preload: true,
+    }).load();
+    const newRequestHandler = (request: Request) => {
+      try {
+        notifiationSound.play();
+      } catch (error) {}
+      navigator.vibrate([500, 100, 500]);
+      setRequests((requests) => requests.concat(request));
+      notification.warning({
+        message: "درخواست پیجر دریافت شد",
+        placement: "topRight",
+      });
+      props.setRequestPagersDrawerOpen(true);
+    };
+    const cancelRequestHandler = (request_id: Request["uuid"]) => {
+      setRequests((requests) =>
+        requests.filter((req) => req.uuid != request_id)
+      );
+    };
+    fetchPagerRequests();
+    const socketConnection = businessService.pagerService.socket.connect(
+      business.uuid
+    );
+    socketConnection.on("new-request", newRequestHandler);
+    socketConnection.on("cancel-request", cancelRequestHandler);
+    socketConnection.on("update-requests", fetchPagerRequests.bind(this));
+
+    // push notifications
+    // navigator?.serviceWorker?.getRegistration().then(async (register) => {
+    //   const publicKey = process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_PUBLIC_KEY;
+    //   if (!publicKey) {
+    //     console.error("Check push notification public key!");
+    //     process.exit(1);
+    //   }
+    //   const subscription = await register?.pushManager.subscribe({
+    //     userVisibleOnly: true,
+    //     applicationServerKey: publicKey,
+    //   });
+
+    //   await axios.post(
+    //     `/panel/business/${business.uuid}/web-push/subscribe`,
+    //     JSON.stringify(subscription)
+    //   );
+    // });
+
+    return () => {
+      socketConnection.off("new-request", newRequestHandler);
+      socketConnection.off("cancel-request", cancelRequestHandler);
+      socketConnection.off("update-requests", fetchPagerRequests.bind(this));
+    };
+  }, []);
 
   const pendings = useMemo(() => {
-    return props.requests
+    return requests
       .filter((req) => req.status == "TODO")
       .map((req, idx) => <RequestItem request={req} key={idx} />);
-  }, [props.requests, loadings]);
+  }, [requests]);
   const doing = useMemo(() => {
-    return props.requests
+    return requests
       .filter((req) => req.status == "DOING")
       .map((req, idx) => <RequestItem request={req} key={idx} />);
-  }, [props.requests, loadings]);
+  }, [requests]);
 
   return (
     <Drawer

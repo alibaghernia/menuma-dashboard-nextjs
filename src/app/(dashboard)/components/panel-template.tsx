@@ -5,8 +5,6 @@ import {
   useCurrentBreakpoints,
   useCustomRouter,
   useLoadings,
-  useMessage,
-  useNotification,
   useTailwindColor,
 } from "@/utils/hooks";
 import { Badge, Col, Flex, Layout, Menu } from "antd";
@@ -15,7 +13,6 @@ import classNames from "classnames";
 import React, {
   FC,
   PropsWithChildren,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -39,21 +36,21 @@ import { setMenuKeys } from "./helpers";
 import Breadcrumb from "./breadcrumb";
 import DiscountOutlined from "@/icons/discount-outlined";
 import Link from "@/components/common/link/link";
-import PagerRequestsDrawer from "./pager-requests-drawer";
 import User from "./user/user";
 import { Session } from "next-auth";
-import { BusinessProviderContext } from "@/providers/business/provider";
-import { Request } from "@/services/dashboard/pager/types";
-import { Howl } from "howler";
+import dynamic from "next/dynamic";
 import axios from "@/lib/axios";
+
+const PagerRequestsDrawer = dynamic(() => import("./pager-requests-drawer"), {
+  ssr: false,
+});
 
 const PanelTemplate: FC<
   PropsWithChildren<{ administrator?: boolean; session: Session }>
 > = ({ children, administrator, session }) => {
-  const [addL, remvoeL, hasL] = useLoadings();
-  const message = useMessage();
-  const notification = useNotification();
-  const [requests, setRequests] = useState<Request[]>([]);
+  axios.defaults.headers.common.Authorization = `Bearer ${session.user?.access_token}`;
+  const [, , hasL] = useLoadings();
+  const [requestsCount, setRequestsCount] = useState(0);
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const breakpoints = useCurrentBreakpoints();
   const typographyColor = useTailwindColor("typography");
@@ -62,7 +59,6 @@ const PanelTemplate: FC<
   const [selectedKeys, setSelectedKeys] = useState<string[]>(["dashboard"]);
   const pathname = usePathname();
   const [requestPagersDrawerOpen, setRequestPagersDrawerOpen] = useState(false);
-  const { businessService, business } = useContext(BusinessProviderContext);
 
   useEffect(() => {
     setMenuKeys({ pathname, setSelectedKeys });
@@ -226,80 +222,6 @@ const PanelTemplate: FC<
       ]);
   }, [selectedKeys]);
 
-  function fetchPagerRequests() {
-    addL("load-pager-requests-noall");
-    businessService.pagerService
-      .getItems({
-        status: ["DOING", "TODO"],
-      })
-      .finally(() => {
-        remvoeL("load-pager-requests-noall");
-      })
-      .then((data) => {
-        setRequests(data.data.requests);
-      })
-      .catch(() => {
-        message.error("دریافت اطلاعات پیجر با مشکل مواجه شد.");
-      });
-  }
-
-  useEffect(() => {
-    if (!administrator) {
-      const notifiationSound = new Howl({
-        src: "/sounds/notification_sound.mp3",
-        preload: true,
-      }).load();
-      const newRequestHandler = (request: Request) => {
-        try {
-          notifiationSound.play();
-        } catch (error) {}
-        navigator.vibrate([500, 100, 500]);
-        setRequests((requests) => requests.concat(request));
-        notification.warning({
-          message: "درخواست پیجر دریافت شد",
-          placement: "topRight",
-        });
-        setRequestPagersDrawerOpen(true);
-      };
-      const cancelRequestHandler = (request_id: Request["uuid"]) => {
-        setRequests((requests) =>
-          requests.filter((req) => req.uuid != request_id)
-        );
-      };
-      fetchPagerRequests();
-      const socketConnection = businessService.pagerService.socket.connect(
-        business.uuid
-      );
-      socketConnection.on("new-request", newRequestHandler);
-      socketConnection.on("cancel-request", cancelRequestHandler);
-      socketConnection.on("update-requests", fetchPagerRequests.bind(this));
-
-      // push notifications
-      navigator?.serviceWorker?.getRegistration().then(async (register) => {
-        const publicKey = process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_PUBLIC_KEY;
-        if (!publicKey) {
-          console.error("Check push notification public key!");
-          process.exit(1);
-        }
-        const subscription = await register?.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: publicKey,
-        });
-
-        await axios.post(
-          `/panel/business/${business.uuid}/web-push/subscribe`,
-          JSON.stringify(subscription)
-        );
-      });
-
-      return () => {
-        socketConnection.off("new-request", newRequestHandler);
-        socketConnection.off("cancel-request", cancelRequestHandler);
-        socketConnection.off("update-requests", fetchPagerRequests.bind(this));
-      };
-    }
-  }, []);
-
   return (
     <>
       <Layout>
@@ -353,12 +275,7 @@ const PanelTemplate: FC<
                         size={24}
                       />
                     ) : (
-                      <Badge
-                        className=""
-                        count={
-                          requests.filter((req) => req.status == "TODO").length
-                        }
-                      >
+                      <Badge count={requestsCount}>
                         <BellOutlined
                           color={typographyColor}
                           onClick={() => setRequestPagersDrawerOpen(true)}
@@ -428,9 +345,10 @@ const PanelTemplate: FC<
       </Layout>
       {!administrator && (
         <PagerRequestsDrawer
-          requests={requests}
           open={requestPagersDrawerOpen}
           onClose={() => setRequestPagersDrawerOpen(false)}
+          setRequestPagersDrawerOpen={setRequestPagersDrawerOpen}
+          setRequestsCount={setRequestsCount}
         />
       )}
     </>

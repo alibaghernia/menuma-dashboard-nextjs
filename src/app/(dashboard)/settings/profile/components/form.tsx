@@ -1,7 +1,7 @@
 "use client";
 import { logOut } from "@/app/(dashboard)/components/user/actions";
 import { LOADINGS } from "@/providers/general/constants";
-import { UsersService } from "@/services/users.service";
+import { UsersService } from "@/services/dashboard/users/users.service";
 import { useLoadings, useCustomRouter, useMessage } from "@/utils/hooks";
 import { InboxOutlined } from "@ant-design/icons";
 import { Button } from "antd";

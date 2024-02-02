@@ -9,6 +9,7 @@ import {
   useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
+import { renderTime } from "@/utils/tables";
 import { EditOutlined } from "@ant-design/icons";
 import { Button, Col, Flex, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
@@ -37,10 +38,6 @@ const ItemsTable: ItemsTableType = (props) => {
   // renders
   const renderCategories: ColumnProps<unknown>["render"] = (val) => {
     return (val as any[]).map((category) => category.title);
-  };
-  const renderTime: ColumnProps<unknown>["render"] = (val) => {
-    const time = moment(val);
-    return time.format("jYYYY/jMM/jDD HH:mm");
   };
 
   const columns: TableProps["columns"] = [

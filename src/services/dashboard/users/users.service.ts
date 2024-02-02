@@ -1,6 +1,6 @@
 import { AxiosResponseType } from "@/lib/auth/types";
 import type { AxiosInstance } from "axios";
-import { recreateServiceAxiosIns } from "./helpers";
+import { recreateServiceAxiosIns } from "../../helpers";
 import { User } from "./types";
 
 export class UsersService {

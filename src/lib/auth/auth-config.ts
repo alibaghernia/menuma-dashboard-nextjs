@@ -3,8 +3,8 @@ import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import axios from "../axios";
 import { AxiosResponseType } from "./types";
-import { UsersService } from "@/services/users.service";
-import { User } from "@/services/types";
+import { UsersService } from "@/services/dashboard/users/users.service";
+import { User } from "@/services/dashboard/users/types";
 
 export const authConfig = {
   pages: {

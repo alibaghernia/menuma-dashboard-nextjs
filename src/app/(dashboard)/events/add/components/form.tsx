@@ -116,7 +116,6 @@ const EventForm = () => {
                   ]}
                   //@ts-ignore
                   getValueProps={(value) => {
-                    console.log({ value });
                     return dayjs(value);
                   }}
                 >
