@@ -18,7 +18,7 @@ import {
   Upload,
   UploadFile,
 } from "antd/lib";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import "react-multi-date-picker/styles/layouts/mobile.css";
 import ImageDisplayerWrapper from "../../../../../components/common/image-displayer";
 import Image from "next/image";
@@ -41,6 +41,7 @@ import { uploadCustomRequest } from "@/utils/upload";
 import { UsersService } from "@/services/administrator/users/users.service";
 import { User } from "@/services/dashboard/users/types";
 import _ from "lodash";
+import { errorHandling } from "@/utils/forms";
 
 const CafeRestaurantForm: FormType = (props) => {
   const [form] = Form.useForm();
@@ -55,38 +56,45 @@ const CafeRestaurantForm: FormType = (props) => {
   const [bannerFileList, setBannerFileList] = useState<UploadFile<any>[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<[number, number]>();
   const [loaded, setLoaded] = useState(false);
-  const businessService = BusinessService.init();
-  const usersService = UsersService.init();
+  const businessService = useMemo(() => BusinessService.init(), []);
+  const usersService = useMemo(() => UsersService.init(), []);
   const [users, setUsers] = useState<User[]>([]);
 
+  const fieldsLabels = {
+    slug: "اسلاگ",
+  };
+
   function formFinishHandler(values: any) {
+    const handleCatch = (err: any) => {
+      if (err.data) {
+        errorHandling(err.data, message, fieldsLabels);
+      } else message.error("خطایی در ذخیره اطلاعات رخ داد.");
+    };
+
     addL("save-data");
-    if (props.isEdit)
+    if (props.isEdit) {
       businessService
         .update(params.uuid as string, values)
         .finally(() => {
           removeL("save-data");
         })
-        .catch(() => {
-          message.error("خطایی در ذخیره اطلاعات رخ داد.");
-        })
         .then(() => {
           message.success("اطلاعات با موفقیت ذخیره شد.");
           router.push("/administrator/cafe_restaurants");
-        });
-    else
+        })
+        .catch(handleCatch);
+    } else {
       businessService
         .create(values)
         .finally(() => {
           removeL("save-data");
         })
-        .catch(() => {
-          message.error("خطایی در ذخیره اطلاعات رخ داد.");
-        })
         .then(() => {
           message.success("اطلاعات با موفقیت ذخیره شد.");
           router.push("/administrator/cafe_restaurants");
-        });
+        })
+        .catch(handleCatch);
+    }
   }
   const locationPoint: [number, number] = [
     parseFloat(form.getFieldValue("location_lat") || 0),
@@ -125,8 +133,13 @@ const CafeRestaurantForm: FormType = (props) => {
             ?.link,
           whatsapp: data.data.socials?.find((soc) => soc.type == "whatsapp")
             ?.link,
-          status: data.data.status == "1" ? "active" : "deactive",
+          status: data.data.status == "1" ? "active" : "inactive",
           manager: data.data.users?.[0]?.uuid,
+          users: data.data.users?.map((user) => ({
+            user_uuid: user.uuid,
+            //@ts-ignore
+            role: user.BusinessUser.role,
+          })),
           pager: data.data.pager,
           customer_club: data.data.customer_club,
         });
@@ -140,12 +153,12 @@ const CafeRestaurantForm: FormType = (props) => {
   function fetchUsers() {
     addL("fetch-users");
     usersService
-      .getManagers({ no_business: !props.isEdit })
+      .getAll()
       .finally(() => {
         removeL("fetch-users");
       })
       .then((data) => {
-        setUsers(data.data);
+        setUsers(data.data.users);
       })
       .catch(() => {
         message.error("مشکلی در دریافت اطلاعات رخ داد");
@@ -176,39 +189,9 @@ const CafeRestaurantForm: FormType = (props) => {
         initialValues={{
           location_lat: "31.876",
           location_long: "54.34",
-          working_hours: [
-            {
-              from: null,
-              to: null,
-              day: null,
-            },
-          ],
+          status: "active",
         }}
       >
-        <Row gutter={24}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              name="manager"
-              label="مدیر"
-              rules={[
-                {
-                  required: true,
-                  message: "انتخاب مدیر اجباری است",
-                },
-              ]}
-            >
-              <Select
-                options={users.map((user) => ({
-                  label: [user.first_name, user.last_name]
-                    .filter(Boolean)
-                    .join(" "),
-                  value: user.uuid,
-                }))}
-                placeholder="انتخاب مدیر..."
-              />
-            </Form.Item>
-          </Col>
-        </Row>
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item
@@ -496,6 +479,7 @@ const CafeRestaurantForm: FormType = (props) => {
                               ]}
                             >
                               <Select
+                                placeholder="روز هفته..."
                                 options={[
                                   {
                                     label: "شنبه",
@@ -604,6 +588,129 @@ const CafeRestaurantForm: FormType = (props) => {
                     }}
                   >
                     افزودن ساعت کاری
+                  </Button>
+                )
+              }
+            </Form.List>
+          </Card>
+        </Form.Item>
+        <Form.Item>
+          <Card title="اعضا">
+            <Form.List name="users">
+              {(fields, { add, remove }) =>
+                !!fields.length ? (
+                  <Flex vertical gap={8}>
+                    {fields.map(({ key, name }) => (
+                      <Flex
+                        key={key}
+                        vertical={breakpoints.isXs || breakpoints.last == "sm"}
+                        justify="space-between"
+                        gap={8}
+                        wrap="wrap"
+                      >
+                        <Row gutter={8} align="bottom" className="w-full" wrap>
+                          <Col xs={24} sm={11}>
+                            <Form.Item
+                              label="کاربر"
+                              name={[name, "user_uuid"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "انتخاب کاربر",
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="انتخاب کاربر..."
+                                options={users.map((user) => ({
+                                  label: [user.first_name, user.last_name].join(
+                                    " "
+                                  ),
+                                  value: user.uuid,
+                                }))}
+                              />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={24} sm={11}>
+                            <Form.Item
+                              name={[name, "role"]}
+                              label="نقش"
+                              initialValue={"user"}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "نقش اجباری است",
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="انتخاب نقش..."
+                                options={[
+                                  {
+                                    label: "کاربر",
+                                    value: "user",
+                                  },
+                                  {
+                                    label: "کارمند",
+                                    value: "employee",
+                                  },
+                                  {
+                                    label: "مدیر",
+                                    value: "manager",
+                                  },
+                                ]}
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col xs={24} sm={2}>
+                            <Form.Item>
+                              <Row gutter={8}>
+                                <Col span={12}>
+                                  <Button
+                                    ghost
+                                    type="primary"
+                                    onClick={() => {
+                                      add();
+                                    }}
+                                    block={breakpoints.isXs}
+                                  >
+                                    <PlusCircleOutlined />
+                                  </Button>
+                                </Col>
+                                <Col span={12}>
+                                  <Button
+                                    ghost
+                                    type="primary"
+                                    onClick={() => {
+                                      remove(name);
+                                    }}
+                                    block={breakpoints.isXs}
+                                    danger
+                                  >
+                                    <MinusCircleOutlined />
+                                  </Button>
+                                </Col>
+                              </Row>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                      </Flex>
+                    ))}
+                  </Flex>
+                ) : (
+                  <Button
+                    ghost
+                    type="primary"
+                    className={classNames({
+                      "mx-auto": !breakpoints.isXs,
+                    })}
+                    block={breakpoints.isXs}
+                    onClick={() => {
+                      add();
+                    }}
+                  >
+                    افزودن عضو
                   </Button>
                 )
               }

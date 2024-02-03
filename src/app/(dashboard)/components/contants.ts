@@ -55,10 +55,12 @@ export const MENU_KEYS = {
     cafe_restaurants_children: {
       list: "ad-ca-res-list",
       add: "ad-ca-res-add",
+      edit: "ad-ca-res-edit",
     },
     categories: "admin-categories",
     categories_children: {
       list: "admin-categ-list",
+      edit: "admin-categ-edit",
       add: "admin-categ-add",
     },
     items: "admin-items",
@@ -80,6 +82,7 @@ export const MENU_KEYS = {
     users_children: {
       list: "adm-usrs-list",
       add: "adm-usrs-add",
+      edit: "adm-usrs-edit",
     },
   },
 };

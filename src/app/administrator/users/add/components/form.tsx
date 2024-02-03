@@ -1,38 +1,23 @@
 "use client";
-import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import {
-  Card,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Row,
-  Select,
-  Spin,
-  TimePicker,
-  Upload,
-  UploadFile,
-  theme,
-} from "antd/lib";
+import { Card, Col, Flex, Form, Input, Row, Select } from "antd/lib";
 import React, { useEffect, useState } from "react";
-import DateObject from "react-date-object";
-import moment from "jalali-moment";
-import classNames from "classnames";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
 import "react-multi-date-picker/styles/layouts/mobile.css";
-import DatePicker from "react-multi-date-picker";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import dayjs from "dayjs";
 import { UsersService } from "@/services/administrator/users/users.service";
-import { useCustomRouter, useLoadings, useMessage } from "@/utils/hooks";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useLoadings,
+  useMessage,
+  useTailwindColor,
+} from "@/utils/hooks";
 import { FormType } from "@/types";
 import { useParams } from "next/navigation";
 import { BusinessService } from "@/services/administrator/business.service";
 import { Business } from "@/services/administrator/types";
+import TrashOutlined from "@/icons/trash-outlined";
+import { errorHandling } from "@/utils/forms";
 
 const UserForm: FormType = (props) => {
   const [password, setPassword] = useState<string>();
@@ -42,12 +27,22 @@ const UserForm: FormType = (props) => {
   const message = useMessage();
   const router = useCustomRouter();
   const [businesses, setBusinesses] = useState<Business[]>([]);
+  const redColor = useTailwindColor("red");
+  const breakpoints = useCurrentBreakpoints();
 
   const businessService = BusinessService.init();
   const usersService = UsersService.init();
-
+  const fieldsLabels = {
+    mobile: "شماره موبایل",
+  };
   const loadingKey = "save-user-noall";
   function formFinishHandler(values: any) {
+    const handleCatch = (err: any) => {
+      if (err.response?.data) {
+        errorHandling(err.response?.data, message, fieldsLabels);
+      } else message.error("خطایی در ذخیره اطلاعات رخ داد.");
+    };
+
     const { confirm, ...payload } = values;
     addL(loadingKey);
 
@@ -64,13 +59,7 @@ const UserForm: FormType = (props) => {
         else message.success("کاربر با موفقیت ساخته شد.");
         router.push("/administrator/users");
       })
-      .catch((err) => {
-        console.log({
-          err,
-        });
-        if (props.isEdit) message.error("مشکلی در ویرایش کاربر وجود دارد.");
-        else message.error("مشکلی در ساخت کاربر وجود دارد.");
-      });
+      .catch(handleCatch);
   }
 
   function fetchItem() {
@@ -85,8 +74,10 @@ const UserForm: FormType = (props) => {
           first_name: data.data.first_name,
           last_name: data.data.last_name,
           mobile: data.data.mobile,
-          role: data.data.role,
-          business_uuid: data.data.businesses?.[0]?.uuid,
+          businesses: data.data.businesses?.map((bus) => ({
+            business_uuid: bus.uuid,
+            role: bus.BusinessUser.role,
+          })),
         });
       })
       .catch(() => {
@@ -169,45 +160,120 @@ const UserForm: FormType = (props) => {
               <Input placeholder="شماره موبایل..." />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              name="role"
-              label="نقش"
-              initialValue={"user"}
-              rules={[
-                {
-                  required: true,
-                  message: "نقش اجباری است",
-                },
-              ]}
-            >
-              <Select
-                placeholder="انتخاب نقش..."
-                options={[
-                  {
-                    label: "کاربر",
-                    value: "user",
-                  },
-                  {
-                    label: "مدیر",
-                    value: "manager",
-                  },
-                ]}
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item name="business_uuid" label="کافه یا رستوران">
-              <Select
-                placeholder="انتخاب کافه یا رستوران..."
-                options={businesses.map((bus) => ({
-                  label: bus.name,
-                  value: bus.uuid,
-                }))}
-              />
-            </Form.Item>
-          </Col>
         </Row>
+        <Form.Item>
+          <Card title="کافه ها و رستوران ها">
+            <Form.List name="businesses">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.length ? (
+                    fields.map(({ name, key }) => (
+                      <Row key={key} align={"bottom"} gutter={8}>
+                        <Col xs={24} sm={10}>
+                          <Form.Item
+                            name={[name, "role"]}
+                            label="نقش"
+                            initialValue={"user"}
+                            rules={[
+                              {
+                                required: true,
+                                message: "نقش اجباری است",
+                              },
+                            ]}
+                          >
+                            <Select
+                              placeholder="انتخاب نقش..."
+                              options={[
+                                {
+                                  label: "کاربر",
+                                  value: "user",
+                                },
+                                {
+                                  label: "کارمند",
+                                  value: "employee",
+                                },
+                                {
+                                  label: "مدیر",
+                                  value: "manager",
+                                },
+                              ]}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={10}>
+                          <Form.Item
+                            name={[name, "business_uuid"]}
+                            label="کافه یا رستوران"
+                            rules={[
+                              {
+                                required: true,
+                                message: "انتخاب کافه یا رستوران اجباری است",
+                              },
+                            ]}
+                          >
+                            <Select
+                              placeholder="انتخاب کافه یا رستوران..."
+                              options={businesses.map((bus) => ({
+                                label: bus.name,
+                                value: bus.uuid,
+                              }))}
+                              allowClear
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={4}>
+                          <Form.Item>
+                            <Flex gap={4} wrap="wrap" align="center">
+                              <Button
+                                ghost
+                                danger
+                                type="primary"
+                                block={breakpoints.isXs}
+                              >
+                                <TrashOutlined
+                                  color={redColor[500]}
+                                  className="flex items-center justify-center"
+                                  width={16}
+                                  height={16}
+                                  onClick={() => {
+                                    remove(name);
+                                  }}
+                                />
+                              </Button>
+                              <Button
+                                ghost
+                                type="primary"
+                                block={breakpoints.isXs}
+                              >
+                                <PlusCircleOutlined
+                                  className="flex items-center justify-center"
+                                  onClick={() => {
+                                    add();
+                                  }}
+                                />
+                              </Button>
+                            </Flex>
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    ))
+                  ) : (
+                    <Button
+                      ghost
+                      type="primary"
+                      className="mx-auto"
+                      onClick={() => {
+                        add();
+                      }}
+                    >
+                      افزودن کافه یا رستوران
+                    </Button>
+                  )}
+                </>
+              )}
+            </Form.List>
+          </Card>
+        </Form.Item>
 
         <Row gutter={24}>
           <Col xs={24} sm={12}>

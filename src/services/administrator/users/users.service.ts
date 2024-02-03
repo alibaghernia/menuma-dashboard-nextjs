@@ -38,6 +38,9 @@ export class UsersService {
       .post<AxiosResponseType>("/", payload)
       .then(({ data }) => data);
   }
+  delete(uuid: string) {
+    return this.axiosIns.delete<AxiosResponseType>(`/${uuid}`);
+  }
   update(uuid: string, payload: CreateUserPayload) {
     return this.axiosIns
       .put<AxiosResponseType>(`/${uuid}`, payload)

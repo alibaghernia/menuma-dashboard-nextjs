@@ -5,7 +5,7 @@ import Logout from "./user/logout";
 const NoBusinessError = () => {
   return (
     <Flex className="min-h-screen" align="center" justify="center">
-      <Result status="404" extra="شما عضو هیچ کسب و کاری نیستید!">
+      <Result status="403" extra="شما مجوز لازم برای دسترسی به پنل را ندارید!">
         <Logout />
       </Result>
     </Flex>

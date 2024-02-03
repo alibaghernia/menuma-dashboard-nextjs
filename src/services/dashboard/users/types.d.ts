@@ -15,4 +15,7 @@ export interface BusinessesEntity {
   uuid: string;
   name: string;
   slug: string;
+  BusinessUser: {
+    role: string;
+  };
 }

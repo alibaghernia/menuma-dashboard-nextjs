@@ -234,6 +234,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.cafe_restaurants_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش کافه یا رستوران",
+          });
+          break;
+        }
         case MENU_KEYS.administrator.categories: {
           breadcrumbsItems.push({
             title: linking("دسته بندی ها", "/administrator/categories", idx),
@@ -333,6 +339,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.administrator.users_children.add: {
           breadcrumbsItems.push({
             title: linking("افزودن کاربر", "/administrator/users/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.users_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش کاربر",
           });
           break;
         }

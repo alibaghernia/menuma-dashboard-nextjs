@@ -30,13 +30,14 @@ export class BusinessService {
       .then(({ data }) => data);
   }
   create(payload: unknown) {
-    return this.axiosIns
-      .post<AxiosResponseType>("", payload)
-      .then(({ data }) => data);
+    return this.axiosIns.post<AxiosResponseType>("", payload);
   }
   update(uuid: string, payload: unknown) {
     return this.axiosIns
       .put<AxiosResponseType>(`/${uuid}`, payload)
-      .then(({ data }) => data);
+      .catch(({ response }) => Promise.reject(response));
+  }
+  delete(uuid: string) {
+    return this.axiosIns.delete<AxiosResponseType>(`/${uuid}`);
   }
 }

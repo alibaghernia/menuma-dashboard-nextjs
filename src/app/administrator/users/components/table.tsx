@@ -57,7 +57,22 @@ const UsersTable: UsersTableType = (props) => {
             onEdit={() => {
               router.push(`/administrator/users/${rec["uuid"]}`);
             }}
-            seeAllExcludeFields={["uuid", "username"]}
+            onDelete={() => {
+              addL("delete-user");
+              usersService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("delete-user");
+                })
+                .then(() => {
+                  message.success("کاربر با موفقیت حذف شد");
+                  fetchItems();
+                })
+                .catch(() => {
+                  message.error("مشکلی در حذف کاربر وجود داشت");
+                });
+            }}
+            seeAllExcludeFields={["uuid", "username", "businesses"]}
             seeAllRender={{
               createdAt: renderTime,
               updatedAt: renderTime,
@@ -79,7 +94,11 @@ const UsersTable: UsersTableType = (props) => {
   ];
 
   async function fetchItems(
-    filters: GetItemsFilters = { page: currentPage, limit: pageSize }
+    filters: GetItemsFilters = {
+      page: currentPage,
+      limit: pageSize,
+      search: props.search,
+    }
   ) {
     try {
       addL("fetch-items-noall");

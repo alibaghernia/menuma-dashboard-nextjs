@@ -17,7 +17,7 @@ import _ from "lodash";
 import React, { FC, useEffect, useState } from "react";
 
 type ICafeRestaurantsTable = FC<{
-  search: string;
+  search?: string;
 }>;
 
 const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
@@ -81,6 +81,21 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
             onEdit={() => {
               router.push(`/administrator/cafe_restaurants/${rec["uuid"]}`);
             }}
+            onDelete={() => {
+              addL("delete-cafe-noall");
+              businessService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("delete-cafe-noall");
+                })
+                .then(() => {
+                  message.success("کافه یا رستوران مورد نظر با موفقیت حذف شد!");
+                  fetchItems();
+                })
+                .catch(() => {
+                  message.success("مشکلی در حذف کافه یا رستوران وجود داشت.");
+                });
+            }}
             seeAllExcludeFields={[
               "uuid",
               "working_hours",
@@ -124,7 +139,11 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
   ];
 
   async function fetchItems(
-    filters: GetAllItemsFilter = { page: currentPage, limit: pageSize }
+    filters: GetAllItemsFilter = {
+      page: currentPage,
+      limit: pageSize,
+      name: props.search,
+    }
   ) {
     try {
       addL("fetch-items-noall");
@@ -165,6 +184,7 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
       }}
       columns={columns}
       dataSource={items}
+      loading={!!hasL("delete-cafe-noall")}
     />
   );
 };

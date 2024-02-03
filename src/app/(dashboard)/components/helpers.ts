@@ -225,6 +225,25 @@ export const setMenuKeys = ({
         ]);
         break;
       }
+      if (
+        comparePatternWithPathname(
+          pathname,
+          "/administrator/cafe_restaurants/[uuid]"
+        )
+      ) {
+        setSelectedKeys([
+          ...admin_cafe_restaurants,
+          MENU_KEYS.administrator.cafe_restaurants_children.edit,
+        ]);
+        break;
+      }
+      if (comparePatternWithPathname(pathname, "/administrator/users/[uuid]")) {
+        setSelectedKeys([
+          MENU_KEYS.administrator.users,
+          MENU_KEYS.administrator.users_children.edit,
+        ]);
+        break;
+      }
     }
   }
 };
