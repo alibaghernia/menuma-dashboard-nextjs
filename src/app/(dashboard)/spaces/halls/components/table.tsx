@@ -1,10 +1,35 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
-import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
+import { BusinessProviderContext } from "@/providers/business/provider";
+import {
+  IGetItemsFilters,
+  TableEntity,
+} from "@/services/dashboard/tables/types";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useLoadings,
+  useMessage,
+  useTailwindColor,
+} from "@/utils/hooks";
 import { Table, TableProps } from "antd/lib";
-import React from "react";
+import _ from "lodash";
+import React, { FC, useContext, useEffect, useState } from "react";
 
-const HallsTable = () => {
+export type ItemsTableType = FC<{
+  search?: string;
+}>;
+const HallsTable: ItemsTableType = (props) => {
+  const message = useMessage();
+  const [addL, removeL, hasL] = useLoadings();
+  const [items, setItems] = useState<TableEntity[]>([]);
+  const router = useCustomRouter();
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const { businessService } = useContext(BusinessProviderContext);
+
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
   const columns: TableProps["columns"] = [
@@ -42,18 +67,59 @@ const HallsTable = () => {
       },
     },
   ];
-  const dataSource = [
-    {
-      code: "hall-1",
-      capacity: 10,
-      max_capacity: 15,
-    },
-  ];
+
+  async function fetchItems(
+    filters: IGetItemsFilters = { page: currentPage, limit: pageSize }
+  ) {
+    try {
+      addL("fetch-items-noall");
+      const { data } = await businessService.hallsService.getItems(filters);
+      setTotal(data.total);
+      setItems(data.halls);
+    } catch (error) {
+      console.log({
+        error,
+      });
+    }
+
+    removeL("fetch-items-noall");
+  }
+
+  useEffect(() => {
+    fetchItems({
+      page: currentPage,
+      limit: pageSize,
+      code: props.search,
+    });
+  }, [currentPage, pageSize]);
+  useEffect(
+    _.debounce(() => {
+      fetchItems({
+        page: currentPage,
+        limit: pageSize,
+        code: props.search,
+      });
+    }, 500),
+    [props.search]
+  );
+
+  const tablePaginationOnChange = (current: number, pageSize: number) => {
+    setCurrentPage(current);
+    setPageSize(pageSize);
+  };
+
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
       columns={columns}
-      dataSource={dataSource}
+      dataSource={items}
+      loading={hasL("fetch-items-noall", "delete-item-noall")}
+      pagination={{
+        current: currentPage,
+        pageSize,
+        total,
+        onChange: tablePaginationOnChange,
+      }}
     />
   );
 };

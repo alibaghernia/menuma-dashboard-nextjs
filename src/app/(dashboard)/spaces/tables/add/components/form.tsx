@@ -1,17 +1,7 @@
 "use client";
 import { InboxOutlined } from "@ant-design/icons";
-import { Button, Select } from "antd";
-import {
-  Card,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Upload,
-  UploadFile,
-  theme,
-} from "antd/lib";
+import { Button, Select, UploadFile } from "antd";
+import { Card, Col, Form, Input, InputNumber, Row, Upload } from "antd/lib";
 import React, { useState } from "react";
 import DateObject from "react-date-object";
 import "react-multi-date-picker/styles/layouts/mobile.css";
@@ -53,7 +43,7 @@ const TableForm = () => {
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item
-              name="hall"
+              name="hall_uuid"
               label="سالن"
               help="در صورتی که میز داخل سالن خاصی است، سالن را انتخاب کنید."
             >
@@ -87,6 +77,10 @@ const TableForm = () => {
               </Col>
             </Row>
           </Card>
+        </Form.Item>
+
+        <Form.Item name="description" label="توضیحات">
+          <Input.TextArea placeholder="توضیحات در مورد این میز..." />
         </Form.Item>
         <Form.Item label="تصویر" name="picture">
           <Upload.Dragger
