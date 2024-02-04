@@ -1,9 +1,11 @@
-export interface TableEntity {
+export interface HallEntity {
   uuid: string;
   code: string;
-  limit: number;
+  capacity: number;
+  max_capacity?: number;
+  image?: string;
+  image_url?: string;
   description?: null;
-  hall_uuid?: null;
   createdAt: string;
   updatedAt: string;
 }

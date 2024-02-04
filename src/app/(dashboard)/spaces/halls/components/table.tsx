@@ -1,6 +1,7 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
 import { BusinessProviderContext } from "@/providers/business/provider";
+import { HallEntity } from "@/services/dashboard/halls/types";
 import {
   IGetItemsFilters,
   TableEntity,
@@ -12,6 +13,7 @@ import {
   useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
+import { renderTime } from "@/utils/tables";
 import { Table, TableProps } from "antd/lib";
 import _ from "lodash";
 import React, { FC, useContext, useEffect, useState } from "react";
@@ -22,7 +24,7 @@ export type ItemsTableType = FC<{
 const HallsTable: ItemsTableType = (props) => {
   const message = useMessage();
   const [addL, removeL, hasL] = useLoadings();
-  const [items, setItems] = useState<TableEntity[]>([]);
+  const [items, setItems] = useState<HallEntity[]>([]);
   const router = useCustomRouter();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,10 +58,36 @@ const HallsTable: ItemsTableType = (props) => {
             value={value}
             record={rec}
             index={idx}
+            onEdit={() => {
+              router.push(`/spaces/halls/${rec["uuid"]}`);
+            }}
+            onDelete={() => {
+              addL("remove-item-noall");
+              businessService.hallsService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("remove-item-noall");
+                })
+                .then(() => {
+                  message.success("سالن با موفقیت حذف شد");
+                  fetchItems();
+                })
+                .catch(() => {
+                  message.success("مشکلی در حذف سالن وجود داشت");
+                });
+            }}
+            seeAllExcludeFields={["uuid", "image", "image_url"]}
+            seeAllRender={{
+              createdAt: renderTime,
+              updatedAt: renderTime,
+            }}
             seeAllNames={{
               code: "کد",
               capacity: "ظرفیت",
               max_capacity: "حداکثر ظرفیت",
+              description: "توضیحات",
+              createdAt: "زمان ایجاد",
+              updatedAt: "آخرین بروزرسانی",
             }}
             seeAll
           />
@@ -113,7 +141,7 @@ const HallsTable: ItemsTableType = (props) => {
       className="w-full rounded-[1rem] overflow-hidden"
       columns={columns}
       dataSource={items}
-      loading={hasL("fetch-items-noall", "delete-item-noall")}
+      loading={hasL("fetch-items-noall", "remove-item-noall")}
       pagination={{
         current: currentPage,
         pageSize,

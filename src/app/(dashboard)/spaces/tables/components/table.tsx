@@ -13,6 +13,7 @@ import {
   useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
+import { renderTime } from "@/utils/tables";
 import { QrcodeOutlined } from "@ant-design/icons";
 import { Table, TableProps } from "antd/lib";
 import _ from "lodash";
@@ -57,10 +58,36 @@ const TablesTable: ITablesTable = (props) => {
             value={value}
             record={rec}
             index={idx}
+            onEdit={() => {
+              router.push(`/spaces/tables/${rec["uuid"]}`);
+            }}
+            onDelete={() => {
+              addL("remove-item-noall");
+              businessService.tablesService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("remove-item-noall");
+                })
+                .then(() => {
+                  message.success("میز با موفقیت حذف شد");
+                  fetchItems();
+                })
+                .catch(() => {
+                  message.success("مشکلی در حذف میز وجود داشت");
+                });
+            }}
+            seeAllExcludeFields={["uuid", "image", "image_url", "hall_uuid"]}
             seeAllNames={{
               code: "کد",
               capacity: "ظرفیت",
               max_capacity: "حداکثر ظرفیت",
+              description: "توضیحات",
+              createdAt: "زمان ساخت",
+              updatedAt: "آخرین بروزرسانی",
+            }}
+            seeAllRender={{
+              createdAt: renderTime,
+              updatedAt: renderTime,
             }}
             otherActions={[
               {
@@ -133,3 +160,4 @@ const TablesTable: ITablesTable = (props) => {
 };
 
 export default TablesTable;
+// TODO: implement generate QR code

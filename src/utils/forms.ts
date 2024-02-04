@@ -13,6 +13,9 @@ export const errorHandling = (
           `${fieldsLabels[field as keyof typeof fieldsLabels]!} تکراری است!`
         );
       });
+      break;
     }
+    default:
+      return true;
   }
 };

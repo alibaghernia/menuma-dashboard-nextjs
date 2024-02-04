@@ -1,6 +1,6 @@
 import { AxiosResponseType } from "@/lib/auth/types";
 import { BusinessService } from "../business.service";
-import { IGetItemsFilters, TableEntity } from "./types";
+import { HallEntity, IGetItemsFilters } from "./types";
 
 export class HallsService {
   static init(businessService: BusinessService) {
@@ -14,7 +14,7 @@ export class HallsService {
       .get<
         AxiosResponseType<{
           total: number;
-          halls: TableEntity[];
+          halls: HallEntity[];
         }>
       >("/halls", {
         params: filter,
@@ -23,7 +23,7 @@ export class HallsService {
   }
   async getItem(uuid: string) {
     return this.businessService.axiosIns
-      .get<AxiosResponseType<TableEntity>>(`/halls/${uuid}`)
+      .get<AxiosResponseType<HallEntity>>(`/halls/${uuid}`)
       .then(({ data }) => data);
   }
   async delete(id: string) {

@@ -225,6 +225,22 @@ export const setMenuKeys = ({
         ]);
         break;
       }
+      if (comparePatternWithPathname(pathname, "/spaces/halls/[uuid]")) {
+        setSelectedKeys([
+          MENU_KEYS.spaces,
+          MENU_KEYS.spaces_children.halls,
+          MENU_KEYS.spaces_children.halls_children.edit,
+        ]);
+        break;
+      }
+      if (comparePatternWithPathname(pathname, "/spaces/tables/[uuid]")) {
+        setSelectedKeys([
+          MENU_KEYS.spaces,
+          MENU_KEYS.spaces_children.tables,
+          MENU_KEYS.spaces_children.tables_children.edit,
+        ]);
+        break;
+      }
       if (
         comparePatternWithPathname(
           pathname,

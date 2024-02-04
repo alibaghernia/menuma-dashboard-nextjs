@@ -1,22 +1,127 @@
 "use client";
+import ImageDisplayerWrapper from "@/components/common/image-displayer";
+import { BusinessProviderContext } from "@/providers/business/provider";
+import { HallEntity } from "@/services/dashboard/halls/types";
+import { FormType } from "@/types";
+import { errorHandling } from "@/utils/forms";
+import { useLoadings, useCustomRouter } from "@/utils/hooks";
+import { uploadCustomRequest } from "@/utils/upload";
 import { InboxOutlined } from "@ant-design/icons";
-import { Button, Select, UploadFile } from "antd";
+import { Button, Select, UploadFile, message } from "antd";
 import { Card, Col, Form, Input, InputNumber, Row, Upload } from "antd/lib";
-import React, { useState } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import React, { useContext, useEffect, useState } from "react";
 import DateObject from "react-date-object";
 import "react-multi-date-picker/styles/layouts/mobile.css";
 
-const TableForm = () => {
+const TableForm: FormType = (props) => {
+  const params = useParams();
+  const [addL, removeL] = useLoadings();
+  const router = useCustomRouter();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
   const [date, setDate] = useState<DateObject | DateObject[] | null>();
   const [editorLoading, setEditorLoading] = useState(true);
+  const [halls, setHalls] = useState<HallEntity[]>([]);
+  const { businessService } = useContext(BusinessProviderContext);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | undefined>();
 
+  const fieldsName = {
+    code: "کد",
+  };
+  const saveLoadingKey = "save-data-noall";
   function formFinishHandler(values: any) {
-    console.log({
-      values,
-    });
+    addL(saveLoadingKey);
+    if (props.isEdit)
+      businessService.tablesService
+        .update(params.uuid as string, values)
+        .finally(() => {
+          removeL(saveLoadingKey);
+        })
+        .then(() => {
+          message.success("میز با موفقیت ویرایش شد");
+          router.push("/spaces/tables");
+        })
+        .catch((error) => {
+          errorHandling(error.response?.data, message, fieldsName);
+          message.error("مشکلی در ویرایش میز وجود داشت.");
+        });
+    else
+      businessService.tablesService
+        .create(values)
+        .finally(() => {
+          removeL(saveLoadingKey);
+        })
+        .then(() => {
+          message.success("میز با موفقیت ایجاد شد");
+          router.push("/spaces/tables");
+        })
+        .catch((error) => {
+          if (errorHandling(error.response?.data, message, fieldsName))
+            message.error("مشکلی در ساخت میز وجود داشت.");
+        });
   }
+
+  function fetchHalls() {
+    addL("load-halls");
+    businessService.hallsService
+      .getItems()
+      .finally(() => {
+        removeL("load-halls");
+      })
+      .then((data) => {
+        setHalls(data.data.halls);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت لیست سالن ها وجود دارد!");
+      });
+  }
+
+  const handleUploadOnChange = async (info: any) => {
+    const arrayBuffer = await info.file.originFileObj?.arrayBuffer();
+    if (arrayBuffer) {
+      var arrayBufferView = new Uint8Array(arrayBuffer);
+      var blob = new Blob([arrayBufferView], {
+        type: info.file.type,
+      });
+      const url = window.URL.createObjectURL(blob);
+      setImagePreviewUrl(url);
+    } else {
+      setImagePreviewUrl(undefined);
+    }
+    setFileList(info.fileList);
+  };
+
+  function fetchItem() {
+    addL("load-item");
+    businessService.tablesService
+      .getItem(params.uuid as string)
+      .finally(() => {
+        removeL("load-item");
+      })
+      .then((data) => {
+        form.setFieldsValue({
+          code: data.data.code,
+          capacity: data.data.capacity,
+          max_capacity: data.data.max_capacity,
+          image: data.data.image,
+          description: data.data.description,
+          hall_uuid: data.data.hall_uuid,
+        });
+        setImagePreviewUrl(data.data.image_url);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت اطلاعات وجود دارد!");
+      });
+  }
+
+  useEffect(() => {
+    fetchHalls();
+    if (props.isEdit) {
+      fetchItem();
+    }
+  }, []);
 
   return (
     <Card className="w-full">
@@ -47,7 +152,18 @@ const TableForm = () => {
               label="سالن"
               help="در صورتی که میز داخل سالن خاصی است، سالن را انتخاب کنید."
             >
-              <Select className="w-full" placeholder="سالن..." />
+              <Select
+                options={halls.map((hall) => ({
+                  label: hall.code,
+                  value: hall.uuid,
+                }))}
+                allowClear
+                onClear={() => {
+                  form.setFieldValue("hall_uuid", "");
+                }}
+                className="w-full"
+                placeholder="سالن..."
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -82,16 +198,22 @@ const TableForm = () => {
         <Form.Item name="description" label="توضیحات">
           <Input.TextArea placeholder="توضیحات در مورد این میز..." />
         </Form.Item>
-        <Form.Item label="تصویر" name="picture">
+        <Form.Item label="تصویر" name="image">
           <Upload.Dragger
-            name="picture"
-            listType="picture"
             multiple={false}
-            showUploadList
+            showUploadList={false}
             accept=".png,.jpg,.jpeg"
-            onChange={(info) => {
-              setFileList(info.fileList);
+            customRequest={(options) => {
+              addL("upload-image");
+              return uploadCustomRequest(options)
+                .finally(() => {
+                  removeL("upload-image");
+                })
+                .then((data) => {
+                  form.setFieldValue("image", data.uuid);
+                });
             }}
+            onChange={handleUploadOnChange}
             fileList={fileList}
             openFileDialogOnClick={!!!fileList.length}
           >
@@ -103,11 +225,29 @@ const TableForm = () => {
                   <InboxOutlined />
                 </p>
                 <p className="ant-upload-text">
-                  برای انتخاب کلیک کنید یا تصویر را به اینجا بکشید.
+                  برای انتخاب کلیک کنید یا عکس را به اینجا بکشید.
                 </p>
               </>
             )}
           </Upload.Dragger>
+          {!!imagePreviewUrl && (
+            <ImageDisplayerWrapper
+              onRemove={() => {
+                setFileList([]);
+                setImagePreviewUrl(undefined);
+                form.setFieldValue("image", null);
+              }}
+              className="mx-auto"
+              imageRootClassName="relative w-[8rem] h-[5rem] md:w-[15rem] md:h-[10rem] border"
+            >
+              <Image
+                className="object-contain"
+                fill
+                src={imagePreviewUrl}
+                alt="image"
+              />
+            </ImageDisplayerWrapper>
+          )}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">

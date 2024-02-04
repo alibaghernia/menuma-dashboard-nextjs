@@ -1,9 +1,12 @@
 export interface TableEntity {
   uuid: string;
   code: string;
-  limit: number;
+  capacity: number;
+  max_capacity?: number;
   description?: null;
   hall_uuid?: null;
+  image?: string;
+  image_url?: string;
   createdAt: string;
   updatedAt: string;
 }

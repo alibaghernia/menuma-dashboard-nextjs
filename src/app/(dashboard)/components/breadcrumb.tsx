@@ -174,6 +174,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.spaces_children.halls_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش سالن",
+          });
+          break;
+        }
         case MENU_KEYS.spaces_children.tables: {
           breadcrumbsItems.push({
             title: linking("میز ها", "/spaces/tables", idx),
@@ -189,6 +195,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.spaces_children.tables_children.add: {
           breadcrumbsItems.push({
             title: linking("افزودن میز", "/spaces/tables/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.spaces_children.tables_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش میز",
           });
           break;
         }
