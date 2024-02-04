@@ -9,6 +9,7 @@ import { User } from "@/services/dashboard/users/types";
 export const authConfig = {
   pages: {
     signIn: "/auth/login",
+    error: "/auth/login",
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -78,9 +79,7 @@ export const authConfig = {
             const { data } = await usersService.getMe();
             return { ...data, access_token };
           } catch (error) {
-            console.error({
-              error,
-            });
+            return null;
           }
         }
         return null;

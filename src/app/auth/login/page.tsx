@@ -5,7 +5,6 @@ import bg from "@/assets/images/login-bg.svg";
 import { Logo } from "@/components/core/logo";
 import {} from "antd/lib/icon";
 import dynamic from "next/dynamic";
-import { signIn } from "@/lib/auth/auth";
 const LoginForm = dynamic(() => import("./components/form.component"), {
   ssr: false,
 });

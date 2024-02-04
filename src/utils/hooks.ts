@@ -8,7 +8,11 @@ import { useRouter } from "next/navigation";
 import { useCallback, useContext, useMemo } from "react";
 import resolveConfig from "tailwindcss/resolveConfig";
 
-export const useLoadings = () => {
+export const useLoadings: () => [
+  (loading: string) => void,
+  (loading: string) => void,
+  (...loadings: string[]) => boolean
+] = () => {
   const { addLoading, removeLoading, loadings } = useContext(
     GeneralProviderContext
   );

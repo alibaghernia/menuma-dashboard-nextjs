@@ -144,7 +144,7 @@ const ItemsTable: ItemsTableType = (props) => {
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
       columns={columns}
-      loading={!!hasL("fetch-items-noall", "delete-item-noall")}
+      loading={hasL("fetch-items-noall", "delete-item-noall")}
       pagination={{
         current: currentPage,
         pageSize,

@@ -350,7 +350,7 @@ const AddItemForm: FormType = (props) => {
         <Form.Item label="تگ ها" name={"metadata"}>
           <Checkbox.Group>
             <Checkbox value="new">جدید</Checkbox>
-            <Checkbox value="sold-out">تمام شده</Checkbox>
+            <Checkbox value="sold_out">تمام شده</Checkbox>
             <Checkbox value="offer">پیشنهاد روز</Checkbox>
           </Checkbox.Group>
         </Form.Item>

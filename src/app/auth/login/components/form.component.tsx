@@ -8,15 +8,14 @@ import React from "react";
 import { ILoginForm } from "./types";
 import { useFormState, useFormStatus } from "react-dom";
 import { submit } from "./actions";
+import ErrorList from "antd/lib/form/ErrorList";
 
 const LoginForm: ILoginForm = (props) => {
   const color = useTailwindColor("primary");
   const [form] = Form.useForm();
-  const [addL, removeL] = useLoadings();
   const [formErrors, dispatch] = useFormState(submit, undefined);
-  // TODO: add error messages
   return (
-    <Form form={form} onFinish={(data) => dispatch(data)}>
+    <Form form={form} onFinish={dispatch}>
       <Form.Item
         name="mobile"
         rules={[
@@ -63,6 +62,14 @@ const LoginForm: ILoginForm = (props) => {
           </Col>
         </Flex>
       </Form.Item> */}
+      {formErrors == "CredentialsSignin" && (
+        <Form.Item>
+          <Form.ErrorList
+            className="text-red-500"
+            errors={["نام کاربری یا رمز عبور اشتباه است!"]}
+          />
+        </Form.Item>
+      )}
       <Form.Item>
         <SubmitButton />
       </Form.Item>
@@ -74,6 +81,9 @@ export default LoginForm;
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  console.log({
+    pending,
+  });
   return (
     <Button
       type="primary"
