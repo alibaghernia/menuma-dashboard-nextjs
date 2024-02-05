@@ -64,7 +64,7 @@ export const setMenuKeys = ({
       ]);
       break;
     }
-    case "/events": {
+    case `/${params.business}/events`: {
       setSelectedKeys([
         MENU_KEYS.gatherings,
         MENU_KEYS.gatherings_children.list,
@@ -260,6 +260,18 @@ export const setMenuKeys = ({
           MENU_KEYS.spaces,
           MENU_KEYS.spaces_children.tables,
           MENU_KEYS.spaces_children.tables_children.edit,
+        ]);
+        break;
+      }
+      if (
+        comparePatternWithPathname(
+          pathname,
+          `/${params.business}/events/[uuid]`
+        )
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.gatherings,
+          MENU_KEYS.gatherings_children.edit,
         ]);
         break;
       }

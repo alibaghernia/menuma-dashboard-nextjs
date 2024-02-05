@@ -176,7 +176,11 @@ const TableForm: FormType = (props) => {
                   label="ظرفیت"
                   help="ظرفیت میز در حالت عادی"
                 >
-                  <InputNumber className="w-full" placeholder="ظرفیت..." />
+                  <InputNumber
+                    min={1}
+                    className="w-full"
+                    placeholder="ظرفیت..."
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12}>
@@ -186,6 +190,7 @@ const TableForm: FormType = (props) => {
                   help="ظرفیت میز در حالت حداکثری"
                 >
                   <InputNumber
+                    min={1}
                     className="w-full"
                     placeholder="حداکثر ظرفیت..."
                   />

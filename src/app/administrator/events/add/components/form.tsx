@@ -86,7 +86,7 @@ const EventForm = () => {
               label="ظرفیت"
               help="تعداد افراد شرکت کننده"
             >
-              <InputNumber className="w-full" placeholder="ظرفیت..." />
+              <InputNumber min={1} className="w-full" placeholder="ظرفیت..." />
             </Form.Item>
           </Col>
         </Row>

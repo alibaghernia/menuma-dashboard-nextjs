@@ -6,6 +6,7 @@ import { CategoriesService } from "./categories/categories.service";
 import { PagerService } from "./pager/pager.service";
 import { TablesService } from "./tables/tables.service";
 import { HallsService } from "./halls/halls.service";
+import { EventsService } from "./events/events.service";
 
 export class BusinessService {
   static init(business_uuid: string) {
@@ -32,5 +33,8 @@ export class BusinessService {
   }
   get hallsService() {
     return HallsService.init(this);
+  }
+  get eventsService() {
+    return EventsService.init(this);
   }
 }

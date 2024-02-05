@@ -27,11 +27,13 @@ import {
 } from "antd/lib";
 import classNames from "classnames";
 import _ from "lodash";
+import { useParams } from "next/navigation";
 import React, { FC, useContext, useEffect, useState } from "react";
 
 type ITablesTable = FC<{ search?: string }>;
 
 const TablesTable: ITablesTable = (props) => {
+  const params = useParams();
   const message = useMessage();
   const [addL, removeL, hasL] = useLoadings();
   const [items, setItems] = useState<TableEntity[]>([]);
@@ -73,7 +75,7 @@ const TablesTable: ITablesTable = (props) => {
             record={rec}
             index={idx}
             onEdit={() => {
-              router.push(`/spaces/tables/${rec["uuid"]}`);
+              router.push(`/${params.business}/spaces/tables/${rec["uuid"]}`);
             }}
             onDelete={() => {
               addL("remove-item-noall");

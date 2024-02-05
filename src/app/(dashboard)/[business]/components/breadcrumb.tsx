@@ -86,13 +86,13 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         }
         case MENU_KEYS.gatherings: {
           breadcrumbsItems.push({
-            title: linking("دورهمی ها", "/events", idx),
+            title: linking("دورهمی ها", `/${params.business}/events`, idx),
           });
           break;
         }
         case MENU_KEYS.gatherings_children.list: {
           breadcrumbsItems.push({
-            title: linking("لیست دورهمی ها", "/events", idx),
+            title: linking("لیست دورهمی ها", `/${params.business}/events`, idx),
           });
           break;
         }
@@ -103,6 +103,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
               `/${params.business}/events/add`,
               idx
             ),
+          });
+          break;
+        }
+        case MENU_KEYS.gatherings_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش دورهمی",
           });
           break;
         }

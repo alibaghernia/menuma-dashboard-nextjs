@@ -32,6 +32,7 @@ export const MENU_KEYS = {
   gatherings_children: {
     list: "getherings-list",
     add: "getherings-add",
+    edit: "getherings-edit",
   },
   spaces: "spaces",
   spaces_children: {

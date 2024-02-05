@@ -131,12 +131,13 @@ const PanelTemplate: FC<
               color={iconColor(MENU_KEYS.conditional_discounts)}
             />
           ),
+          disabled: process.env.NODE_ENV == "production",
           label: "تخفیف های شرطی",
           onClick: () => router.push("/conditional_discounts"),
         },
         {
           key: MENU_KEYS.gatherings,
-          onClick: () => router.push("/events"),
+          onClick: () => router.push(`/${params.business}/events`),
           icon: (
             <HandshakeOutlined
               className="ml-1"
@@ -176,6 +177,7 @@ const PanelTemplate: FC<
             />
           ),
           label: "باشگاه مشتریان",
+          disabled: process.env.NODE_ENV == "production",
           children: [
             {
               key: MENU_KEYS.customer_club_children.customers,
