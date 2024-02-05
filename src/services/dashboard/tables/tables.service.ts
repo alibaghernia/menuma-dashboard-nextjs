@@ -26,6 +26,11 @@ export class TablesService {
       .get<AxiosResponseType<TableEntity>>(`/tables/${uuid}`)
       .then(({ data }) => data);
   }
+  async generateQrCode(uuid: string) {
+    return this.businessService.axiosIns
+      .post<AxiosResponseType<string>>(`/tables/${uuid}/generate-qrcode`)
+      .then(({ data }) => data);
+  }
   async delete(id: string) {
     return this.businessService.axiosIns
       .delete<AxiosResponseType>(`/tables/${id}`)

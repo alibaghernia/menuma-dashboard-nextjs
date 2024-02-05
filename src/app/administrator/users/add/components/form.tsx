@@ -173,7 +173,7 @@ const UserForm: FormType = (props) => {
                           <Form.Item
                             name={[name, "role"]}
                             label="نقش"
-                            initialValue={"user"}
+                            initialValue={"employee"}
                             rules={[
                               {
                                 required: true,
@@ -184,10 +184,6 @@ const UserForm: FormType = (props) => {
                             <Select
                               placeholder="انتخاب نقش..."
                               options={[
-                                {
-                                  label: "کاربر",
-                                  value: "user",
-                                },
                                 {
                                   label: "کارمند",
                                   value: "employee",

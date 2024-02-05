@@ -1,5 +1,5 @@
 import React, { FC, PropsWithChildren } from "react";
-import PanelTemplate from "../(dashboard)/components/panel-template";
+import PanelTemplate from "../(dashboard)/[business]/components/panel-template";
 import auth from "@/middleware";
 import { redirect } from "next/navigation";
 import Forbidden from "./components/forbidden";

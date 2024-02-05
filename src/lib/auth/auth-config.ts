@@ -50,9 +50,6 @@ export const authConfig = {
   providers: [
     Credentials({
       async authorize(credentials): Promise<User | null> {
-        console.log({
-          credentials,
-        });
         const parsedCredentials = z
           .object({
             mobile: z.string().regex(/^(09)\d{9}$/),
@@ -61,7 +58,6 @@ export const authConfig = {
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
-          console.log("success");
           try {
             const {
               data: { access_token },

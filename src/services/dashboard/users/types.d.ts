@@ -8,13 +8,17 @@ export interface User {
   role: string;
   createdAt: string;
   updatedAt: string;
-  businesses?: BusinessesEntity[] | null;
+  businesses?: BusinessesEntity[];
   access_token: string;
 }
 export interface BusinessesEntity {
   uuid: string;
   name: string;
   slug: string;
+  logo?: string;
+  banner?: string;
+  logo_url?: string;
+  banner_url?: string;
   BusinessUser: {
     role: string;
   };
