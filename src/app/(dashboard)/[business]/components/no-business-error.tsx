@@ -1,3 +1,4 @@
+"use server";
 import { Flex, Result } from "antd/lib";
 import React from "react";
 import Logout from "./user/logout";

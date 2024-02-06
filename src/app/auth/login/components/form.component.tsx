@@ -8,14 +8,22 @@ import { ILoginForm } from "./types";
 import { useFormState, useFormStatus } from "react-dom";
 import { submit } from "./actions";
 import { useSearchParams } from "next/navigation";
+import { LOADINGS } from "@/providers/general/constants";
 
 const LoginForm: ILoginForm = (props) => {
+  const [addL] = useLoadings();
   const searchParams = useSearchParams();
   const color = useTailwindColor("primary");
   const [form] = Form.useForm();
   const [formErrors, dispatch] = useFormState(submit, undefined);
   return (
-    <Form form={form} onFinish={dispatch}>
+    <Form
+      form={form}
+      onFinish={(values) => {
+        addL(LOADINGS.page);
+        dispatch(values);
+      }}
+    >
       <Form.Item
         name="mobile"
         rules={[

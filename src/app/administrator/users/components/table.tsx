@@ -134,6 +134,7 @@ const UsersTable: UsersTableType = (props) => {
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
+      loading={hasL("fetch-items-noall")}
       locale={{
         emptyText: "داده ای وجود ندارد",
       }}
