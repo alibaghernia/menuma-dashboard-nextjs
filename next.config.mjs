@@ -2,6 +2,7 @@ import withSerwistInit from "@serwist/next";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ["**"],
     remotePatterns: [
       {
         protocol: "http",
@@ -12,6 +13,7 @@ const nextConfig = {
         hostname: "**",
       },
     ],
+    unoptimized: true,
   },
 };
 
