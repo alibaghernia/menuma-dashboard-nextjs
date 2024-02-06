@@ -16,7 +16,7 @@ import {
   UploadFile,
   theme,
 } from "antd/lib";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DateObject from "react-date-object";
 import moment from "jalali-moment";
 import classNames from "classnames";
@@ -34,6 +34,8 @@ import { uploadCustomRequest } from "@/utils/upload";
 import ImageDisplayerWrapper from "@/components/common/image-displayer";
 import Image from "next/image";
 import { BusinessProviderContext } from "@/providers/business/provider";
+import { AxiosResponseType } from "@/lib/auth/types";
+import { EventEntity } from "@/services/dashboard/events/types";
 
 const EventForm: FormType = (props) => {
   const params = useParams();
@@ -47,6 +49,7 @@ const EventForm: FormType = (props) => {
   // const [date, setDate] = useState<DateObject | DateObject[] | null>();
   const [editorLoading, setEditorLoading] = useState(true);
   const { businessService } = useContext(BusinessProviderContext);
+  const ckEditor = useRef<ClassicEditor>();
 
   async function onFinish(values: unknown) {
     const { start_date, start_time, end_date, end_time, ...payload } =
@@ -55,19 +58,18 @@ const EventForm: FormType = (props) => {
     payload.organizer_type = "BUSINESS";
     payload.organizer_uuid = params.business;
     const start = moment(
-      `${start_date} ${start_time}`,
+      `${start_date} ${start_time?.format?.("HH:mm")}`,
       "jYYYY-jMM-jDD HH:mm"
-    ).toLocaleString();
+    ).toISOString();
     let end: string;
     if (end_date) {
       end = moment(
-        `${end_date} ${end_time || "00:00"}`,
+        `${end_date} ${end_time?.format?.("HH:mm") || "00:00"}`,
         "jYYYY-jMM-jDD HH:mm"
-      ).toLocaleString();
+      ).toISOString();
       payload.end_at = end;
     }
     payload.start_at = start;
-
     addL("create-item");
     if (props.isEdit) {
       businessService.eventsService
@@ -108,12 +110,13 @@ const EventForm: FormType = (props) => {
   };
   function fetchItem() {
     addL("load-item");
+
     businessService.eventsService
       .getItem(params.uuid as string)
       .finally(() => {
         removeL("load-item");
       })
-      .then((data) => {
+      .then((data: AxiosResponseType<EventEntity>) => {
         form.setFieldsValue({
           title: data.data.title,
           price: data.data.price,
@@ -123,6 +126,8 @@ const EventForm: FormType = (props) => {
           banner_uuid: data.data.banner_uuid,
           limit: data.data.limit,
         });
+        if (data.data.long_description)
+          ckEditor.current?.setData(data.data.long_description);
         const start_at = moment(data.data.start_at);
         let end_at;
         if (data.data.end_at) end_at = moment(data.data.end_at);
@@ -133,7 +138,6 @@ const EventForm: FormType = (props) => {
           form.setFieldValue("end_time", dayjs(data.data.end_at));
           form.setFieldValue("end_date", end_at.format("jYYYY/jMM/jDD"));
         }
-
         setImagePreviewUrl(data.data.banner_url);
       })
       .catch(() => {
@@ -406,6 +410,8 @@ const EventForm: FormType = (props) => {
                 language: "fa",
               }}
               onReady={(editor) => {
+                console.log("inialized");
+                ckEditor.current = editor;
                 editor.setData(form.getFieldValue("long_description"));
                 setEditorLoading(false);
                 editor.editing.view.change((writer) => {
