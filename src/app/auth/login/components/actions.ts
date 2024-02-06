@@ -8,11 +8,11 @@ export const submit = async (
 ) => {
   try {
     const res = await signIn("credentials", {
-      redirect: false,
+      // redirect: false,
       ...data,
     });
-    if (!res?.error) redirect("/");
-    else return res?.error;
+    // if (!res?.error) redirect("/");
+    // else return res?.error;
   } catch (error) {
     console.log({
       loginError: error,

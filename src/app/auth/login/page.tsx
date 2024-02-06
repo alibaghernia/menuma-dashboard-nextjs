@@ -3,7 +3,6 @@ import { Content } from "antd/lib/layout/layout";
 import React from "react";
 import bg from "@/assets/images/login-bg.svg";
 import { Logo } from "@/components/core/logo";
-import {} from "antd/lib/icon";
 import dynamic from "next/dynamic";
 const LoginForm = dynamic(() => import("./components/form.component"), {
   ssr: false,

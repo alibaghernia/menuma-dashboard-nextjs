@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <AntdRegistry>
+        <main>
           <LocaleProvider locale={faIR}>
             <ConfigProvider
               direction="rtl"
@@ -40,12 +40,14 @@ export default function RootLayout({
             >
               <SessionProvider>
                 <RouteChangeProvider>
-                  <GeneralProvider>{children}</GeneralProvider>
+                  <GeneralProvider>
+                    <AntdRegistry>{children}</AntdRegistry>
+                  </GeneralProvider>
                 </RouteChangeProvider>
               </SessionProvider>
             </ConfigProvider>
           </LocaleProvider>
-        </AntdRegistry>
+        </main>
       </body>
     </html>
   );

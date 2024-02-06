@@ -3,14 +3,14 @@ import LockOutlinedIcon from "@/icons/lock-outlined";
 import { useLoadings, useTailwindColor } from "@/utils/hooks";
 import { MobileOutlined } from "@ant-design/icons";
 import { Button, Col, Flex, Form, Input } from "antd";
-import Link from "next/link";
 import React from "react";
 import { ILoginForm } from "./types";
 import { useFormState, useFormStatus } from "react-dom";
 import { submit } from "./actions";
-import ErrorList from "antd/lib/form/ErrorList";
+import { useSearchParams } from "next/navigation";
 
 const LoginForm: ILoginForm = (props) => {
+  const searchParams = useSearchParams();
   const color = useTailwindColor("primary");
   const [form] = Form.useForm();
   const [formErrors, dispatch] = useFormState(submit, undefined);
@@ -62,7 +62,7 @@ const LoginForm: ILoginForm = (props) => {
           </Col>
         </Flex>
       </Form.Item> */}
-      {formErrors == "CredentialsSignin" && (
+      {searchParams.get("error") == "CredentialsSignin" && (
         <Form.Item>
           <Form.ErrorList
             className="text-red-500"
