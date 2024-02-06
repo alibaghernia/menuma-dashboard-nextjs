@@ -153,6 +153,10 @@ const TableForm: FormType = (props) => {
               help="در صورتی که میز داخل سالن خاصی است، سالن را انتخاب کنید."
             >
               <Select
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.label ?? "").includes(input)
+                }
                 options={halls.map((hall) => ({
                   label: hall.code,
                   value: hall.uuid,

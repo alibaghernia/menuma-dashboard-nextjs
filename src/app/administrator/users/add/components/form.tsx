@@ -208,6 +208,10 @@ const UserForm: FormType = (props) => {
                             ]}
                           >
                             <Select
+                              showSearch
+                              filterOption={(input, option) =>
+                                (option?.label ?? "").includes(input)
+                              }
                               placeholder="انتخاب کافه یا رستوران..."
                               options={businesses.map((bus) => ({
                                 label: bus.name,

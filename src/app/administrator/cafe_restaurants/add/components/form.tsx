@@ -479,6 +479,10 @@ const CafeRestaurantForm: FormType = (props) => {
                               ]}
                             >
                               <Select
+                                showSearch
+                                filterOption={(input, option) =>
+                                  (option?.label ?? "").includes(input)
+                                }
                                 placeholder="روز هفته..."
                                 options={[
                                   {
@@ -621,6 +625,10 @@ const CafeRestaurantForm: FormType = (props) => {
                               ]}
                             >
                               <Select
+                                showSearch
+                                filterOption={(input, option) =>
+                                  (option?.label ?? "").includes(input)
+                                }
                                 placeholder="انتخاب کاربر..."
                                 options={users.map((user) => ({
                                   label: [user.first_name, user.last_name].join(

@@ -188,6 +188,10 @@ const AddItemForm: FormType = (props) => {
               ]}
             >
               <Select
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.label ?? "").includes(input)
+                }
                 options={categories.map((cat) => ({
                   label: cat.title,
                   value: cat.uuid,
