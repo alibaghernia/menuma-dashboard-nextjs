@@ -177,7 +177,6 @@ const PanelTemplate: FC<
             />
           ),
           label: "باشگاه مشتریان",
-          disabled: process.env.NODE_ENV == "production",
           children: [
             {
               key: MENU_KEYS.customer_club_children.customers,

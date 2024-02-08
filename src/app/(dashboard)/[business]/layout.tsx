@@ -16,7 +16,7 @@ const DashboardLayout: FC<PropsWithChildren> = async ({
 
   if (
     !business ||
-    !["manager", "employee"].includes(business?.BusinessUser.role)
+    !["manager", "employee"].includes(business?.BusinessUser?.role)
   )
     return <NoBusinessError />;
   return (

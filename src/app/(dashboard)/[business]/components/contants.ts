@@ -26,6 +26,7 @@ export const MENU_KEYS = {
     customers_children: {
       list: "cus-club-cust-list",
       add: "cus-club-cust-add",
+      edit: "cus-club-cust-edit",
     },
   },
   gatherings: "getherings",

@@ -12,7 +12,7 @@ import {
   UploadFile,
   theme,
 } from "antd/lib";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DateObject from "react-date-object";
 import moment from "jalali-moment";
 import classNames from "classnames";
@@ -20,18 +20,122 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import "react-multi-date-picker/styles/layouts/mobile.css";
 import DatePicker from "react-multi-date-picker";
+import { useLoadings, useCustomRouter, useMessage } from "@/utils/hooks";
+import { useParams } from "next/navigation";
+import { BusinessProviderContext } from "@/providers/business/provider";
+import { FormType } from "@/types";
+import { AxiosResponseType } from "@/lib/auth/types";
+import { CustomerEntity } from "@/services/dashboard/customer_club/customers/types";
+import { errorHandling } from "@/utils/forms";
 
-const CustomerForm = () => {
+const CustomerForm: FormType = (props) => {
+  const params = useParams();
+  const [addL, removeL] = useLoadings();
+  const message = useMessage();
+  const router = useCustomRouter();
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | undefined>();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
   const designToken = theme.useToken();
   const [birthDate, setBirthDate] = useState<
     DateObject | DateObject[] | null
   >();
+  const { businessService } = useContext(BusinessProviderContext);
+
+  const fields = {
+    mobile: "شماره موبایل",
+  };
+
+  async function onFinish(values: unknown) {
+    const { birth_date, ...payload } = values as any;
+
+    addL("create-item");
+    if (props.isEdit) {
+      businessService.customerClubService.customersService
+        .update(params.uuid as string, {
+          birth_date: moment(
+            (birth_date as DateObject).format("YYYY-MM-DD"),
+            "jYYYY-jMM-jDD"
+          ).format("YYYY-MM-DD"),
+          ...payload,
+        })
+        .finally(() => {
+          removeL("create-item");
+        })
+        .then(() => {
+          message.success("مشتری با موفقیت بروزرسانی شد.");
+          router.push(`/${params.business}/customer_club/customers`);
+        })
+        .catch((error) => {
+          if (errorHandling(error.data, message, fields))
+            message.error("مشکلی در زخیره اطلاعات وجود دارد");
+        });
+    } else {
+      businessService.customerClubService.customersService
+        .create({
+          birth_date: moment(
+            (birth_date as DateObject).format("YYYY-MM-DD"),
+            "jYYYY-jMM-jDD"
+          ).format("YYYY-MM-DD"),
+          ...payload,
+        })
+        .finally(() => {
+          removeL("create-item");
+        })
+        .then(() => {
+          message.success("مشتری با موفقیت ساخته شد.");
+          router.push(`/${params.business}/customer_club/customers`);
+        })
+        .catch((error) => {
+          console.log({
+            error,
+          });
+          if (errorHandling(error.data, message, fields))
+            message.error("مشکلی در زخیره اطلاعات وجود دارد");
+        });
+    }
+  }
+
+  function fetchItem() {
+    addL("load-item");
+
+    businessService.customerClubService.customersService
+      .getItem(params.uuid as string)
+      .finally(() => {
+        removeL("load-item");
+      })
+      .then((data) => {
+        const birth_date = new DateObject({
+          date: data.data.birth_date,
+          format: "YYYY-MM-DD",
+        });
+        form.setFieldsValue({
+          first_name: data.data.first_name,
+          last_name: data.data.last_name,
+          gender: data.data.gender,
+          mobile: data.data.mobile,
+          birth_date,
+        });
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت اطلاعات وجود دارد!");
+      });
+  }
+
+  useEffect(() => {
+    if (props.isEdit) {
+      fetchItem();
+    }
+  }, []);
 
   return (
     <Card className="w-full">
-      <Form form={form} layout="vertical" className="w-full">
+      <Form
+        form={form}
+        layout="vertical"
+        className="w-full"
+        onFinish={onFinish}
+      >
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item
@@ -86,13 +190,6 @@ const CustomerForm = () => {
               label="تاریخ تولد"
               name="birth_date"
               className={"w-full"}
-              getValueFromEvent={(date: DateObject) => {
-                return moment(date?.toDate().toISOString()).format(
-                  "YYYY-MM-DD"
-                );
-              }}
-              valuePropName=""
-              initialValue={""}
             >
               <DatePicker
                 inputClass={classNames(
@@ -106,8 +203,10 @@ const CustomerForm = () => {
                 calendarPosition="bottom-right"
                 value={birthDate}
                 highlightToday={false}
+                digits={["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}
                 onChange={(date: DateObject) => {
-                  setBirthDate(date);
+                  // form.setFieldValue("birth_date", date.format("YYYY-MM-DD"));
+                  return date as any;
                 }}
               />
             </Form.Item>
@@ -126,14 +225,9 @@ const CustomerForm = () => {
               ]}
             >
               <Radio.Group>
-                <Radio.Button value="men">آقا</Radio.Button>
-                <Radio.Button value="women">خانم</Radio.Button>
+                <Radio.Button value="man">آقا</Radio.Button>
+                <Radio.Button value="woman">خانم</Radio.Button>
               </Radio.Group>
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item name="note" label="یادداشت">
-              <Input.TextArea placeholder="یادداشت..." />
             </Form.Item>
           </Col>
         </Row>

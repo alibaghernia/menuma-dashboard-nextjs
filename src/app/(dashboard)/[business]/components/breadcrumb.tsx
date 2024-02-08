@@ -186,6 +186,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.customer_club_children.customers_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش مشتری",
+          });
+          break;
+        }
         case MENU_KEYS.conditional_discounts: {
           breadcrumbsItems.push({
             title: linking("تخفیف های شرطی", "/conditional_discounts", idx),

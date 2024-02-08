@@ -278,6 +278,19 @@ export const setMenuKeys = ({
       if (
         comparePatternWithPathname(
           pathname,
+          `/${params.business}/customer_club/customers/[uuid]`
+        )
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.customer_club,
+          MENU_KEYS.customer_club_children.customers,
+          MENU_KEYS.customer_club_children.customers_children.edit,
+        ]);
+        break;
+      }
+      if (
+        comparePatternWithPathname(
+          pathname,
           "/administrator/cafe_restaurants/[uuid]"
         )
       ) {

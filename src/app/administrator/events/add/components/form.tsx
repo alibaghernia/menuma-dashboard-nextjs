@@ -92,18 +92,7 @@ const EventForm = () => {
         </Row>
         <Form.Item>
           <Card title="زمان برگزاری">
-            <Form.Item
-              label="تاریخ"
-              name="date"
-              className={"w-full"}
-              getValueFromEvent={(date: DateObject) => {
-                return moment(date?.toDate().toISOString()).format(
-                  "YYYY-MM-DD"
-                );
-              }}
-              valuePropName=""
-              initialValue={""}
-            >
+            <Form.Item label="تاریخ" name="date" className={"w-full"}>
               <DatePicker
                 inputClass={classNames(
                   "ant-input ant-input-outlined",
@@ -113,10 +102,12 @@ const EventForm = () => {
                 placeholder="تاریخ برگزاری..."
                 calendar={persian}
                 locale={persian_fa}
+                digits={["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}
                 calendarPosition="bottom-right"
                 value={date}
                 onChange={(date: DateObject) => {
-                  setDate(date);
+                  form.setFieldValue("birth_date", date.format("YYYY-MM-DD"));
+                  return date as any;
                 }}
               />
             </Form.Item>
