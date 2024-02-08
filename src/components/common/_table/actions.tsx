@@ -6,12 +6,14 @@ import { Button, Col, Drawer, Flex, Popover, Table } from "antd/lib";
 import React, { useCallback, useMemo, useState } from "react";
 import { ITableActions } from "./types";
 import ConfirmModal from "../confirm_modal/confirm_modal";
+import TrashOutlined from "@/icons/trash-outlined";
 
 const TableActions: ITableActions = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [seeAllOpen, setSeeAllOpen] = useState(false);
   const primaryColor = useTailwindColor("primary");
+  const redColor = useTailwindColor("red");
   const breakpoints = useCurrentBreakpoints();
 
   const getRecords = useCallback(() => {
@@ -65,7 +67,10 @@ const TableActions: ITableActions = (props) => {
             </Col>
             <Col>
               <Button
-                icon={<EditOutlined />}
+                icon={
+                  <TrashOutlined width={14} height={14} color={redColor[500]} />
+                }
+                className="flex items-center"
                 danger
                 type="text"
                 onClick={() => {

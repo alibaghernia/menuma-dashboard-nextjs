@@ -124,16 +124,22 @@ const PanelTemplate: FC<
     else
       return items.concat([
         {
-          key: MENU_KEYS.conditional_discounts,
+          key: MENU_KEYS.discounts,
           icon: (
             <DiscountOutlined
               className="ml-1"
-              color={iconColor(MENU_KEYS.conditional_discounts)}
+              color={iconColor(MENU_KEYS.discounts)}
             />
           ),
-          disabled: process.env.NODE_ENV == "production",
-          label: "تخفیف های شرطی",
-          onClick: () => router.push("/conditional_discounts"),
+          label: "تخفیف ها",
+          children: [
+            {
+              key: MENU_KEYS.discounts_children.conditional,
+              label: "شرطی",
+              onClick: () =>
+                router.push(`/${params.business}/discounts/conditional`),
+            },
+          ],
         },
         {
           key: MENU_KEYS.gatherings,

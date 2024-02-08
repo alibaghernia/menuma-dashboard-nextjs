@@ -2,9 +2,9 @@
 import TableActions from "@/components/common/_table/actions";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import {
-  Category,
-  IGetItemsFilters,
-} from "@/services/dashboard/categories/types";
+  DiscountEntity,
+  IGetFilters,
+} from "@/services/dashboard/discounts/types";
 import {
   useCurrentBreakpoints,
   useCustomRouter,
@@ -12,20 +12,21 @@ import {
   useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
-import { Avatar, Table, TableProps } from "antd/lib";
-import { ColumnProps } from "antd/lib/table";
+import { renderTime } from "@/utils/tables";
+import { Table, TableProps } from "antd/lib";
+import _ from "lodash";
 import { useParams } from "next/navigation";
 import React, { FC, useContext, useEffect, useState } from "react";
 
-export type CategoriesTableType = FC<{
+export type ItemsTableType = FC<{
   search?: string;
 }>;
 
-const CategoriesTable: CategoriesTableType = (props) => {
+const DiscountsTable: ItemsTableType = (props) => {
   const params = useParams();
   const message = useMessage();
-  const [addL, removeL] = useLoadings();
-  const [items, setItems] = useState<Category[]>([]);
+  const [addL, removeL, hasL] = useLoadings();
+  const [items, setItems] = useState<DiscountEntity[]>([]);
   const router = useCustomRouter();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,37 +36,18 @@ const CategoriesTable: CategoriesTableType = (props) => {
 
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
-  const renderImage: ColumnProps<unknown>["render"] = (value, rec, idx) => {
-    if (value && /^https:|http:/.test(value))
-      return (
-        <Avatar
-          src={value}
-          size="large"
-          className="border border-typography/[.1]"
-        />
-      );
-    return (
-      <div className="text-typography py-2 px-4 bg-typography/[.1] rounded-[1rem] w-fit">
-        بدون تصویر
-      </div>
-    );
-  };
   const columns: TableProps["columns"] = [
     {
-      key: "title",
       title: "عنوان",
       dataIndex: "title",
     },
     {
-      key: "products_count",
-      title: "تعداد آیتم",
-      dataIndex: "products_count",
+      title: "مقدار تخفیف",
+      dataIndex: "discount",
     },
     {
-      key: "image_url",
-      title: "تصویر",
-      dataIndex: "image_url",
-      render: renderImage,
+      title: "توضیحات",
+      dataIndex: "description",
       responsive: ["md"],
     },
     {
@@ -79,37 +61,38 @@ const CategoriesTable: CategoriesTableType = (props) => {
             record={rec}
             index={idx}
             onDelete={async () => {
-              addL("delete-item");
-              businessService.categoriesService
+              addL("delete-item-noall");
+              businessService.discountsService
                 .delete(rec["uuid"])
                 .finally(() => {
-                  removeL("delete-item");
-                })
-                .catch(() => {
-                  message.error("حذف دسته بندی انجام نشد!");
+                  removeL("delete-item-noall");
                 })
                 .then(() => {
-                  message.success("دسته بندی با موفقیت حذف شد.");
+                  message.success("آیتم مورد نظر با موفقیت حذف شد.");
                   fetchItems();
+                })
+                .catch(() => {
+                  message.error("مشکلی در حذف آیتم وجود دارد.");
                 });
             }}
             onEdit={() => {
-              router.push(`/${params.business}/menu/categories/${rec["uuid"]}`);
+              router.push(
+                `/${params.business}/discounts/conditional/${rec["uuid"]}`
+              );
             }}
-            seeAllExcludeFields={[
-              "uuid",
-              "parent_uuid",
-              "slug",
-              "image",
-              "BusinessCategory",
-            ]}
-            seeAllNames={{
-              title: "عنوان",
-              image_url: "تصویر",
-              products_count: "تعداد آیتم ها",
-            }}
+            seeAllExcludeFields={["uuid", "pin", "type", "deletedAt"]}
             seeAllRender={{
-              image_url: renderImage,
+              createdAt: renderTime,
+              updatedAt: renderTime,
+            }}
+            seeAllNames={{
+              title: "نام",
+              amount: "مقدار تخفیف",
+              descriptions: "توضیحات",
+              discount: "مقدار تخفیف",
+              description: "توضیحات",
+              createdAt: "زمان ساخت",
+              updatedAt: "آخرین بروزرسانی",
             }}
             seeAll
           />
@@ -119,28 +102,45 @@ const CategoriesTable: CategoriesTableType = (props) => {
   ];
 
   async function fetchItems(
-    filters: IGetItemsFilters = { page: currentPage, limit: pageSize }
+    filters: Omit<IGetFilters, "type"> = {
+      page: currentPage,
+      limit: pageSize,
+    }
   ) {
     try {
-      const { data } = await businessService.categoriesService.getItems(
-        filters
-      );
+      addL("fetch-items-noall");
+      const { data } = await businessService.discountsService.getItems({
+        ...filters,
+        type: "CONDITIONAL",
+      });
       setTotal(data.total);
-      setItems(data.categories);
+      setItems(data.items);
     } catch (error) {
       console.log({
         error,
       });
     }
+
+    removeL("fetch-items-noall");
   }
 
   useEffect(() => {
     fetchItems({
       page: currentPage,
       limit: pageSize,
-      name: props.search,
+      search: props.search,
     });
-  }, [props.search, currentPage, pageSize]);
+  }, [currentPage, pageSize]);
+  useEffect(
+    _.debounce(() => {
+      fetchItems({
+        page: currentPage,
+        limit: pageSize,
+        search: props.search,
+      });
+    }, 500),
+    [props.search]
+  );
 
   const tablePaginationOnChange = (current: number, pageSize: number) => {
     setCurrentPage(current);
@@ -149,16 +149,17 @@ const CategoriesTable: CategoriesTableType = (props) => {
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
+      loading={hasL("fetch-items-noall", "delete-item-noall")}
       columns={columns}
-      dataSource={items}
       pagination={{
         current: currentPage,
         pageSize,
         total,
         onChange: tablePaginationOnChange,
       }}
+      dataSource={items}
     />
   );
 };
 
-export default CategoriesTable;
+export default DiscountsTable;

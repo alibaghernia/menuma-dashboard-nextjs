@@ -78,17 +78,19 @@ export const setMenuKeys = ({
       ]);
       break;
     }
-    case "/conditional_discounts": {
+    case `/${params.business}/discounts/conditional`: {
       setSelectedKeys([
-        MENU_KEYS.conditional_discounts,
-        MENU_KEYS.conditional_discounts_children.list,
+        MENU_KEYS.discounts,
+        MENU_KEYS.discounts_children.conditional,
+        MENU_KEYS.discounts_children.conditional_children.list,
       ]);
       break;
     }
-    case `/${params.business}/conditional_discounts/add`: {
+    case `/${params.business}/discounts/conditional/add`: {
       setSelectedKeys([
-        MENU_KEYS.conditional_discounts,
-        MENU_KEYS.conditional_discounts_children.add,
+        MENU_KEYS.discounts,
+        MENU_KEYS.discounts_children.conditional,
+        MENU_KEYS.discounts_children.conditional_children.add,
       ]);
       break;
     }
@@ -272,6 +274,19 @@ export const setMenuKeys = ({
         setSelectedKeys([
           MENU_KEYS.gatherings,
           MENU_KEYS.gatherings_children.edit,
+        ]);
+        break;
+      }
+      if (
+        comparePatternWithPathname(
+          pathname,
+          `/${params.business}/discounts/conditional/[uuid]`
+        )
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.discounts,
+          MENU_KEYS.discounts_children.conditional,
+          MENU_KEYS.discounts_children.conditional_children.edit,
         ]);
         break;
       }

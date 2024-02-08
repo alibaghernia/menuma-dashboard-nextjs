@@ -15,10 +15,16 @@ export const MENU_KEYS = {
       edit: "items-edit",
     },
   },
-  conditional_discounts: "conditional-discounts",
-  conditional_discounts_children: {
-    list: "cond-dis-list",
-    add: "cond-dis-add",
+  discounts: "discounts",
+  discounts_children: {
+    list: "dis-list",
+    add: "dis-add",
+    conditional: "dis-conditional",
+    conditional_children: {
+      list: "cond-dis-list",
+      edit: "cond-dis-edit",
+      add: "cond-dis-add",
+    },
   },
   customer_club: "customer_club",
   customer_club_children: {

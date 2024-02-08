@@ -1,12 +1,24 @@
+"use client";
 import { Button, Card, Col, Flex, Row } from "antd/lib";
 import Search from "antd/lib/input/Search";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import DiscountsTable from "./components/table";
 import Link from "@/components/common/link/link";
 import { useParams } from "next/navigation";
+import _ from "lodash";
 
-const ConditionalDiscountsPage = () => {
+const DiscountsPage = () => {
   const params = useParams();
+  const [search, setSearch] = useState<string>();
+  const [searchingText, _setSearchingText] = useState<string>();
+
+  const setSearchingText = useMemo(
+    () =>
+      _.debounce((value) => {
+        _setSearchingText(value);
+      }, 200),
+    []
+  );
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -27,21 +39,26 @@ const ConditionalDiscountsPage = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      setSearchingText(value);
+                    }}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
-                  <Button type="primary" ghost>
-                    <Link
-                      href={`/${params.business}/conditional_discounts/add`}
-                    >
+                  <Link href={`/${params.business}/discounts/conditional/add`}>
+                    <Button type="primary" ghost>
                       افزودن
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 </Col>
               </Flex>
             </Row>
             <Row>
-              <DiscountsTable />
+              <DiscountsTable search={searchingText} />
             </Row>
           </Flex>
         </Card>
@@ -50,4 +67,4 @@ const ConditionalDiscountsPage = () => {
   );
 };
 
-export default ConditionalDiscountsPage;
+export default DiscountsPage;

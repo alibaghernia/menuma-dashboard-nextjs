@@ -192,15 +192,35 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
-        case MENU_KEYS.conditional_discounts: {
+        case MENU_KEYS.discounts: {
           breadcrumbsItems.push({
-            title: linking("تخفیف های شرطی", "/conditional_discounts", idx),
+            title: "تخفیف ها",
           });
           break;
         }
-        case MENU_KEYS.conditional_discounts_children.list: {
+        case MENU_KEYS.discounts_children.conditional: {
           breadcrumbsItems.push({
-            title: linking("تخفیف های شرطی", "/conditional_discounts", idx),
+            title: linking(
+              "تخفیف های شرطی",
+              `/${params.business}/discounts/conditional`,
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.discounts_children.conditional_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن تخفیف شرطی",
+              `/${params.business}/discounts/conditional/add`,
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.discounts_children.conditional_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش تخفیف شرطی",
           });
           break;
         }
@@ -431,16 +451,6 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.administrator.users_children.edit: {
           breadcrumbsItems.push({
             title: "ویرایش کاربر",
-          });
-          break;
-        }
-        case MENU_KEYS.conditional_discounts_children.add: {
-          breadcrumbsItems.push({
-            title: linking(
-              "افزودن تحفیف شرطی",
-              `/${params.business}/conditional_discounts/add`,
-              idx
-            ),
           });
           break;
         }
