@@ -52,8 +52,7 @@ export class PagerService {
             !!process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE
               ? "wss"
               : "ws"
-          }://${host}
-          }/pager_requests`,
+          }://${host}/pager_requests`,
           {
             host,
             path: "/socket.io",
