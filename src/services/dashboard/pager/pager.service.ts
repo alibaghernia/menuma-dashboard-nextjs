@@ -41,25 +41,21 @@ export class PagerService {
     return {
       connect: (business_uuid: string) => {
         const host = process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_HOST;
-        const port = +(
-          process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_PORT || 3001
-        );
-        const portSSL = +(
-          process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_PORT_SSL || 3001
-        );
+        // const port = +(
+        //   process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_PORT || 3001
+        // );
+        // const portSSL = +(
+        //   process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_PORT_SSL || 3001
+        // );
         return io(
           `${
             !!process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE
               ? "wss"
               : "ws"
-          }://${host}:${
-            !!process.env.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE
-              ? portSSL
-              : port
+          }://${host}
           }/pager_requests`,
           {
             host,
-            port,
             path: "/socket.io",
             query: {
               business_uuid,
