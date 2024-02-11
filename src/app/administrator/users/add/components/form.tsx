@@ -232,7 +232,7 @@ const UserForm: FormType = (props) => {
                               >
                                 <TrashOutlined
                                   color={redColor[500]}
-                                  className="flex items-center justify-center"
+                                  className="flex items-center justify-center mx-auto"
                                   width={16}
                                   height={16}
                                   onClick={() => {
