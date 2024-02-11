@@ -34,7 +34,7 @@ jobs:
           tags: registry.menuma.online/menuma/dashboard:latest
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            AUTH_SECRET=${{ vars.AUTH_SECRET }}
+            AUTH_SECRET=${{ secrets.AUTH_SECRET }}
             NEXT_PUBLIC_BACKEND_BASEURL=${{ vars.NEXT_PUBLIC_BACKEND_BASEURL }}
             NEXT_PUBLIC_BACKEND_SOCKET_SERVER_HOST=${{ vars.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_HOST }}
             NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE=${{ vars.NEXT_PUBLIC_BACKEND_SOCKET_SERVER_SECURE }}
