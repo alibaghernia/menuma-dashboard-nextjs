@@ -63,12 +63,12 @@ const ProfileForm = () => {
       .finally(() => {
         removeL("save-noall");
       })
-      .then(() => {
+      .then(async () => {
         message.success("پروفایل شما با موفقیت بروز شد");
         // if (!!password) {
         message.info("در حال خروج از پنل...", 2);
         addL(LOADINGS.page);
-        logOut();
+        await logOut();
         // }
       })
       .catch(() => {

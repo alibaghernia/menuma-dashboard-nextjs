@@ -9,9 +9,9 @@ const Logout = () => {
   const [addL] = useLoadings();
   return (
     <form
-      action={() => {
+      action={async () => {
         addL(LOADINGS.page);
-        logOut();
+        await logOut();
       }}
     >
       <Button htmlType="submit" block ghost danger type="primary">
