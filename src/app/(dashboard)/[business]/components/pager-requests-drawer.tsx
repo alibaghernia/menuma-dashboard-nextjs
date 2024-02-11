@@ -252,24 +252,6 @@ const PagerRequestsDrawer: FC<IPagerRequestsDrawer> = ({ ...props }) => {
     socketConnection.on("cancel-request", cancelRequestHandler);
     socketConnection.on("update-requests", fetchPagerRequests.bind(this));
 
-    // push notifications
-    // navigator?.serviceWorker?.getRegistration().then(async (register) => {
-    //   const publicKey = process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_PUBLIC_KEY;
-    //   if (!publicKey) {
-    //     console.error("Check push notification public key!");
-    //     process.exit(1);
-    //   }
-    //   const subscription = await register?.pushManager.subscribe({
-    //     userVisibleOnly: true,
-    //     applicationServerKey: publicKey,
-    //   });
-
-    //   await axios.post(
-    //     `/panel/business/${business.uuid}/web-push/subscribe`,
-    //     JSON.stringify(subscription)
-    //   );
-    // });
-
     return () => {
       socketConnection.off("new-request", newRequestHandler);
       socketConnection.off("cancel-request", cancelRequestHandler);
