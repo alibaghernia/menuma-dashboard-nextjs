@@ -184,7 +184,7 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
       }}
       columns={columns}
       dataSource={items}
-      loading={!!hasL("delete-cafe-noall")}
+      loading={hasL("delete-cafe-noall", "fetch-items-noall")}
     />
   );
 };

@@ -83,6 +83,17 @@ const CustomersTable: ItemsTableType = (props) => {
                 `/${params.business}/customer_club/customers/${rec["uuid"]}`
               );
             }}
+            seeAllRender={{
+              gender: (value) => {
+                if (value == "man") return "آقا";
+                else return "خانم";
+              },
+              birth_date: (value) => {
+                return moment(value, "YYYY-MM-DD")
+                  .locale("fa")
+                  .format("jDD jMMMM(jM) jYYYY");
+              },
+            }}
             seeAllExcludeFields={[
               "uuid",
               "business_uuid",
