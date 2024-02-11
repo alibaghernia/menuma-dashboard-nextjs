@@ -32,8 +32,6 @@ const CustomersTable: ItemsTableType = (props) => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const { businessService } = useContext(BusinessProviderContext);
-  const primaryColor = useTailwindColor("primary");
-  const breakpoints = useCurrentBreakpoints();
   const renderDateTime = (value: string) => {
     if (!value) return "";
     const time = moment(value).locale("fa").format("dddd DD jMMMM jYYYY HH:mm");
