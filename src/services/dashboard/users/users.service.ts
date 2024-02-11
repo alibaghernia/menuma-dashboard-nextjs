@@ -2,6 +2,7 @@ import { AxiosResponseType } from "@/lib/auth/types";
 import type { AxiosInstance } from "axios";
 import { recreateServiceAxiosIns } from "../../helpers";
 import { User } from "./types";
+import axios from "@/lib/axios";
 
 export class UsersService {
   static init() {
@@ -11,12 +12,12 @@ export class UsersService {
   private axiosIns: AxiosInstance;
 
   constructor() {
-    this.axiosIns = recreateServiceAxiosIns("/users");
+    this.axiosIns = recreateServiceAxiosIns("/panel/users");
   }
 
   getMe() {
-    return this.axiosIns
-      .get<AxiosResponseType<User>>(`/me`)
+    return axios
+      .get<AxiosResponseType<User>>(`/users/me`)
       .then(({ data }) => data);
   }
   updateProfile(payload: unknown) {

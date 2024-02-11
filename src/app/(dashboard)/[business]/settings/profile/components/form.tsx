@@ -65,11 +65,11 @@ const ProfileForm = () => {
       })
       .then(() => {
         message.success("پروفایل شما با موفقیت بروز شد");
-        if (!!password) {
-          message.info("در حال خروج از پنل...", 2);
-          addL(LOADINGS.page);
-          logOut();
-        }
+        // if (!!password) {
+        message.info("در حال خروج از پنل...", 2);
+        addL(LOADINGS.page);
+        logOut();
+        // }
       })
       .catch(() => {
         message.error("خطایی در بروزرسانی پروفایل رخ داد.");
