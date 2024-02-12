@@ -790,6 +790,11 @@ const CafeRestaurantForm: FormType = (props) => {
               <Switch />
             </Form.Item>
           </Col>
+          <Col xs={12} md={8}>
+            <Form.Item name="pin" label="پین شده">
+              <Switch />
+            </Form.Item>
+          </Col>
         </Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">

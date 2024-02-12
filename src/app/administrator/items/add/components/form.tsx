@@ -30,6 +30,7 @@ import {
   InputNumber,
   Row,
   Select,
+  Switch,
   Upload,
   UploadFile,
 } from "antd/lib";
@@ -416,6 +417,15 @@ const AddItemForm: FormType = (props) => {
             <Checkbox value="sold_out">تمام شده</Checkbox>
             <Checkbox value="offer">پیشنهاد روز</Checkbox>
           </Checkbox.Group>
+        </Form.Item>
+        <Form.Item>
+          <Row>
+            <Col xs={12} md={8}>
+              <Form.Item name="pin" label="پین شده">
+                <Switch />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
