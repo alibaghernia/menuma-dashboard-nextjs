@@ -1,27 +1,36 @@
+"use client";
 import { Card, Flex } from "antd/lib";
 import { Row, Col } from "antd";
 import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "صحه اصلی",
-};
+import { BusinessService } from "@/services/dashboard/business.service";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function Dashboard() {
+  const params = useParams();
+  const [statistics, setStatistics] = useState<any>();
+  const businessService = BusinessService.init(params.business as string);
+
+  useEffect(() => {
+    businessService.statistics().then((data) => {
+      setStatistics(data.data);
+    });
+  }, []);
+
   return (
-    <Row gutter={24}>
-      <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="اسکن های امروز">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">25</div>
+    <Row gutter={16}>
+      <Col xs={24} sm={12}>
+        <Card title="دسته بندی ها">
+          <div className="text-[1.5rem] font-bold mx-auto w-fit">
+            {statistics?.categories}
+          </div>
         </Card>
       </Col>
-      <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="اسکن های هفته">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">200</div>
-        </Card>
-      </Col>
-      <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="اسکن های ماه">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">520</div>
+      <Col xs={24} sm={12}>
+        <Card title="آیتم ها">
+          <div className="text-[1.5rem] font-bold mx-auto w-fit">
+            {statistics?.items}
+          </div>
         </Card>
       </Col>
     </Row>

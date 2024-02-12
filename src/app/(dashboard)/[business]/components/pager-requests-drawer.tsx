@@ -19,6 +19,7 @@ import {
   Flex,
   Row,
   Space,
+  Switch,
   Typography,
 } from "antd/lib";
 import React, {
@@ -27,6 +28,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import moment, { Moment } from "jalali-moment";
@@ -198,6 +200,8 @@ const PagerRequestsDrawer: FC<IPagerRequestsDrawer> = ({ ...props }) => {
   const [addL, remvoeL, hasL] = useLoadings();
   const message = useMessage();
   const notification = useNotification();
+  const [soundMode, setSoundMode] = useState(false);
+  const notifiationSound = useRef<Howl>();
 
   function fetchPagerRequests() {
     addL("load-pager-requests-noall");
@@ -223,21 +227,26 @@ const PagerRequestsDrawer: FC<IPagerRequestsDrawer> = ({ ...props }) => {
   }, [requests]);
 
   useEffect(() => {
-    const notifiationSound = new Howl({
+    const soundModeLocal = !!+(localStorage.getItem("pager-silent") || "0");
+    setSoundMode(soundModeLocal);
+    notifiationSound.current = new Howl({
       src: "/sounds/notification_sound.mp3",
       preload: true,
+      volume: soundMode ? 1 : 0,
     }).load();
     const newRequestHandler = (request: Request) => {
       try {
-        notifiationSound.play();
+        notifiationSound.current?.play();
       } catch (error) {}
-      navigator.vibrate([500, 100, 500]);
       setRequests((requests) => requests.concat(request));
-      notification.warning({
-        message: "درخواست پیجر دریافت شد",
-        placement: "topRight",
-      });
-      props.setRequestPagersDrawerOpen(true);
+      if (soundMode) {
+        navigator.vibrate([500, 100, 500]);
+        notification.warning({
+          message: "درخواست پیجر دریافت شد",
+          placement: "topRight",
+        });
+        props.setRequestPagersDrawerOpen(true);
+      }
     };
     const cancelRequestHandler = (request_id: Request["uuid"]) => {
       setRequests((requests) =>
@@ -256,8 +265,9 @@ const PagerRequestsDrawer: FC<IPagerRequestsDrawer> = ({ ...props }) => {
       socketConnection.off("new-request", newRequestHandler);
       socketConnection.off("cancel-request", cancelRequestHandler);
       socketConnection.off("update-requests", fetchPagerRequests.bind(this));
+      socketConnection.disconnect();
     };
-  }, []);
+  }, [soundMode]);
 
   const pendings = useMemo(() => {
     return requests
@@ -278,24 +288,49 @@ const PagerRequestsDrawer: FC<IPagerRequestsDrawer> = ({ ...props }) => {
       onClose={props.onClose}
       open={props.open}
       width={breakpoints.isXs ? "100vw" : "25rem"}
+      extra={
+        <Switch
+          checkedChildren="صدای اعلان"
+          unCheckedChildren="بی صدا"
+          onChange={(checked: boolean) => {
+            localStorage.setItem("pager-silent", checked ? "1" : "0");
+            notifiationSound.current?.volume(checked ? 1 : 0);
+            setSoundMode(checked);
+          }}
+          checked={soundMode}
+        />
+      }
     >
       <Flex vertical gap={16}>
-        <div>
-          <Typography.Text className="text-[1rem]">در انتظار</Typography.Text>
-          <Divider className="my-[.5rem]" />
-          <Flex vertical gap={8}>
-            {pendings}
-          </Flex>
-        </div>
-        {!!doing.length && (
-          <div>
-            <Typography.Text className="text-[1rem]">
-              در حال انجام
-            </Typography.Text>
-            <Divider className="my-[.5rem]" />
-            <Flex vertical gap={8}>
-              {doing}
-            </Flex>
+        {!!pendings.length || !!doing.length ? (
+          <>
+            {!!pendings.length && (
+              <div>
+                <Typography.Text className="text-[1rem]">
+                  در انتظار
+                </Typography.Text>
+                <Divider className="my-[.5rem]" />
+                <Flex vertical gap={8}>
+                  {pendings}
+                </Flex>
+              </div>
+            )}
+            {!!doing.length && (
+              <div>
+                <Typography.Text className="text-[1rem]">
+                  در حال انجام
+                </Typography.Text>
+                <Divider className="my-[.5rem]" />
+                <Flex vertical gap={8}>
+                  {doing}
+                </Flex>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-[.8rem] text-typography/[.8] font-semibold text-center">
+            اگر درخواستی از سمت مشتری دریافت شود در این قسمت نمایش داده خواهند
+            شد
           </div>
         )}
       </Flex>

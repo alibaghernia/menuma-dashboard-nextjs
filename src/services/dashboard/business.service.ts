@@ -45,4 +45,12 @@ export class BusinessService {
   get discountsService() {
     return DiscountsService.init(this);
   }
+
+  statistics() {
+    return this.axiosIns
+      .get<AxiosResponseType<{ categories: number; items: number }>>(
+        "/statistics"
+      )
+      .then(({ data }) => data);
+  }
 }
