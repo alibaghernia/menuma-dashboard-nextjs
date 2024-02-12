@@ -372,6 +372,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.categories_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش دسته بندی",
+          });
+          break;
+        }
         case MENU_KEYS.administrator.items: {
           breadcrumbsItems.push({
             title: linking("آیتم ها", "/administrator/items", idx),
@@ -390,6 +396,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.items_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش آیتم",
+          });
+          break;
+        }
         case MENU_KEYS.administrator.events: {
           breadcrumbsItems.push({
             title: linking("دورهمی ها", "/administrator/events", idx),
@@ -405,6 +417,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.administrator.events_children.add: {
           breadcrumbsItems.push({
             title: linking("افزودن دورهمی", "/administrator/events/add", idx),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.events_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش دورهمی",
           });
           break;
         }
@@ -427,6 +445,12 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
               "/administrator/catalogs/add",
               idx
             ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.catalogs_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش کاتالوگ",
           });
           break;
         }

@@ -77,16 +77,19 @@ export const MENU_KEYS = {
     items_children: {
       list: "adm-itms-list",
       add: "adm-itms-add",
+      edit: "adm-itms-edit",
     },
     events: "admin-events",
     events_children: {
       list: "adm-evnts-list",
       add: "adm-evnts-add",
+      edit: "adm-evnts-edit",
     },
     catalogs: "admin-catalogs",
     catalogs_children: {
       list: "adm-ctlgs-list",
       add: "adm-ctlgs-add",
+      edit: "adm-ctlgs-edit",
     },
     users: "admin-users",
     users_children: {

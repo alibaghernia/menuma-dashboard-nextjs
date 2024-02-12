@@ -204,8 +204,13 @@ const AddItemForm: FormType = (props) => {
             >
               <Select
                 size="large"
-                placeholder="عنوان آیتم..."
+                placeholder="کافه/رستوران..."
                 disabled={props.isEdit}
+                allowClear
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.label ?? "").includes(input)
+                }
                 options={businesses.map((bus) => ({
                   label: bus.name,
                   value: bus.uuid,

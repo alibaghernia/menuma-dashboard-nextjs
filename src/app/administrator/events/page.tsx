@@ -1,10 +1,24 @@
+"use client";
 import { Button, Card, Col, Flex, Row } from "antd/lib";
 import Search from "antd/lib/input/Search";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import EventsTable from "./components/table";
 import Link from "@/components/common/link/link";
+import { useParams } from "next/navigation";
+import _ from "lodash";
 
-const Customers = () => {
+const Events = () => {
+  const params = useParams();
+  const [search, setSearch] = useState<string>();
+  const [searchingText, _setSearchingText] = useState<string>();
+
+  const setSearchingText = useMemo(
+    () =>
+      _.debounce((value) => {
+        _setSearchingText(value);
+      }, 200),
+    []
+  );
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -25,17 +39,26 @@ const Customers = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      setSearchingText(value);
+                    }}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
-                  <Button type="primary" ghost>
-                    <Link href="/administrator/events/add">افزودن</Link>
-                  </Button>
+                  <Link href={`/administrator/events/add`}>
+                    <Button type="primary" ghost>
+                      افزودن
+                    </Button>
+                  </Link>
                 </Col>
               </Flex>
             </Row>
             <Row>
-              <EventsTable />
+              <EventsTable search={searchingText} />
             </Row>
           </Flex>
         </Card>
@@ -44,4 +67,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default Events;

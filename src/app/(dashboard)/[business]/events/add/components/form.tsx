@@ -207,7 +207,7 @@ const EventForm: FormType = (props) => {
           </Row>
         </Form.Item>
         <Form.Item>
-          <Card title="زمان برگزاری">
+          <Card title="زمان برگذاری">
             <Row gutter={8}>
               <Col xs={24} md={4}>
                 <Form.Item label="دوره زمانی" name="cycle">
@@ -255,7 +255,7 @@ const EventForm: FormType = (props) => {
                     )}
                     className="rmdp-mobile"
                     containerClassName="w-full"
-                    placeholder="تاریخ برگزاری..."
+                    placeholder="تاریخ برگذاری..."
                     calendar={persian}
                     highlightToday={false}
                     locale={persian_fa}

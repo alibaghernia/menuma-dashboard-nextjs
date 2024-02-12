@@ -315,6 +315,40 @@ export const setMenuKeys = ({
         ]);
         break;
       }
+      if (
+        comparePatternWithPathname(pathname, "/administrator/categories/[uuid]")
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.administrator.categories,
+          MENU_KEYS.administrator.categories_children.edit,
+        ]);
+        break;
+      }
+      if (comparePatternWithPathname(pathname, "/administrator/items/[uuid]")) {
+        setSelectedKeys([
+          MENU_KEYS.administrator.items,
+          MENU_KEYS.administrator.items_children.edit,
+        ]);
+        break;
+      }
+      if (
+        comparePatternWithPathname(pathname, "/administrator/events/[uuid]")
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.administrator.events,
+          MENU_KEYS.administrator.events_children.edit,
+        ]);
+        break;
+      }
+      if (
+        comparePatternWithPathname(pathname, "/administrator/catalogs/[uuid]")
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.administrator.catalogs,
+          MENU_KEYS.administrator.catalogs_children.edit,
+        ]);
+        break;
+      }
       if (comparePatternWithPathname(pathname, "/administrator/users/[uuid]")) {
         setSelectedKeys([
           MENU_KEYS.administrator.users,

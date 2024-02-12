@@ -139,7 +139,7 @@ const AddCategoryForm: FormType = (props) => {
             >
               <Select
                 size="large"
-                placeholder="عنوان آیتم..."
+                placeholder="کافه/رستوران..."
                 disabled={props.isEdit}
                 options={businesses.map((bus) => ({
                   label: bus.name,
