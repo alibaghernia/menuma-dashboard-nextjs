@@ -1,11 +1,24 @@
-import { Card, Col, Flex, Row } from "antd";
+"use client";
+import { Button, Card, Col, Flex, Row } from "antd";
 import Search from "antd/lib/input/Search";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import CategoriesTable from "./components/table";
 import Link from "@/components/common/link/link";
-import { Button } from "antd/lib";
+import { useParams } from "next/navigation";
+import _ from "lodash";
 
 const CategoriesPage = () => {
+  const params = useParams();
+  const [search, setSearch] = useState<string>();
+  const [searchingText, _setSearchingText] = useState<string>();
+
+  const setSearchingText = useMemo(
+    () =>
+      _.debounce((value) => {
+        _setSearchingText(value);
+      }, 200),
+    []
+  );
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -26,10 +39,17 @@ const CategoriesPage = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      setSearchingText(value);
+                    }}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
-                  <Link href="/administrator/categories/add">
+                  <Link href={`/administrator/categories/add`}>
                     <Button ghost type="primary">
                       افزودن
                     </Button>
@@ -38,7 +58,7 @@ const CategoriesPage = () => {
               </Flex>
             </Row>
             <Row>
-              <CategoriesTable />
+              <CategoriesTable search={searchingText} />
             </Row>
           </Flex>
         </Card>

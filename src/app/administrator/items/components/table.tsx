@@ -1,34 +1,229 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
-import { useCurrentBreakpoints, useTailwindColor } from "@/utils/hooks";
+import { BusinessProviderContext } from "@/providers/business/provider";
+import { BusinessService } from "@/services/administrator/business.service";
+import { ItemsService } from "@/services/administrator/items/items.service";
+import {
+  IGetProductFilters,
+  Product,
+} from "@/services/administrator/items/types";
+import { Business } from "@/services/administrator/types";
+import {
+  useCurrentBreakpoints,
+  useCustomRouter,
+  useLoadings,
+  useMessage,
+  useTailwindColor,
+} from "@/utils/hooks";
+import { renderTime } from "@/utils/tables";
 import { EditOutlined } from "@ant-design/icons";
-import { Button, Col, Flex, Table, TableProps } from "antd/lib";
-import React from "react";
+import { Button, Col, Flex, Row, Select, Table, TableProps } from "antd/lib";
+import { ColumnProps } from "antd/lib/table";
+import moment from "jalali-moment";
+import * as _ from "lodash";
+import { useParams } from "next/navigation";
+import React, { FC, useContext, useEffect, useState } from "react";
 
-const ItemsTable = () => {
+export type ItemsTableType = FC<{
+  search?: string;
+}>;
+
+const ItemsTable: ItemsTableType = (props) => {
+  const params = useParams();
+  const message = useMessage();
+  const [addL, removeL, hasL] = useLoadings();
+  const [items, setItems] = useState<Product[]>([]);
+  const router = useCustomRouter();
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [selectedBusiness, setSelectedBusiness] = useState<string>();
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
+  const itemsService = ItemsService.init();
+  const businessService = BusinessService.init();
+
+  // renders
+  const renderCategories: ColumnProps<unknown>["render"] = (val) => {
+    return (val as any[]).map((category) => category.title);
+  };
+
   const columns: TableProps["columns"] = [
     {
-      title: "نام",
-      dataIndex: "first_name",
+      title: "عنوان",
+      dataIndex: "title",
+    },
+    {
+      title: "کافه/رستوران",
+      dataIndex: "business",
+      render: (value: Business) => value?.name,
+    },
+    {
+      title: "دسته بندی",
+      dataIndex: "categories",
+      responsive: ["md"],
+      render: renderCategories,
     },
     {
       key: "actions",
       title: "عملیات",
       width: 100,
       render: (value, rec, idx) => {
-        return <TableActions value={value} record={rec} index={idx} />;
+        return (
+          <TableActions
+            value={value}
+            record={rec}
+            index={idx}
+            onDelete={async () => {
+              addL("delete-item-noall");
+              itemsService
+                .delete(rec["uuid"])
+                .finally(() => {
+                  removeL("delete-item-noall");
+                })
+                .then(() => {
+                  message.success("آیتم مورد نظر با موفقیت حذف شد.");
+                  fetchItems();
+                })
+                .catch(() => {
+                  message.error("مشکلی در حذف آیتم وجود دارد.");
+                });
+            }}
+            onEdit={() => {
+              router.push(`/administrator/items/${rec["uuid"]}`);
+            }}
+            seeAllNames={{
+              title: "عنوان",
+              categories: "دسته بندی",
+              description: "توضیحات",
+              createdAt: "زمان ایجاد",
+              updatedAt: "آخرین بروزرسانی",
+              business: "کافه/رستوران",
+            }}
+            seeAllExcludeFields={[
+              "uuid",
+              "prices",
+              "metadata",
+              "images",
+              "image",
+              "image_url",
+            ]}
+            seeAllRender={{
+              categories: renderCategories,
+              createdAt: renderTime,
+              updatedAt: renderTime,
+              business: (value) => value?.name,
+            }}
+            seeAll
+          />
+        );
       },
     },
   ];
+
+  async function fetchItems(
+    filters: IGetProductFilters = {
+      page: currentPage,
+      limit: pageSize,
+      business_uuid: selectedBusiness,
+    }
+  ) {
+    try {
+      addL("fetch-items-noall");
+      const { data } = await itemsService.getItems(filters);
+      setTotal(data.total);
+      setItems(data.items);
+    } catch (error) {
+      console.log({
+        error,
+      });
+    }
+
+    removeL("fetch-items-noall");
+  }
+  useEffect(() => {
+    fetchItems({
+      page: currentPage,
+      limit: pageSize,
+      title: props.search,
+      business_uuid: selectedBusiness,
+    });
+  }, [currentPage, pageSize, selectedBusiness]);
+  useEffect(
+    _.debounce(() => {
+      fetchItems({
+        page: currentPage,
+        limit: pageSize,
+        title: props.search,
+        business_uuid: selectedBusiness,
+      });
+    }, 500),
+    [props.search]
+  );
+
+  const tablePaginationOnChange = (current: number, pageSize: number) => {
+    setCurrentPage(current);
+    setPageSize(pageSize);
+  };
+
+  function fetchBusinesses() {
+    addL("load-businesses");
+    businessService
+      .getAll()
+      .finally(() => {
+        removeL("load-businesses");
+      })
+      .then((data) => {
+        setBusinesses(data.data.businesses);
+      })
+      .catch(() => {
+        message.error("مشکلی در دریافت داده ها وجود دارد!");
+      });
+  }
+  useEffect(() => {
+    fetchBusinesses();
+  }, []);
+
   // const dataSource = [];
   return (
-    <Table
-      className="w-full rounded-[1rem] overflow-hidden"
-      columns={columns}
-      // dataSource={dataSource}
-    />
+    <Flex vertical gap={"1rem"} className="w-full">
+      <Row>
+        <Col xs={24} md={8}>
+          <Select
+            placeholder="کافه/رستوران"
+            options={businesses.map((bus) => ({
+              label: bus.name,
+              value: bus.uuid,
+            }))}
+            allowClear
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label ?? "").includes(input)
+            }
+            value={selectedBusiness}
+            onChange={setSelectedBusiness}
+            className="w-full"
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Table
+          className="w-full rounded-[1rem] overflow-hidden"
+          columns={columns}
+          loading={hasL("fetch-items-noall", "delete-item-noall")}
+          pagination={{
+            current: currentPage,
+            pageSize,
+            total,
+            onChange: tablePaginationOnChange,
+          }}
+          dataSource={items}
+        />
+      </Row>
+    </Flex>
   );
 };
 

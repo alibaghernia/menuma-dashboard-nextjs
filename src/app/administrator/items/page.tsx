@@ -1,11 +1,26 @@
+"use client";
 import { Card, Col, Flex, Row } from "antd";
 import Search from "antd/lib/input/Search";
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import ItemsTable from "./components/table";
 import { Button } from "antd/lib";
 import Link from "@/components/common/link/link";
+import _ from "lodash";
+import { useParams } from "next/navigation";
 
 const ItemsPage = () => {
+  const params = useParams();
+  const [search, setSearch] = useState<string>();
+  const [searchingText, _setSearchingText] = useState<string>();
+
+  const setSearchingText = useMemo(
+    () =>
+      _.debounce((value) => {
+        _setSearchingText(value);
+      }, 200),
+    []
+  );
+
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -26,17 +41,24 @@ const ItemsPage = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      setSearchingText(value);
+                    }}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
                   <Button ghost type="primary">
-                    <Link href="/administrator/items/add">افزودن</Link>
+                    <Link href={`/administrator/items/add`}>افزودن</Link>
                   </Button>
                 </Col>
               </Flex>
             </Row>
             <Row>
-              <ItemsTable />
+              <ItemsTable search={searchingText} />
             </Row>
           </Flex>
         </Card>
