@@ -83,7 +83,7 @@ const AddItemForm: FormType = (props) => {
         })
         .then(() => {
           message.success("آیتم با موفقیت ساخته شد.");
-          router.push(`/${params.business}/menu/items`);
+          router.push(`/administrator/items`);
         });
     }
   }
@@ -166,6 +166,7 @@ const AddItemForm: FormType = (props) => {
 
   useEffect(() => {
     if (business_uuid_watch) fetchCategories(business_uuid_watch);
+    else setCategories([]);
   }, [business_uuid_watch]);
 
   return (
