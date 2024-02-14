@@ -13,6 +13,7 @@ import classNames from "classnames";
 import React, {
   FC,
   PropsWithChildren,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -40,6 +41,7 @@ import User from "./user/user";
 import { Session } from "next-auth";
 import dynamic from "next/dynamic";
 import axios from "@/lib/axios";
+import { BusinessProviderContext } from "@/providers/business/provider";
 
 const PagerRequestsDrawer = dynamic(() => import("./pager-requests-drawer"), {
   ssr: false,
@@ -60,6 +62,7 @@ const PanelTemplate: FC<
   const [selectedKeys, setSelectedKeys] = useState<string[]>(["dashboard"]);
   const pathname = usePathname();
   const [requestPagersDrawerOpen, setRequestPagersDrawerOpen] = useState(false);
+  const { business } = useContext(BusinessProviderContext);
 
   useEffect(() => {
     setMenuKeys({ pathname, setSelectedKeys, params });
@@ -301,26 +304,33 @@ const PanelTemplate: FC<
             </Col>
             <Col>
               <Flex align="center" gap={"1rem"}>
+                {!administrator &&
+                  (session.user?.businesses?.length || 0) > 1 && (
+                    <div
+                      className={twMerge(
+                        classNames("text-[.9rem] text-typography font-bold", {
+                          hidden: breakpoints.isXs,
+                        })
+                      )}
+                    >
+                      ( {business.name} )
+                    </div>
+                  )}
                 {!administrator && (
-                  <Col>
+                  <Col
+                    onClick={() => setRequestPagersDrawerOpen(true)}
+                    className="cursor-pointer"
+                  >
                     {!!hasL("load-pager-requests-noall") ? (
-                      <LoadingOutlined
-                        color={typographyColor}
-                        onClick={() => setRequestPagersDrawerOpen(true)}
-                        size={24}
-                      />
+                      <LoadingOutlined color={typographyColor} size={24} />
                     ) : (
                       <Badge count={requestsCount}>
-                        <BellOutlined
-                          color={typographyColor}
-                          onClick={() => setRequestPagersDrawerOpen(true)}
-                          size={24}
-                        />
+                        <BellOutlined color={typographyColor} size={24} />
                       </Badge>
                     )}
                   </Col>
                 )}
-                <Col>
+                <Col className="shrink-0">
                   <User />
                 </Col>
               </Flex>
