@@ -19,7 +19,11 @@ import React, {
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
-import { BellOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  BellOutlined,
+  LoadingOutlined,
+  QrcodeOutlined,
+} from "@ant-design/icons";
 import Sider from "antd/es/layout/Sider";
 import type { MenuProps } from "antd";
 import DashboardOutlinedIcon from "@/icons/dashboard-outlined";
@@ -236,6 +240,16 @@ const PanelTemplate: FC<
               ),
             },
           ],
+        },
+        {
+          key: MENU_KEYS.qrCode,
+          icon: (
+            <QrcodeOutlined
+              className="ml-1"
+              color={iconColor(MENU_KEYS.qrCode)}
+            />
+          ),
+          label: <Link href={`/${params.business}/qr-codes`}>کیوآر کد ها</Link>,
         },
         {
           key: MENU_KEYS.settings,

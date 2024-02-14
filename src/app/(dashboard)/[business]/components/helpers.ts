@@ -78,6 +78,14 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case `/${params.business}/qr-codes`: {
+      setSelectedKeys([MENU_KEYS.qrCode, MENU_KEYS.qrCode_children.list]);
+      break;
+    }
+    case `/${params.business}/qr-codes/add`: {
+      setSelectedKeys([MENU_KEYS.qrCode, MENU_KEYS.qrCode_children.add]);
+      break;
+    }
     case `/${params.business}/discounts/conditional`: {
       setSelectedKeys([
         MENU_KEYS.discounts,
@@ -291,6 +299,15 @@ export const setMenuKeys = ({
           MENU_KEYS.gatherings,
           MENU_KEYS.gatherings_children.edit,
         ]);
+        break;
+      }
+      if (
+        comparePatternWithPathname(
+          pathname,
+          `/${params.business}/qr-codes/[uuid]`
+        )
+      ) {
+        setSelectedKeys([MENU_KEYS.qrCode, MENU_KEYS.qrCode_children.edit]);
         break;
       }
       if (

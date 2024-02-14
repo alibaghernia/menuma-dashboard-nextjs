@@ -9,6 +9,7 @@ import { HallsService } from "./halls/halls.service";
 import { EventsService } from "./events/events.service";
 import { CustomerClubService } from "./customer_club/customer_club.service";
 import { DiscountsService } from "./discounts/discounts.service";
+import { QrCodeService } from "./qr-codes/qr-codes.service";
 
 export class BusinessService {
   static init(business_uuid: string) {
@@ -44,6 +45,9 @@ export class BusinessService {
   }
   get discountsService() {
     return DiscountsService.init(this);
+  }
+  get qrCodeService() {
+    return QrCodeService.init(this);
   }
 
   statistics() {

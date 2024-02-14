@@ -192,6 +192,28 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.qrCode: {
+          breadcrumbsItems.push({
+            title: linking("کیو آر کد ها", `/${params.business}/qr-codes`, idx),
+          });
+          break;
+        }
+        case MENU_KEYS.qrCode_children.add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن کیو آر کد",
+              `/${params.business}/qr-codes/add`,
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.qrCode_children.edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش کیو آر کد",
+          });
+          break;
+        }
         case MENU_KEYS.discounts: {
           breadcrumbsItems.push({
             title: "تخفیف ها",

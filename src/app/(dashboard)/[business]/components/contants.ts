@@ -41,6 +41,12 @@ export const MENU_KEYS = {
     add: "getherings-add",
     edit: "getherings-edit",
   },
+  qrCode: "qrCode",
+  qrCode_children: {
+    list: "qrCode-list",
+    add: "qrCode-add",
+    edit: "qrCode-edit",
+  },
   spaces: "spaces",
   spaces_children: {
     halls: "spaces-halls",

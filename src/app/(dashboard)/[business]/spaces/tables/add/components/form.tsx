@@ -107,7 +107,7 @@ const TableForm: FormType = (props) => {
           max_capacity: data.data.max_capacity,
           image: data.data.image,
           description: data.data.description,
-          hall_uuid: data.data.hall_uuid,
+          hall_uuid: data.data.hall_uuid || undefined,
         });
         setImagePreviewUrl(data.data.image_url);
       })

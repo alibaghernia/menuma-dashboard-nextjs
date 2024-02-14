@@ -55,32 +55,40 @@ const TableActions: ITableActions = (props) => {
             align="center"
             gap={10}
           >
-            <Col>
-              <Button
-                icon={<EditOutlined />}
-                color={primaryColor}
-                type="link"
-                onClick={() => props.onEdit?.(props.record)}
-              >
-                ویرایش
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                icon={
-                  <TrashOutlined width={14} height={14} color={redColor[500]} />
-                }
-                className="flex items-center"
-                danger
-                type="text"
-                onClick={() => {
-                  setDeleteModal(true);
-                  setIsOpen(false);
-                }}
-              >
-                حذف
-              </Button>
-            </Col>
+            {props.onEdit && (
+              <Col>
+                <Button
+                  icon={<EditOutlined />}
+                  color={primaryColor}
+                  type="link"
+                  onClick={() => props.onEdit?.(props.record)}
+                >
+                  ویرایش
+                </Button>
+              </Col>
+            )}
+            {props.onDelete && (
+              <Col>
+                <Button
+                  icon={
+                    <TrashOutlined
+                      width={14}
+                      height={14}
+                      color={redColor[500]}
+                    />
+                  }
+                  className="flex items-center"
+                  danger
+                  type="text"
+                  onClick={() => {
+                    setDeleteModal(true);
+                    setIsOpen(false);
+                  }}
+                >
+                  حذف
+                </Button>
+              </Col>
+            )}
             {props.seeAll && (
               <Col>
                 <Button
