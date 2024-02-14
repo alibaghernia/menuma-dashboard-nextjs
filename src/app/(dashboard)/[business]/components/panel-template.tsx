@@ -42,6 +42,7 @@ import { Session } from "next-auth";
 import dynamic from "next/dynamic";
 import axios from "@/lib/axios";
 import { BusinessProviderContext } from "@/providers/business/provider";
+import BusinessBadge from "./business-badge";
 
 const PagerRequestsDrawer = dynamic(() => import("./pager-requests-drawer"), {
   ssr: false,
@@ -62,7 +63,6 @@ const PanelTemplate: FC<
   const [selectedKeys, setSelectedKeys] = useState<string[]>(["dashboard"]);
   const pathname = usePathname();
   const [requestPagersDrawerOpen, setRequestPagersDrawerOpen] = useState(false);
-  const { business } = useContext(BusinessProviderContext);
 
   useEffect(() => {
     setMenuKeys({ pathname, setSelectedKeys, params });
@@ -306,15 +306,7 @@ const PanelTemplate: FC<
               <Flex align="center" gap={"1rem"}>
                 {!administrator &&
                   (session.user?.businesses?.length || 0) > 1 && (
-                    <div
-                      className={twMerge(
-                        classNames("text-[.9rem] text-typography font-bold", {
-                          hidden: breakpoints.isXs,
-                        })
-                      )}
-                    >
-                      ( {business.name} )
-                    </div>
+                    <BusinessBadge />
                   )}
                 {!administrator && (
                   <Col
