@@ -79,7 +79,9 @@ const PanelTemplate: FC<
       {
         key: MENU_KEYS.dashboard,
         label: (
-          <Link href={administrator ? "/administrator" : "/"}>داشبورد</Link>
+          <Link href={administrator ? "/administrator" : `/${params.business}`}>
+            داشبورد
+          </Link>
         ),
         icon: (
           <DashboardOutlinedIcon
