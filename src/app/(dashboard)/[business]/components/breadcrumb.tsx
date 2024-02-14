@@ -478,6 +478,40 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
           });
           break;
         }
+        case MENU_KEYS.administrator.discounts: {
+          breadcrumbsItems.push({
+            title: "تخفیف ها",
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.discounts_children.conditional: {
+          breadcrumbsItems.push({
+            title: linking(
+              "تخفیف های شرطی",
+              `/administrator/discounts/conditional`,
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.discounts_children.conditional_children
+          .add: {
+          breadcrumbsItems.push({
+            title: linking(
+              "افزودن تخفیف شرطی",
+              `/administrator/discounts/conditional/add`,
+              idx
+            ),
+          });
+          break;
+        }
+        case MENU_KEYS.administrator.discounts_children.conditional_children
+          .edit: {
+          breadcrumbsItems.push({
+            title: "ویرایش تخفیف شرطی",
+          });
+          break;
+        }
       }
     }
     return breadcrumbsItems;

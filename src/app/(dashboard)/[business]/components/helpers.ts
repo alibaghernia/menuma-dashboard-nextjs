@@ -214,6 +214,22 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case `/administrator/discounts/conditional`: {
+      setSelectedKeys([
+        MENU_KEYS.administrator.discounts,
+        MENU_KEYS.administrator.discounts_children.conditional,
+        MENU_KEYS.administrator.discounts_children.conditional_children.list,
+      ]);
+      break;
+    }
+    case `/administrator/discounts/conditional/add`: {
+      setSelectedKeys([
+        MENU_KEYS.administrator.discounts,
+        MENU_KEYS.administrator.discounts_children.conditional,
+        MENU_KEYS.administrator.discounts_children.conditional_children.add,
+      ]);
+      break;
+    }
     default: {
       if (
         comparePatternWithPathname(
@@ -353,6 +369,20 @@ export const setMenuKeys = ({
         setSelectedKeys([
           MENU_KEYS.administrator.users,
           MENU_KEYS.administrator.users_children.edit,
+        ]);
+        break;
+      }
+
+      if (
+        comparePatternWithPathname(
+          pathname,
+          `/administrator/discounts/conditional/[uuid]`
+        )
+      ) {
+        setSelectedKeys([
+          MENU_KEYS.administrator.discounts,
+          MENU_KEYS.administrator.discounts_children.conditional,
+          MENU_KEYS.administrator.discounts_children.conditional_children.edit,
         ]);
         break;
       }

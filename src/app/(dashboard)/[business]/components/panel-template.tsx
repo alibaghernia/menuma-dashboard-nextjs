@@ -109,6 +109,24 @@ const PanelTemplate: FC<
           label: <Link href="/administrator/events">دورهمی ها</Link>,
         },
         {
+          key: MENU_KEYS.administrator.discounts,
+          icon: (
+            <DiscountOutlined
+              className="ml-1"
+              color={iconColor(MENU_KEYS.administrator.discounts)}
+            />
+          ),
+          label: "تخفیف ها",
+          children: [
+            {
+              key: MENU_KEYS.administrator.discounts_children.conditional,
+              label: "شرطی",
+              onClick: () =>
+                router.push(`/administrator/discounts/conditional`),
+            },
+          ],
+        },
+        {
           type: "group",
           label: <div className="text-[.8rem]">پلتفرم</div>,
         },

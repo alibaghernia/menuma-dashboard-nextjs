@@ -67,6 +67,17 @@ export const MENU_KEYS = {
       add: "ad-ca-res-add",
       edit: "ad-ca-res-edit",
     },
+    discounts: "admin-discounts",
+    discounts_children: {
+      list: "adm-dis-list",
+      add: "adm-dis-add",
+      conditional: "adm-dis-conditional",
+      conditional_children: {
+        list: "adm-cond-dis-list",
+        edit: "adm-cond-dis-edit",
+        add: "adm-cond-dis-add",
+      },
+    },
     categories: "admin-categories",
     categories_children: {
       list: "admin-categ-list",
