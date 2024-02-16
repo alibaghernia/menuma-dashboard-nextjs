@@ -11,6 +11,7 @@ import {
   Row,
   Select,
   Spin,
+  Switch,
   TimePicker,
   Upload,
   UploadFile,
@@ -134,6 +135,7 @@ const EventForm: FormType = (props) => {
           limit: data.data.limit,
           organizer_type: data.data.organizer_type,
           organizer_uuid: data.data.organizer_uuid,
+          pin: data.data.pin,
         });
         if (data.data.long_description)
           ckEditor.current?.setData(data.data.long_description);
@@ -538,6 +540,9 @@ const EventForm: FormType = (props) => {
               </div>
             )}
           </div>
+        </Form.Item>
+        <Form.Item name="pin" label="پین شده">
+          <Switch />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
