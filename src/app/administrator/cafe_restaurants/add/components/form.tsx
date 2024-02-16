@@ -120,6 +120,7 @@ const CafeRestaurantForm: FormType = (props) => {
           logo: data.data.logo,
           slug: data.data.slug,
           domain: data.data.domain,
+          pin: data.data.pin,
           working_hours: data.data.working_hours?.map((wh) => ({
             ...wh,
             from: dayjs(wh.from),

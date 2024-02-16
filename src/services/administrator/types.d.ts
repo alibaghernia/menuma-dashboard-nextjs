@@ -16,6 +16,7 @@ export interface Business {
   location_long: string;
   phone_number: string;
   domain: string;
+  pin: boolean;
   email: string;
   working_hours?: WorkingHoursEntity[] | null;
   logo: string;
