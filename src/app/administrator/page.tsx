@@ -15,7 +15,7 @@ export default function Dashboard() {
         </Card>
       </Col>
       <Col xs={24} sm={12} md={8} className="gutter-row">
-        <Card title="کافه و رستوران ها">
+        <Card title="بیزنس ها">
           <div className="text-[1.5rem] font-bold mx-auto w-fit">20</div>
         </Card>
       </Col>

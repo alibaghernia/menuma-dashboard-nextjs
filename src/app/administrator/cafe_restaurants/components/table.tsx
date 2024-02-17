@@ -89,11 +89,11 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
                   removeL("delete-cafe-noall");
                 })
                 .then(() => {
-                  message.success("کافه یا رستوران مورد نظر با موفقیت حذف شد!");
+                  message.success("بیزنس مورد نظر با موفقیت حذف شد!");
                   fetchItems();
                 })
                 .catch(() => {
-                  message.success("مشکلی در حذف کافه یا رستوران وجود داشت.");
+                  message.success("مشکلی در حذف بیزنس وجود داشت.");
                 });
             }}
             seeAllExcludeFields={[

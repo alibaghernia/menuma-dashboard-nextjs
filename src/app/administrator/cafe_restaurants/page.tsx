@@ -22,7 +22,7 @@ const CafeRestaurantsPage = () => {
       <Row>
         <Flex>
           <Col>
-            <div className="text-[1.5rem] font-semibold">کافه و رستوران ها</div>
+            <div className="text-[1.5rem] font-semibold">بیزنس ها</div>
           </Col>
         </Flex>
       </Row>

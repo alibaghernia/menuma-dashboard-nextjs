@@ -199,11 +199,11 @@ const UserForm: FormType = (props) => {
                         <Col xs={24} sm={10}>
                           <Form.Item
                             name={[name, "business_uuid"]}
-                            label="کافه یا رستوران"
+                            label="بیزنس"
                             rules={[
                               {
                                 required: true,
-                                message: "انتخاب کافه یا رستوران اجباری است",
+                                message: "انتخاب بیزنس اجباری است",
                               },
                             ]}
                           >
@@ -212,7 +212,7 @@ const UserForm: FormType = (props) => {
                               filterOption={(input, option) =>
                                 (option?.label ?? "").includes(input)
                               }
-                              placeholder="انتخاب کافه یا رستوران..."
+                              placeholder="انتخاب بیزنس..."
                               options={businesses.map((bus) => ({
                                 label: bus.name,
                                 value: bus.uuid,
@@ -266,7 +266,7 @@ const UserForm: FormType = (props) => {
                         add();
                       }}
                     >
-                      افزودن کافه یا رستوران
+                      افزودن بیزنس
                     </Button>
                   )}
                 </>

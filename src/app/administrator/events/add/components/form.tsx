@@ -223,7 +223,7 @@ const EventForm: FormType = (props) => {
                 placeholder="نوع برگذار کننده"
                 options={[
                   {
-                    label: "کافه/رستوران",
+                    label: "بیزنس",
                     value: "BUSINESS",
                   },
                   {

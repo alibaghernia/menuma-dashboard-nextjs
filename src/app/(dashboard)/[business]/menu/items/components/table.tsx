@@ -15,6 +15,7 @@ import { Button, Col, Flex, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
 import moment from "jalali-moment";
 import * as _ from "lodash";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { FC, useContext, useEffect, useState } from "react";
 
@@ -42,10 +43,38 @@ const ItemsTable: ItemsTableType = (props) => {
     return (val as any[]).map((category) => category.title);
   };
 
+  const renderImage: ColumnProps<unknown>["render"] = (
+    value,
+    rec: any,
+    idx
+  ) => {
+    if (value && /^https:|http:/.test(value))
+      return (
+        <Image
+          alt={rec["title"]!}
+          src={value}
+          width={100}
+          height={100}
+          className="border border-typography/[.1] rounded-[.5rem] overflow-hidden"
+        />
+      );
+    return (
+      <div className="text-typography py-2 px-4 bg-typography/[.1] rounded-[1rem] w-fit">
+        بدون تصویر
+      </div>
+    );
+  };
   const columns: TableProps["columns"] = [
     {
       title: "عنوان",
       dataIndex: "title",
+    },
+    {
+      key: "image_url",
+      title: "تصویر",
+      dataIndex: "image_url",
+      render: renderImage,
+      responsive: ["md"],
     },
     {
       title: "دسته بندی",

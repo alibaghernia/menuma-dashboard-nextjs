@@ -196,17 +196,17 @@ const AddItemForm: FormType = (props) => {
           <Col xs={24} sm={12}>
             <Form.Item
               name="business_uuid"
-              label="کافه/رستوران"
+              label="بیزنس"
               rules={[
                 {
                   required: true,
-                  message: "کافه/رستوران اجباری است!",
+                  message: "بیزنس اجباری است!",
                 },
               ]}
             >
               <Select
                 size="large"
-                placeholder="کافه/رستوران..."
+                placeholder="بیزنس..."
                 disabled={props.isEdit}
                 allowClear
                 showSearch

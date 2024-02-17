@@ -334,18 +334,14 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         }
         case MENU_KEYS.administrator.cafe_restaurants: {
           breadcrumbsItems.push({
-            title: linking(
-              "کافه و رستوران ها",
-              "/administrator/cafe_restaurants",
-              idx
-            ),
+            title: linking("بیزنس ها", "/administrator/cafe_restaurants", idx),
           });
           break;
         }
         case MENU_KEYS.administrator.cafe_restaurants_children.list: {
           breadcrumbsItems.push({
             title: linking(
-              "لیست کافه و رستوران ها",
+              "لیست بیزنس ها",
               "/administrator/cafe_restaurants",
               idx
             ),
@@ -355,7 +351,7 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         case MENU_KEYS.administrator.cafe_restaurants_children.add: {
           breadcrumbsItems.push({
             title: linking(
-              "افزودن کافه یا رستوران",
+              "افزودن بیزنس",
               "/administrator/cafe_restaurants/add",
               idx
             ),
@@ -364,7 +360,7 @@ const Breadcrumb: FC<{ selectedKeys: string[] }> = ({ selectedKeys }) => {
         }
         case MENU_KEYS.administrator.cafe_restaurants_children.edit: {
           breadcrumbsItems.push({
-            title: "ویرایش کافه یا رستوران",
+            title: "ویرایش بیزنس",
           });
           break;
         }

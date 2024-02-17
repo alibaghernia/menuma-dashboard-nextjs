@@ -95,15 +95,11 @@ const PanelTemplate: FC<
       return items.concat([
         {
           type: "group",
-          label: <div className="text-[.8rem]">کافه و رستوران</div>,
+          label: <div className="text-[.8rem]">بیزنس</div>,
         },
         {
           key: MENU_KEYS.administrator.cafe_restaurants,
-          label: (
-            <Link href="/administrator/cafe_restaurants">
-              کافه و رستوران ها
-            </Link>
-          ),
+          label: <Link href="/administrator/cafe_restaurants">بیزنس ها</Link>,
         },
         {
           key: MENU_KEYS.administrator.categories,

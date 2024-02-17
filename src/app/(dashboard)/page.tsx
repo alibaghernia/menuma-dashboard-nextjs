@@ -48,7 +48,7 @@ const Dashboard = async () => {
           gap="1.5rem"
         >
           <div className="text-[.9rem] text-typography text-center">
-            لطفا کافه یا رستوران را انتخاب کنید.
+            لطفا بیزنس را انتخاب کنید.
           </div>
           <Flex vertical gap={"1rem"}>
             {businesses}

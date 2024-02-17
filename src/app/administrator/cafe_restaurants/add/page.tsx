@@ -11,9 +11,7 @@ const AddPage = () => {
       <Row>
         <Flex>
           <Col>
-            <div className="text-[1.5rem] font-semibold">
-              افزودن کافه یا رستوران
-            </div>
+            <div className="text-[1.5rem] font-semibold">افزودن بیزنس</div>
           </Col>
         </Flex>
       </Row>

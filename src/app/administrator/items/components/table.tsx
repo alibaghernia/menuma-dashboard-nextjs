@@ -21,6 +21,7 @@ import { Button, Col, Flex, Row, Select, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
 import moment from "jalali-moment";
 import * as _ from "lodash";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { FC, useContext, useEffect, useState } from "react";
 
@@ -46,6 +47,27 @@ const ItemsTable: ItemsTableType = (props) => {
   const itemsService = ItemsService.init();
   const businessService = BusinessService.init();
 
+  const renderImage: ColumnProps<unknown>["render"] = (
+    value,
+    rec: any,
+    idx
+  ) => {
+    if (value && /^https:|http:/.test(value))
+      return (
+        <Image
+          alt={rec["title"]!}
+          src={value}
+          width={100}
+          height={100}
+          className="border border-typography/[.1] rounded-[.5rem] overflow-hidden"
+        />
+      );
+    return (
+      <div className="text-typography py-2 px-4 bg-typography/[.1] rounded-[1rem] w-fit">
+        بدون تصویر
+      </div>
+    );
+  };
   // renders
   const renderCategories: ColumnProps<unknown>["render"] = (val) => {
     return (val as any[]).map((category) => category.title);
@@ -57,7 +79,14 @@ const ItemsTable: ItemsTableType = (props) => {
       dataIndex: "title",
     },
     {
-      title: "کافه/رستوران",
+      key: "image_url",
+      title: "تصویر",
+      dataIndex: "image_url",
+      render: renderImage,
+      responsive: ["md"],
+    },
+    {
+      title: "بیزنس",
       dataIndex: "business",
       render: (value: Business) => value?.name,
     },
@@ -101,7 +130,7 @@ const ItemsTable: ItemsTableType = (props) => {
               description: "توضیحات",
               createdAt: "زمان ایجاد",
               updatedAt: "آخرین بروزرسانی",
-              business: "کافه/رستوران",
+              business: "بیزنس",
             }}
             seeAllExcludeFields={[
               "uuid",
@@ -193,7 +222,7 @@ const ItemsTable: ItemsTableType = (props) => {
       <Row>
         <Col xs={24} md={8}>
           <Select
-            placeholder="کافه/رستوران"
+            placeholder="بیزنس"
             options={businesses.map((bus) => ({
               label: bus.name,
               value: bus.uuid,

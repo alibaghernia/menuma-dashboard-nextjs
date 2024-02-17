@@ -147,7 +147,7 @@ const EventsTable: ItemsTableType = (props) => {
               user: (_, value) => renderUser(value),
               business: (_, value) => renderBusiness(value),
               organizer_type: (value) =>
-                value == "BUSINESS" ? "کافه/رستوران" : "کاربر",
+                value == "BUSINESS" ? "بیزنس" : "کاربر",
             }}
             seeAll
           />
@@ -240,7 +240,7 @@ const EventsTable: ItemsTableType = (props) => {
             allowClear
             options={[
               {
-                label: "کافه/رستوران",
+                label: "بیزنس",
                 value: "BUSINESS",
               },
               {

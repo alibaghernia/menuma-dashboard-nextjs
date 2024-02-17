@@ -11,9 +11,7 @@ const EditPage = () => {
       <Row>
         <Flex>
           <Col>
-            <div className="text-[1.5rem] font-semibold">
-              ویرایش کافه یا رستوران
-            </div>
+            <div className="text-[1.5rem] font-semibold">ویرایش بیزنس</div>
           </Col>
         </Flex>
       </Row>

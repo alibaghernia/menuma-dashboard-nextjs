@@ -66,7 +66,7 @@ const CategoriesTable: CategoriesTableType = (props) => {
     },
     {
       key: "business",
-      title: "کافه/رستوران",
+      title: "بیزنس",
       dataIndex: "business",
       render: (value) => value?.name,
     },
@@ -116,7 +116,7 @@ const CategoriesTable: CategoriesTableType = (props) => {
               title: "عنوان",
               image_url: "تصویر",
               products_count: "تعداد آیتم ها",
-              business: "کافه/رستوران",
+              business: "بیزنس",
             }}
             seeAllRender={{
               image_url: renderImage,
@@ -189,7 +189,7 @@ const CategoriesTable: CategoriesTableType = (props) => {
       <Row>
         <Col xs={24} md={8}>
           <Select
-            placeholder="کافه/رستوران"
+            placeholder="بیزنس"
             options={businesses.map((bus) => ({
               label: bus.name,
               value: bus.uuid,
