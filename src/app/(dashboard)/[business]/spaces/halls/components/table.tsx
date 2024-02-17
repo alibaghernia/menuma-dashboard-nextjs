@@ -16,6 +16,7 @@ import {
 import { renderTime } from "@/utils/tables";
 import { Table, TableProps } from "antd/lib";
 import _ from "lodash";
+import { useParams } from "next/navigation";
 import React, { FC, useContext, useEffect, useState } from "react";
 
 export type ItemsTableType = FC<{
@@ -26,6 +27,7 @@ const HallsTable: ItemsTableType = (props) => {
   const [addL, removeL, hasL] = useLoadings();
   const [items, setItems] = useState<HallEntity[]>([]);
   const router = useCustomRouter();
+  const params = useParams();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -59,7 +61,7 @@ const HallsTable: ItemsTableType = (props) => {
             record={rec}
             index={idx}
             onEdit={() => {
-              router.push(`/spaces/halls/${rec["uuid"]}`);
+              router.push(`/${params.business}/spaces/halls/${rec["uuid"]}`);
             }}
             onDelete={() => {
               addL("remove-item-noall");
