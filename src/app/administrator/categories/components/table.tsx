@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { BusinessService } from "@/services/administrator/business.service";
 import { CategoryService } from "@/services/administrator/cateogires/categories.service";
@@ -63,6 +64,14 @@ const CategoriesTable: CategoriesTableType = (props) => {
       key: "title",
       title: "عنوان",
       dataIndex: "title",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/administrator/categories/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       key: "business",

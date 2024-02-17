@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { BusinessService } from "@/services/administrator/business.service";
 import { ItemsService } from "@/services/administrator/items/items.service";
@@ -77,6 +78,14 @@ const ItemsTable: ItemsTableType = (props) => {
     {
       title: "عنوان",
       dataIndex: "title",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/administrator/items/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       key: "image_url",

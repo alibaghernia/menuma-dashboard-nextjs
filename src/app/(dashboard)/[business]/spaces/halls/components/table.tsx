@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { HallEntity } from "@/services/dashboard/halls/types";
 import {
@@ -40,6 +41,14 @@ const HallsTable: ItemsTableType = (props) => {
     {
       title: "کد",
       dataIndex: "code",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/${params.business}/spaces/halls/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "ظرفیت",

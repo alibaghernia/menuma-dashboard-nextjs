@@ -49,7 +49,7 @@ const Events = () => {
                   />
                 </Col>
                 <Col>
-                  <Button type="primary" ghost>
+                  <Button type="primary">
                     <Link href={`/${params.business}/events/add`}>افزودن</Link>
                   </Button>
                 </Col>

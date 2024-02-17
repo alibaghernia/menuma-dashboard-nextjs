@@ -47,7 +47,7 @@ const CafeRestaurantsPage = () => {
                   />
                 </Col>
                 <Col>
-                  <Button type="primary" ghost>
+                  <Button type="primary">
                     <Link href="/administrator/cafe_restaurants/add">
                       افزودن
                     </Link>

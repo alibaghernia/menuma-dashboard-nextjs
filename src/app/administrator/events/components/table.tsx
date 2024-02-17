@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { BusinessService } from "@/services/administrator/business.service";
 import { EventsService } from "@/services/administrator/events/events.service";
@@ -65,6 +66,14 @@ const EventsTable: ItemsTableType = (props) => {
     {
       title: "عنوان",
       dataIndex: "title",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/administrator/events/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "برگذار کننده",

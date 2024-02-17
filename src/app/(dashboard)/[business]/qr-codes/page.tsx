@@ -50,9 +50,7 @@ const Items = () => {
                 </Col>
                 <Col>
                   <Link href={`/${params.business}/qr-codes/add`}>
-                    <Button type="primary" ghost>
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>

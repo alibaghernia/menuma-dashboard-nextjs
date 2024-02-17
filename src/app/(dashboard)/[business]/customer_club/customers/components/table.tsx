@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import {
   CustomerEntity,
@@ -41,6 +42,14 @@ const CustomersTable: ItemsTableType = (props) => {
     {
       title: "نام",
       dataIndex: "first_name",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/${params.business}/customer_club/customers/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "نام خانوادگی",

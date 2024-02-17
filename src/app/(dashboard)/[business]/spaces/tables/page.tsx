@@ -50,9 +50,7 @@ const Tables = () => {
                 </Col>
                 <Col>
                   <Link href={`/${params.business}/spaces/tables/add`}>
-                    <Button type="primary" ghost>
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>

@@ -1,5 +1,4 @@
 "use client";
-import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import {
   Card,

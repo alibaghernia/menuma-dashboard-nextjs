@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { UsersService } from "@/services/administrator/users/users.service";
 import { User } from "@/services/dashboard/users/types";
 import {
@@ -34,6 +35,14 @@ const UsersTable: UsersTableType = (props) => {
     {
       title: "نام",
       dataIndex: "first_name",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/administrator/users/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "نام خانوادگی",

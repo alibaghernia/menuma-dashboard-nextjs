@@ -47,7 +47,7 @@ const Users = () => {
                   />
                 </Col>
                 <Col>
-                  <Button type="primary" ghost>
+                  <Button type="primary">
                     <Link href="/administrator/users/add">افزودن</Link>
                   </Button>
                 </Col>

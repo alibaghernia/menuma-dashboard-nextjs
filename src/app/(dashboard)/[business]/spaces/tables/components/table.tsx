@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import {
   IGetItemsFilters,
@@ -54,6 +55,14 @@ const TablesTable: ITablesTable = (props) => {
     {
       title: "کد",
       dataIndex: "code",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/${params.business}/spaces/tables/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "ظرفیت",

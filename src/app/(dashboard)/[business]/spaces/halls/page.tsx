@@ -50,9 +50,7 @@ const Halls = () => {
                 </Col>
                 <Col>
                   <Link href={`/${params.business}/spaces/halls/add`}>
-                    <Button type="primary" ghost>
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>

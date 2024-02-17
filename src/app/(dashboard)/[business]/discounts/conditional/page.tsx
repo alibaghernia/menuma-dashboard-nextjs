@@ -50,9 +50,7 @@ const DiscountsPage = () => {
                 </Col>
                 <Col>
                   <Link href={`/${params.business}/discounts/conditional/add`}>
-                    <Button type="primary" ghost>
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>

@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { CatalogsService } from "@/services/administrator/catalogs/catalogs.service";
 import {
   CatalogEntity,
@@ -54,6 +55,14 @@ const CatalogsTable: ItemsTableType = (props) => {
     {
       title: "عنوان",
       dataIndex: "title",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/administrator/catalogs/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "برچسب ها",

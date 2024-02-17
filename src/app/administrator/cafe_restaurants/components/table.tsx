@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessService } from "@/services/administrator/business.service";
 import { Business, GetAllItemsFilter } from "@/services/administrator/types";
 import {
@@ -52,6 +53,14 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
     {
       title: "عنوان",
       dataIndex: "name",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/administrator/cafe_restaurants/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "لوگو",

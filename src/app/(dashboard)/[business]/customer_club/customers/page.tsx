@@ -49,7 +49,7 @@ const Customers = () => {
                   />
                 </Col>
                 <Col>
-                  <Button type="primary" ghost>
+                  <Button type="primary">
                     <Link
                       href={`/${params.business}/customer_club/customers/add`}
                     >

@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { QrCodeEntity } from "@/services/dashboard/qr-codes/types";
 import {
@@ -55,6 +56,14 @@ const ItemsTable: IItemsTable = (props) => {
     {
       title: "نوع",
       dataIndex: "type",
+      render: (value, rec) => (
+        <Link
+          className="text-typography"
+          href={`/${params.business}/qr-codes/${rec["uuid"]}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     {
       title: "اسلاگ",

@@ -50,9 +50,7 @@ const CatalogsPage = () => {
                 </Col>
                 <Col>
                   <Link href="/administrator/catalogs/add">
-                    <Button type="primary" ghost>
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>

@@ -50,9 +50,7 @@ const Events = () => {
                 </Col>
                 <Col>
                   <Link href={`/administrator/events/add`}>
-                    <Button type="primary" ghost>
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>
