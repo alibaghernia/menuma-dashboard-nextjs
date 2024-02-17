@@ -1,7 +1,6 @@
 "use client";
-import { Card, Flex } from "antd/lib";
+import { Card } from "antd/lib";
 import { Row, Col } from "antd";
-import { Metadata } from "next";
 import { BusinessService } from "@/services/dashboard/business.service";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -19,20 +18,24 @@ export default function Dashboard() {
 
   return (
     <Row gutter={16}>
-      <Col xs={24} sm={12}>
-        <Card title="دسته بندی ها">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">
-            {statistics?.categories}
-          </div>
-        </Card>
-      </Col>
-      <Col xs={24} sm={12}>
-        <Card title="آیتم ها">
-          <div className="text-[1.5rem] font-bold mx-auto w-fit">
-            {statistics?.items}
-          </div>
-        </Card>
-      </Col>
+      {!!statistics?.customers && (
+        <Col xs={24} sm={12}>
+          <Card title="مشتریان">
+            <div className="text-[1.5rem] font-bold mx-auto w-fit">
+              {statistics?.customers}
+            </div>
+          </Card>
+        </Col>
+      )}
+      {!!statistics?.sold_out && (
+        <Col xs={24} sm={12}>
+          <Card title="آیتم های تمام شده">
+            <div className="text-[1.5rem] font-bold mx-auto w-fit">
+              {statistics?.sold_out}
+            </div>
+          </Card>
+        </Col>
+      )}
     </Row>
   );
 }

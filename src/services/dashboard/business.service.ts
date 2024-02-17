@@ -52,7 +52,7 @@ export class BusinessService {
 
   statistics() {
     return this.axiosIns
-      .get<AxiosResponseType<{ categories: number; items: number }>>(
+      .get<AxiosResponseType<{ customers: number; sold_out: number }>>(
         "/statistics"
       )
       .then(({ data }) => data);
