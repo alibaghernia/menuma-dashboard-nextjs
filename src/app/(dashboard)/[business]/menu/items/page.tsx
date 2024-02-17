@@ -51,7 +51,7 @@ const ItemsPage = () => {
                   />
                 </Col>
                 <Col>
-                  <Button ghost type="primary">
+                  <Button type="primary">
                     <Link href={`/${params.business}/menu/items/add`}>
                       افزودن
                     </Link>

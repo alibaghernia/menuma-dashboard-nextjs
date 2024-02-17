@@ -51,7 +51,7 @@ const ItemsPage = () => {
                   />
                 </Col>
                 <Col>
-                  <Button ghost type="primary">
+                  <Button type="primary">
                     <Link href={`/administrator/items/add`}>افزودن</Link>
                   </Button>
                 </Col>

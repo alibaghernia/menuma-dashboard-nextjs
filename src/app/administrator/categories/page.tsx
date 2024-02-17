@@ -50,9 +50,7 @@ const CategoriesPage = () => {
                 </Col>
                 <Col>
                   <Link href={`/administrator/categories/add`}>
-                    <Button ghost type="primary">
-                      افزودن
-                    </Button>
+                    <Button type="primary">افزودن</Button>
                   </Link>
                 </Col>
               </Flex>

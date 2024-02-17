@@ -9,7 +9,6 @@ const NavigateToAddButton = () => {
   const params = useParams();
   return (
     <Button
-      ghost
       type="primary"
       onClick={() => router.push(`/${params.business}/menu/categories/add`)}
     >

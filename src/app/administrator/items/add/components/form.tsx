@@ -399,7 +399,7 @@ const AddItemForm: FormType = (props) => {
                   </Flex>
                 </Row>
                 <Row>
-                  <Button ghost type="primary" block onClick={() => add()}>
+                  <Button type="primary" block onClick={() => add()}>
                     افزودن قیمت
                   </Button>
                 </Row>

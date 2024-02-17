@@ -139,7 +139,7 @@ const TableActions: ITableActions = (props) => {
             pagination={false}
             dataSource={getRecords()}
           />
-          <Button ghost type="primary" onClick={() => setSeeAllOpen(false)}>
+          <Button type="primary" onClick={() => setSeeAllOpen(false)}>
             بستن
           </Button>
         </Flex>
