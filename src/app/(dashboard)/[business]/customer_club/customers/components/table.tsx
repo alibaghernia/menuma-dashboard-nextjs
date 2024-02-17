@@ -105,6 +105,7 @@ const CustomersTable: ItemsTableType = (props) => {
               mobile: "شماره موبایل",
               birth_date: "تاریخ تولد",
               gender: "جنسیت",
+              description: "توضیحات",
             }}
             seeAll
           />

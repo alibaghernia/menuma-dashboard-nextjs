@@ -4,6 +4,7 @@ export interface CustomerEntity {
   last_name: string;
   gender: string;
   mobile: string;
+  description: string;
   birth_date: string;
   business_uuid: string;
   createdAt: string;

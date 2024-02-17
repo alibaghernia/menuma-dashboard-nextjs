@@ -114,6 +114,7 @@ const CustomerForm: FormType = (props) => {
           last_name: data.data.last_name,
           gender: data.data.gender,
           mobile: data.data.mobile,
+          description: data.data.description,
           birth_date,
         });
       })
@@ -228,6 +229,13 @@ const CustomerForm: FormType = (props) => {
                 <Radio.Button value="man">آقا</Radio.Button>
                 <Radio.Button value="woman">خانم</Radio.Button>
               </Radio.Group>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col xs={24}>
+            <Form.Item name="description" label="توضیحات">
+              <Input.TextArea placeholder="توضیحات..." />
             </Form.Item>
           </Col>
         </Row>
