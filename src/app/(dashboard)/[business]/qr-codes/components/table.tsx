@@ -109,7 +109,7 @@ const ItemsTable: IItemsTable = (props) => {
                     .then((data) => {
                       message.success("QrCode با موفقیت تولید شد");
                       setQrCodeModal({
-                        title: rec["code"],
+                        title: "",
                         data: data.data,
                       });
                     })
