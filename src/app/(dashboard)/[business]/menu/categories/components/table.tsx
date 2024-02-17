@@ -138,7 +138,7 @@ const CategoriesTable: CategoriesTableType = (props) => {
     fetchItems({
       page: currentPage,
       limit: pageSize,
-      name: props.search,
+      title: props.search,
     });
   }, [props.search, currentPage, pageSize]);
 

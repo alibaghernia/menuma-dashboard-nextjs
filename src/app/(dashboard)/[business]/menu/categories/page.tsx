@@ -1,10 +1,24 @@
+"use client";
 import { Card, Col, Flex, Row } from "antd";
 import Search from "antd/lib/input/Search";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import CategoriesTable from "./components/table";
 import NavigateToAddButton from "./components/navigate-to-add-button";
+import { useParams } from "next/navigation";
+import _ from "lodash";
 
 const CategoriesPage = () => {
+  const params = useParams();
+  const [search, setSearch] = useState<string>();
+  const [searchingText, _setSearchingText] = useState<string>();
+
+  const setSearchingText = useMemo(
+    () =>
+      _.debounce((value) => {
+        _setSearchingText(value);
+      }, 200),
+    []
+  );
   return (
     <Flex vertical gap="1.44rem">
       <Row>
@@ -25,7 +39,14 @@ const CategoriesPage = () => {
                 gap=".5rem"
               >
                 <Col>
-                  <Search />
+                  <Search
+                    value={search}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      setSearchingText(value);
+                    }}
+                    enterButton={false}
+                  />
                 </Col>
                 <Col>
                   <NavigateToAddButton />
@@ -33,7 +54,7 @@ const CategoriesPage = () => {
               </Flex>
             </Row>
             <Row>
-              <CategoriesTable />
+              <CategoriesTable search={searchingText} />
             </Row>
           </Flex>
         </Card>
