@@ -147,7 +147,7 @@ const AddItemForm: FormType = (props) => {
           categories: data.data.categories?.[0]?.uuid,
           description: data.data.description,
           metadata: data.data.metadata,
-          image: data.data.images?.[0]?.uuid,
+          image: data.data.image,
           business_uuid: data.data.business?.uuid,
         });
         setImagePreviewUrl(data.data.image_url);

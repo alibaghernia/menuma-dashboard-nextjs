@@ -10,7 +10,7 @@ export interface Product {
   updatedAt: string;
   categories?: CategoriesEntity[];
   image_url?: string;
-  images?: { uuid: string }[];
+  image: string;
   business?: Business;
 }
 export interface PricesEntity {
