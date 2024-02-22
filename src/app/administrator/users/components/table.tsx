@@ -140,6 +140,10 @@ const UsersTable: UsersTableType = (props) => {
     }, 500),
     [props.search]
   );
+  const tablePaginationOnChange = (current: number, pageSize: number) => {
+    setCurrentPage(current);
+    setPageSize(pageSize);
+  };
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
@@ -149,6 +153,12 @@ const UsersTable: UsersTableType = (props) => {
       }}
       columns={columns}
       dataSource={items}
+      pagination={{
+        current: currentPage,
+        pageSize,
+        total,
+        onChange: tablePaginationOnChange,
+      }}
     />
   );
 };

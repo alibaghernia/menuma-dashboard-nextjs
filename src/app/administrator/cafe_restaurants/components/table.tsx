@@ -185,6 +185,12 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
     }, 500),
     [props.search]
   );
+
+  const tablePaginationOnChange = (current: number, pageSize: number) => {
+    setCurrentPage(current);
+    setPageSize(pageSize);
+  };
+
   return (
     <Table
       className="w-full rounded-[1rem] overflow-hidden"
@@ -194,6 +200,12 @@ const CafeRestaurantsTable: ICafeRestaurantsTable = (props) => {
       columns={columns}
       dataSource={items}
       loading={hasL("delete-cafe-noall", "fetch-items-noall")}
+      pagination={{
+        current: currentPage,
+        pageSize,
+        total,
+        onChange: tablePaginationOnChange,
+      }}
     />
   );
 };

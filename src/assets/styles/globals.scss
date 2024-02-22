@@ -61,3 +61,8 @@ input:not(.ant-input-number-input) {
     text-align: start !important;
     unicode-bidi: plaintext !important;
 }
+
+.ant-pagination-prev,
+.ant-pagination-next {
+    transform: rotateZ(180deg) !important;
+}

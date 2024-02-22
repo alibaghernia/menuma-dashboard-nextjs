@@ -105,6 +105,9 @@ const CatalogForm: FormType = (props) => {
         removeL("load-item");
       })
       .then((data) => {
+        console.log({
+          labels: data.data.labels,
+        });
         form.setFieldsValue({
           title: data.data.title,
           long_description: data.data.long_description,

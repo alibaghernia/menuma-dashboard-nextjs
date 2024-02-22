@@ -416,7 +416,7 @@ const AddItemForm: FormType = (props) => {
           <Checkbox.Group>
             <Checkbox value="new">جدید</Checkbox>
             <Checkbox value="sold_out">تمام شده</Checkbox>
-            <Checkbox value="offer">پیشنهاد روز</Checkbox>
+            <Checkbox value="day_offer">پیشنهاد روز</Checkbox>
           </Checkbox.Group>
         </Form.Item>
         <Form.Item>
