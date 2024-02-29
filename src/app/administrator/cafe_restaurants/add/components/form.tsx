@@ -146,6 +146,11 @@ const CafeRestaurantForm: FormType = (props) => {
         });
         setLogoPreviewUrl(data.data.logo_url);
         setBannerPreviewUrl(data.data.banner_url);
+        if (!!data.data.location_lat && !!data.data.location_long)
+          setSelectedLocation([
+            parseFloat(data.data.location_lat),
+            parseFloat(data.data.location_long),
+          ]);
       })
       .catch(() => {
         message.error("مشکلی در دریافت اطلاعات وجود دارد!");
@@ -179,6 +184,27 @@ const CafeRestaurantForm: FormType = (props) => {
       message: "آدرس اشتباه است.",
     },
   ];
+
+  const mapContainer = useMemo(
+    () => (
+      <MapContainer
+        className="w-full h-full z-0"
+        center={selectedLocation}
+        zoom={13}
+      >
+        <TileLayer url="https://mt1.google.com/vt/lyrs=m&x={x}&z={z}&y={y}" />
+        <LocationMarker
+          position={selectedLocation!}
+          setPosition={(position) => {
+            setSelectedLocation(position);
+            form.setFieldValue("location_lat", position[0].toString());
+            form.setFieldValue("location_long", position[1].toString());
+          }}
+        />
+      </MapContainer>
+    ),
+    [selectedLocation]
+  );
 
   return (
     <Card className="w-full">
@@ -406,28 +432,8 @@ const CafeRestaurantForm: FormType = (props) => {
               <Col span={24}>
                 <Flex className="w-full" vertical gap={24}>
                   <div className="rounded-[.5rem] h-[10rem] md:h-[20rem] relative">
-                    {loaded ? (
-                      <MapContainer
-                        className="w-full h-full z-0"
-                        center={selectedLocation || locationPoint}
-                        zoom={13}
-                      >
-                        <TileLayer url="https://mt1.google.com/vt/lyrs=m&x={x}&z={z}&y={y}" />
-                        <LocationMarker
-                          position={selectedLocation || locationPoint}
-                          setPosition={(position) => {
-                            setSelectedLocation(position);
-                            form.setFieldValue(
-                              "location_lat",
-                              position[0].toString()
-                            );
-                            form.setFieldValue(
-                              "location_long",
-                              position[1].toString()
-                            );
-                          }}
-                        />
-                      </MapContainer>
+                    {loaded && selectedLocation ? (
+                      mapContainer
                     ) : (
                       <div className="absolute inset-0 bg-white flex justify-center items-center border">
                         <Spin />
@@ -818,6 +824,7 @@ const LocationMarker: FC<{
   });
   return (
     <Marker
+      key={position[0]}
       position={position}
       icon={L.icon({
         iconSize: [32, 32],
