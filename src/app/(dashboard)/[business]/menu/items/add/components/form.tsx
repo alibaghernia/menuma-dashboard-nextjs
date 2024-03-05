@@ -23,6 +23,7 @@ import {
   Col,
   Flex,
   Form,
+  FormInstance,
   Input,
   InputNumber,
   Row,
@@ -33,53 +34,26 @@ import {
 import classNames from "classnames";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-const AddItemForm: FormType = (props) => {
-  const params = useParams();
+export interface IAddItemForm {
+  form: FormInstance<any>;
+  categories: Category[];
+  imagePreviewUrl?: string;
+  isEdit?: boolean;
+  setImagePreviewUrl: (state?: string) => void;
+  handleRemove?: () => void;
+  onFinish: (values: any) => void;
+}
+
+const AddItemForm: FC<IAddItemForm> = (props) => {
   const [addL, removeL] = useLoadings();
-  const message = useMessage();
-  const router = useCustomRouter();
-  const [form] = Form.useForm<
-    Omit<Product, "categories"> & { categories: string; image: string }
-  >();
-  const breakpoints = useCurrentBreakpoints();
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | undefined>();
+
+  const breakpoints = useCurrentBreakpoints();
   const redColor = useTailwindColor("red");
   const [removeConfirmModal, setRemoveConfirmModal] = useState(false);
-
-  // private implementations
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  const { businessService } = useContext(BusinessProviderContext);
-
-  async function onFinish(values: unknown) {
-    console.log({ values });
-    addL("create-item");
-    if (props.isEdit) {
-      businessService.itemsService
-        .update(params.uuid as string, values)
-        .finally(() => {
-          removeL("create-item");
-        })
-        .then(() => {
-          message.success("آیتم با موفقیت بروزرسانی شد.");
-          router.push(`/${params.business}/menu/items`);
-        });
-    } else {
-      businessService.itemsService
-        .create(values)
-        .finally(() => {
-          removeL("create-item");
-        })
-        .then(() => {
-          message.success("آیتم با موفقیت ساخته شد.");
-          router.push(`/${params.business}/menu/items`);
-        });
-    }
-  }
 
   const handleUploadOnChange = async (info: any) => {
     const arrayBuffer = await info.file.originFileObj?.arrayBuffer();
@@ -89,78 +63,22 @@ const AddItemForm: FormType = (props) => {
         type: info.file.type,
       });
       const url = window.URL.createObjectURL(blob);
-      setImagePreviewUrl(url);
+      props.setImagePreviewUrl(url);
     } else {
-      setImagePreviewUrl(undefined);
+      props.setImagePreviewUrl(undefined);
     }
     setFileList(info.fileList);
   };
-  function fetchItem() {
-    addL("load-item");
-    businessService.itemsService
-      .getItem(params.uuid as string)
-      .finally(() => {
-        removeL("load-item");
-      })
-      .then((data) => {
-        form.setFieldsValue({
-          title: data.data.title,
-          prices: data.data.prices,
-          categories: data.data.categories?.[0]?.uuid,
-          description: data.data.description,
-          metadata: data.data.metadata,
-          image: data.data.image,
-          order: data.data.order,
-        });
-        setImagePreviewUrl(data.data.image_url);
-      })
-      .catch(() => {
-        message.error("مشکلی در دریافت اطلاعات وجود دارد!");
-      });
-  }
-  function fetchCategories() {
-    addL("load-categories");
-    businessService.categoriesService
-      .getItems()
-      .finally(() => {
-        removeL("load-categories");
-      })
-      .then((data) => {
-        setCategories(data.data.categories);
-      })
-      .catch(() => {
-        message.error("مشکلی در دریافت لیست دسته بندی ها وجود دارد!");
-      });
-  }
-  function handleRemove() {
-    addL("delete-item");
-    businessService.itemsService
-      .delete(params.uuid as string)
-      .then(() => {
-        message.success("آیتم مورد نظر با موفقیت حذف شد");
-        router.replace(`/${params.business}/menu/items`);
-      })
-      .finally(() => {
-        removeL("delete-item");
-      });
-  }
-
-  useEffect(() => {
-    fetchCategories();
-    if (props.isEdit) {
-      fetchItem();
-    }
-  }, []);
 
   return (
     <>
       <Card className="w-full">
         <Form
-          form={form}
+          form={props.form}
           layout="vertical"
           className="w-full"
           onFinish={(values) => {
-            onFinish(values);
+            props.onFinish(values);
           }}
           onFinishFailed={(error) => {
             console.log({
@@ -208,7 +126,7 @@ const AddItemForm: FormType = (props) => {
                   filterOption={(input, option) =>
                     (option?.label ?? "").includes(input)
                   }
-                  options={categories.map((cat) => ({
+                  options={props.categories.map((cat) => ({
                     label: cat.title,
                     value: cat.uuid,
                   }))}
@@ -237,7 +155,7 @@ const AddItemForm: FormType = (props) => {
                     console.log({
                       data,
                     });
-                    form.setFieldValue("image", data.uuid);
+                    props.form.setFieldValue("image", data.uuid);
                   });
               }}
               onChange={handleUploadOnChange}
@@ -257,17 +175,17 @@ const AddItemForm: FormType = (props) => {
                 </>
               )}
             </Upload.Dragger>
-            {!!imagePreviewUrl && (
+            {!!props.imagePreviewUrl && (
               <ImageDisplayerWrapper
                 onRemove={() => {
                   setFileList([]);
-                  setImagePreviewUrl(undefined);
-                  form.setFieldValue("image", "");
+                  props.setImagePreviewUrl(undefined);
+                  props.form.setFieldValue("image", "");
                 }}
                 className="mx-auto"
                 imageRootClassName="relative w-[5rem] h-[5rem] border"
               >
-                <Image fill src={imagePreviewUrl} alt="logo" />
+                <Image fill src={props.imagePreviewUrl} alt="logo" />
               </ImageDisplayerWrapper>
             )}
           </Form.Item>
@@ -377,13 +295,13 @@ const AddItemForm: FormType = (props) => {
           <Form.Item
             label="اولویت نمایش"
             name={"order"}
-            help="اولویت از عدد کوچک به بزرگ است"
+            extra="اولویت از عدد کوچک به بزرگ است"
           >
             <InputNumber placeholder="اولویت..." />
           </Form.Item>
           <Form.Item>
             <Flex gap={4}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" onClick={() => props.form.submit()}>
                 ذخیره
               </Button>
               {props.isEdit && (
@@ -406,7 +324,7 @@ const AddItemForm: FormType = (props) => {
         dangerConfirm
         confirmText="حذف کن"
         onClose={() => setRemoveConfirmModal(false)}
-        onConfirm={handleRemove}
+        onConfirm={props.handleRemove}
       >
         <div className="text-center text-typography text-[.9rem]">
           آیا از لغو این آیتم اطمینان دارید؟
