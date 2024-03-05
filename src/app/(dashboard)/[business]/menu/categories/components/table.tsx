@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import DataView from "@/components/common/data_view/data_view";
 import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import {
@@ -16,7 +17,7 @@ import {
 import { Avatar, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
 import { useParams } from "next/navigation";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 
 export type CategoriesTableType = FC<{
   search?: string;
@@ -25,7 +26,7 @@ export type CategoriesTableType = FC<{
 const CategoriesTable: CategoriesTableType = (props) => {
   const params = useParams();
   const message = useMessage();
-  const [addL, removeL] = useLoadings();
+  const [addL, removeL, hasL] = useLoadings();
   const [items, setItems] = useState<Category[]>([]);
   const router = useCustomRouter();
   // pagination
@@ -33,6 +34,12 @@ const CategoriesTable: CategoriesTableType = (props) => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const { businessService } = useContext(BusinessProviderContext);
+  const [dataViewFilters, setDataViewFilters] = useState({});
+  const hasFilter = useMemo(
+    () => !!Object.entries(dataViewFilters).filter(([, val]) => val).length,
+    [dataViewFilters]
+  );
+  const [dataViewSearch, setDataViewSearch] = useState("");
 
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
@@ -66,20 +73,15 @@ const CategoriesTable: CategoriesTableType = (props) => {
       ),
     },
     {
-      key: "products_count",
-      title: "تعداد آیتم",
-      dataIndex: "products_count",
-    },
-    {
       key: "image_url",
       title: "تصویر",
       dataIndex: "image_url",
       render: renderImage,
-      responsive: ["md"],
     },
     {
       key: "actions",
       title: "عملیات",
+      align: "center",
       width: 100,
       render: (value, rec, idx) => {
         return (
@@ -127,13 +129,21 @@ const CategoriesTable: CategoriesTableType = (props) => {
     },
   ];
 
+  const pageAndLimit = useMemo(
+    () => ({ page: currentPage, limit: pageSize }),
+    [currentPage, pageSize]
+  );
   async function fetchItems(
     filters: IGetItemsFilters = { page: currentPage, limit: pageSize }
   ) {
+    const search: IGetItemsFilters = {
+      ...pageAndLimit,
+      title: dataViewSearch,
+      ...dataViewFilters,
+      ...filters,
+    };
     try {
-      const { data } = await businessService.categoriesService.getItems(
-        filters
-      );
+      const { data } = await businessService.categoriesService.getItems(search);
       setTotal(data.total);
       setItems(data.categories);
     } catch (error) {
@@ -144,27 +154,37 @@ const CategoriesTable: CategoriesTableType = (props) => {
   }
 
   useEffect(() => {
-    fetchItems({
-      page: currentPage,
-      limit: pageSize,
-      title: props.search,
-    });
-  }, [props.search, currentPage, pageSize]);
+    fetchItems();
+  }, [currentPage, pageSize]);
 
   const tablePaginationOnChange = (current: number, pageSize: number) => {
     setCurrentPage(current);
     setPageSize(pageSize);
   };
+  const onDataViewChange = (data: any) => {
+    const { search, ...filters } = data;
+    setDataViewSearch(search);
+    setDataViewFilters(filters.filters);
+    fetchItems({
+      ...filters.filters,
+      title: search,
+    });
+  };
   return (
-    <Table
-      className="w-full rounded-[1rem] overflow-hidden"
-      columns={columns}
-      dataSource={items}
-      pagination={{
-        current: currentPage,
-        pageSize,
-        total,
-        onChange: tablePaginationOnChange,
+    <DataView<Category>
+      data={items}
+      onChange={onDataViewChange}
+      columns={breakpoints.isXs ? ["title", "business"] : undefined}
+      options={{
+        className: "w-full rounded-[1rem] overflow-hidden",
+        columns: columns,
+        loading: hasL("fetch-items-noall", "delete-item-noall"),
+        pagination: {
+          current: currentPage,
+          pageSize,
+          total,
+          onChange: tablePaginationOnChange,
+        },
       }}
     />
   );

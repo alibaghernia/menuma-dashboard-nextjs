@@ -305,7 +305,9 @@ const PanelTemplate: FC<
                   <Flex align="center" gap={16}>
                     <Logo
                       className="text-[2rem]"
-                      href={administrator ? "/administrator" : "/"}
+                      href={
+                        administrator ? "/administrator" : `/${params.business}`
+                      }
                     />
                     {administrator && (
                       <div className="text-typography/[.8]">(مدیریت)</div>
