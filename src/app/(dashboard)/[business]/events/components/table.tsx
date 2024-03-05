@@ -1,5 +1,6 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import { IDataViewProps } from "@/components/common/data_view/types";
 import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import {
@@ -34,6 +35,7 @@ const EventsTable: ItemsTableType = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
+  const [filters, setFilters] = useState<IDataViewProps["filters"]>([]);
   const { businessService } = useContext(BusinessProviderContext);
 
   const renderDateTime = (value: string) => {

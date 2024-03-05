@@ -1,8 +1,9 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import DataView from "@/components/common/data_view/data_view";
 import Link from "@/components/common/link/link";
-import { BusinessProviderContext } from "@/providers/business/provider";
 import { BusinessService } from "@/services/administrator/business.service";
+import { BusinessService as DashboardBusinessService } from "@/services/dashboard/business.service";
 import { ItemsService } from "@/services/administrator/items/items.service";
 import {
   IGetProductFilters,
@@ -17,14 +18,12 @@ import {
   useTailwindColor,
 } from "@/utils/hooks";
 import { renderTime } from "@/utils/tables";
-import { EditOutlined } from "@ant-design/icons";
-import { Button, Col, Flex, Row, Select, Table, TableProps } from "antd/lib";
+import { Col, Flex, Row, Select, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
-import moment from "jalali-moment";
 import * as _ from "lodash";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 
 export type ItemsTableType = FC<{
   search?: string;
@@ -33,6 +32,7 @@ export type ItemsTableType = FC<{
 const ItemsTable: ItemsTableType = (props) => {
   const params = useParams();
   const message = useMessage();
+
   const [addL, removeL, hasL] = useLoadings();
   const [items, setItems] = useState<Product[]>([]);
   const router = useCustomRouter();
@@ -47,6 +47,12 @@ const ItemsTable: ItemsTableType = (props) => {
   const breakpoints = useCurrentBreakpoints();
   const itemsService = ItemsService.init();
   const businessService = BusinessService.init();
+  const [dataViewFilters, setDataViewFilters] = useState({});
+  const hasFilter = useMemo(
+    () => !!Object.entries(dataViewFilters).filter(([, val]) => val).length,
+    [dataViewFilters]
+  );
+  const [dataViewSearch, setDataViewSearch] = useState("");
 
   const renderImage: ColumnProps<unknown>["render"] = (
     value,
@@ -92,7 +98,6 @@ const ItemsTable: ItemsTableType = (props) => {
       title: "تصویر",
       dataIndex: "image_url",
       render: renderImage,
-      responsive: ["md"],
     },
     {
       title: "بیزنس",
@@ -102,13 +107,13 @@ const ItemsTable: ItemsTableType = (props) => {
     {
       title: "دسته بندی",
       dataIndex: "categories",
-      responsive: ["md"],
       render: renderCategories,
     },
     {
       key: "actions",
       title: "عملیات",
       width: 100,
+      fixed: "right",
       render: (value, rec, idx) => {
         return (
           <TableActions
@@ -162,16 +167,22 @@ const ItemsTable: ItemsTableType = (props) => {
     },
   ];
 
-  async function fetchItems(
-    filters: IGetProductFilters = {
-      page: currentPage,
-      limit: pageSize,
+  const pageAndLimit = useMemo(
+    () => ({ page: currentPage, limit: pageSize }),
+    [currentPage, pageSize]
+  );
+
+  async function fetchItems(filters = {}) {
+    const search: IGetProductFilters = {
+      ...pageAndLimit,
       business_uuid: selectedBusiness,
-    }
-  ) {
+      title: dataViewSearch,
+      ...dataViewFilters,
+      ...filters,
+    };
     try {
       addL("fetch-items-noall");
-      const { data } = await itemsService.getItems(filters);
+      const { data } = await itemsService.getItems(search);
       setTotal(data.total);
       setItems(data.items);
     } catch (error) {
@@ -184,24 +195,11 @@ const ItemsTable: ItemsTableType = (props) => {
   }
   useEffect(() => {
     fetchItems({
-      page: currentPage,
-      limit: pageSize,
-      title: props.search,
+      ...pageAndLimit,
       business_uuid: selectedBusiness,
+      ...dataViewFilters,
     });
   }, [currentPage, pageSize, selectedBusiness]);
-  useEffect(
-    _.debounce(() => {
-      fetchItems({
-        page: currentPage,
-        limit: pageSize,
-        title: props.search,
-        business_uuid: selectedBusiness,
-      });
-    }, 500),
-    [props.search]
-  );
-
   const tablePaginationOnChange = (current: number, pageSize: number) => {
     setCurrentPage(current);
     setPageSize(pageSize);
@@ -226,42 +224,84 @@ const ItemsTable: ItemsTableType = (props) => {
   }, []);
 
   // const dataSource = [];
+  const onDataViewChange = (data: any) => {
+    const { search, ...filters } = data;
+    setDataViewSearch(search);
+    setDataViewFilters(filters.filters);
+    fetchItems({
+      ...filters.filters,
+      title: search,
+    });
+  };
   return (
-    <Flex vertical gap={"1rem"} className="w-full">
-      <Row>
-        <Col xs={24} md={8}>
-          <Select
-            placeholder="بیزنس"
-            options={businesses.map((bus) => ({
-              label: bus.name,
-              value: bus.uuid,
-            }))}
-            allowClear
-            showSearch
-            filterOption={(input, option) =>
-              (option?.label ?? "").includes(input)
+    <>
+      <Flex vertical gap={"1rem"} className="w-full">
+        <Row>
+          <Col xs={24} md={8}>
+            <Select
+              placeholder="بیزنس"
+              options={businesses.map((bus) => ({
+                label: bus.name,
+                value: bus.uuid,
+              }))}
+              allowClear
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? "").includes(input)
+              }
+              value={selectedBusiness}
+              onChange={setSelectedBusiness}
+              className="w-full"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <DataView<Product>
+            data={items}
+            dragSorting={
+              !hasFilter
+                ? {
+                    onSort(item, newOrder) {
+                      addL("fetch-items-noall");
+                      DashboardBusinessService.init(item.business?.uuid!)
+                        .itemsService.update(item.uuid, { order: newOrder })
+                        .then(() => {
+                          fetchItems();
+                        })
+                        .finally(() => {
+                          removeL("fetch-items-noall");
+                        });
+                    },
+                  }
+                : undefined
             }
-            value={selectedBusiness}
-            onChange={setSelectedBusiness}
-            className="w-full"
+            onChange={onDataViewChange}
+            filters={{
+              items: [
+                {
+                  name: "sold_out",
+                  title: "تمام شده ها",
+                },
+              ],
+              state: dataViewFilters,
+              setState: setDataViewFilters,
+            }}
+            columns={breakpoints.isXs ? ["title", "business"] : undefined}
+            options={{
+              className: "w-full rounded-[1rem] overflow-hidden",
+              columns: columns,
+              loading: hasL("fetch-items-noall", "delete-item-noall"),
+              pagination: {
+                current: currentPage,
+                pageSize,
+                total,
+                onChange: tablePaginationOnChange,
+              },
+            }}
           />
-        </Col>
-      </Row>
-      <Row>
-        <Table
-          className="w-full rounded-[1rem] overflow-hidden"
-          columns={columns}
-          loading={hasL("fetch-items-noall", "delete-item-noall")}
-          pagination={{
-            current: currentPage,
-            pageSize,
-            total,
-            onChange: tablePaginationOnChange,
-          }}
-          dataSource={items}
-        />
-      </Row>
-    </Flex>
+        </Row>
+      </Flex>
+    </>
   );
 };
 

@@ -26,6 +26,9 @@ dependencies:
   antd:
     specifier: ^5.13.2
     version: 5.13.2(moment@2.30.1)(react-dom@18.2.0)(react@18.2.0)
+  array-move:
+    specifier: ^4.0.0
+    version: 4.0.0
   axios:
     specifier: ^1.6.7
     version: 1.6.7
@@ -71,6 +74,9 @@ dependencies:
   react-multi-date-picker:
     specifier: ^4.4.1
     version: 4.4.1(react-dom@18.2.0)(react@18.2.0)
+  react-sortable-hoc:
+    specifier: ^2.0.0
+    version: 2.0.0(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
   sass:
     specifier: ^1.70.0
     version: 1.70.0
@@ -85,6 +91,9 @@ dependencies:
     version: 3.22.4
 
 devDependencies:
+  '@types/array-move':
+    specifier: ^2.0.0
+    version: 2.0.0
   '@types/axios':
     specifier: ^0.14.0
     version: 0.14.0
@@ -121,6 +130,9 @@ devDependencies:
   '@types/react-leaflet':
     specifier: ^3.0.0
     version: 3.0.0(leaflet@1.9.4)(react-dom@18.2.0)(react@18.2.0)
+  '@types/react-sortable-hoc':
+    specifier: ^0.7.1
+    version: 0.7.1(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@types/socket.io-client':
     specifier: ^3.0.0
     version: 3.0.0
@@ -969,6 +981,13 @@ packages:
     dependencies:
       tslib: 2.6.2
 
+  /@types/array-move@2.0.0:
+    resolution: {integrity: sha512-M1Sb7db3XP65S2j5CWvzce2z0ORRfT/Bhd6mYu++nP6ZhRsntMixavFyxgf9NkQa37bveuIfpb0RKYRA8XVcGQ==}
+    deprecated: This is a stub types definition. array-move provides its own type definitions, so you do not need this installed.
+    dependencies:
+      array-move: 4.0.0
+    dev: true
+
   /@types/axios@0.14.0:
     resolution: {integrity: sha512-KqQnQbdYE54D7oa/UmYVMZKq7CO4l8DEENzOKc4aBRwxCXSlJXGz83flFx5L7AWrOQnmuN3kVsRdt+GZPPjiVQ==}
     deprecated: This is a stub types definition for axios (https://github.com/mzabriskie/axios). axios provides its own type definitions, so you don't need @types/axios installed!
@@ -1060,6 +1079,17 @@ packages:
       react-leaflet: 4.2.1(leaflet@1.9.4)(react-dom@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - leaflet
+      - react
+      - react-dom
+    dev: true
+
+  /@types/react-sortable-hoc@0.7.1(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-K27j2M0yzi8F1E/UylqImXbGrIh0L6eu31U905gzZpEImJpBUHkmMWWJCO1Aehw31PMV8I1Pqt9LkCbNF685DA==}
+    deprecated: This is a stub types definition. react-sortable-hoc provides its own type definitions, so you do not need this installed.
+    dependencies:
+      react-sortable-hoc: 2.0.0(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
+    transitivePeerDependencies:
+      - prop-types
       - react
       - react-dom
     dev: true
@@ -1308,6 +1338,10 @@ packages:
       get-intrinsic: 1.2.2
       is-string: 1.0.7
     dev: true
+
+  /array-move@4.0.0:
+    resolution: {integrity: sha512-+RY54S8OuVvg94THpneQvFRmqWdAHeqtMzgMW6JNurHxe8rsS07cHQdfGkXnTUXiBcyZ0j3SiDIxxj0RPiqCkQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   /array-tree-filter@2.1.0:
     resolution: {integrity: sha512-4ROwICNlNw/Hqa9v+rk5h22KjmzB1JGTMVKP2AKJBOCgb0yL0ASf0+YvCcLNNwquOHNX48jkeZIJ3a+oOQqKcw==}
@@ -2534,6 +2568,11 @@ packages:
       hasown: 2.0.0
       side-channel: 1.0.4
     dev: true
+
+  /invariant@2.2.4:
+    resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
+    dependencies:
+      loose-envify: 1.4.0
 
   /is-array-buffer@3.0.2:
     resolution: {integrity: sha512-y+FyyR/w8vfIRq4eQcM1EYgSTnmHXPqaF+IgzgraytCFq5Xh8lllDVmAZolPJiZttZLeFSINPYMaEJ7/vWUa1w==}
@@ -3966,6 +4005,19 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-element-popper: 2.1.6(react-dom@18.2.0)(react@18.2.0)
     dev: false
+
+  /react-sortable-hoc@2.0.0(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-JZUw7hBsAHXK7PTyErJyI7SopSBFRcFHDjWW5SWjcugY0i6iH7f+eJkY8cJmGMlZ1C9xz1J3Vjz0plFpavVeRg==}
+    peerDependencies:
+      prop-types: ^15.5.7
+      react: ^16.3.0 || ^17.0.0
+      react-dom: ^16.3.0 || ^17.0.0
+    dependencies:
+      '@babel/runtime': 7.23.9
+      invariant: 2.2.4
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}

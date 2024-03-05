@@ -9,6 +9,7 @@ export interface Product {
   categories?: CategoriesEntity[];
   image_url?: string;
   image?: string;
+  order: number;
   images?: { uuid: string }[];
 }
 export interface PricesEntity {

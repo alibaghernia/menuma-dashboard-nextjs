@@ -1,4 +1,5 @@
 "use client";
+import ConfirmModal from "@/components/common/confirm_modal/confirm_modal";
 import ImageDisplayerWrapper from "@/components/common/image-displayer";
 import TrashOutlined from "@/icons/trash-outlined";
 import { BusinessProviderContext } from "@/providers/business/provider";
@@ -47,6 +48,7 @@ const AddItemForm: FormType = (props) => {
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | undefined>();
   const redColor = useTailwindColor("red");
+  const [removeConfirmModal, setRemoveConfirmModal] = useState(false);
 
   // private implementations
   const [categories, setCategories] = useState<Category[]>([]);
@@ -108,6 +110,7 @@ const AddItemForm: FormType = (props) => {
           description: data.data.description,
           metadata: data.data.metadata,
           image: data.data.image,
+          order: data.data.order,
         });
         setImagePreviewUrl(data.data.image_url);
       })
@@ -129,6 +132,18 @@ const AddItemForm: FormType = (props) => {
         message.error("مشکلی در دریافت لیست دسته بندی ها وجود دارد!");
       });
   }
+  function handleRemove() {
+    addL("delete-item");
+    businessService.itemsService
+      .delete(params.uuid as string)
+      .then(() => {
+        message.success("آیتم مورد نظر با موفقیت حذف شد");
+        router.replace(`/${params.business}/menu/items`);
+      })
+      .finally(() => {
+        removeL("delete-item");
+      });
+  }
 
   useEffect(() => {
     fetchCategories();
@@ -138,233 +153,266 @@ const AddItemForm: FormType = (props) => {
   }, []);
 
   return (
-    <Card className="w-full">
-      <Form
-        form={form}
-        layout="vertical"
-        className="w-full"
-        onFinish={(values) => {
-          onFinish(values);
-        }}
-        onFinishFailed={(error) => {
-          console.log({
-            error,
-          });
-        }}
-        initialValues={{
-          prices: [
-            {
-              title: "",
-              value: null,
-            },
-          ],
-        }}
-      >
-        <Row gutter={16}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              name="title"
-              label="عنوان"
-              rules={[
-                {
-                  required: true,
-                  message: "عنوان آیتم اجباری است!",
-                },
-              ]}
-              extra="مثلا: اسپرسو"
-            >
-              <Input size="large" placeholder="عنوان آیتم..." />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              name="categories"
-              label="دسته بندی"
-              rules={[
-                {
-                  required: true,
-                  message: "دسته بندی اجباری است!",
-                },
-              ]}
-            >
-              <Select
-                showSearch
-                filterOption={(input, option) =>
-                  (option?.label ?? "").includes(input)
-                }
-                options={categories.map((cat) => ({
-                  label: cat.title,
-                  value: cat.uuid,
-                }))}
-                size="large"
-                placeholder="انتخاب دسته بندی..."
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item name="description" label="توضیحات">
-          <Input.TextArea placeholder="توضیحات آیتم" />
-        </Form.Item>
-
-        <Form.Item label="تصویر" name="image">
-          <Upload.Dragger
-            multiple={false}
-            showUploadList={false}
-            accept=".png,.jpg,.jpeg"
-            customRequest={(options) => {
-              addL("upload-image");
-              return uploadCustomRequest(options)
-                .finally(() => {
-                  removeL("upload-image");
-                })
-                .then((data) => {
-                  console.log({
-                    data,
-                  });
-                  form.setFieldValue("image", data.uuid);
-                });
-            }}
-            onChange={handleUploadOnChange}
-            fileList={fileList}
-            openFileDialogOnClick={!!!fileList.length}
-          >
-            {Boolean(fileList.length) ? (
-              <p className="ant-upload-text">تصویر انتخاب شد</p>
-            ) : (
-              <>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">
-                  برای انتخاب کلیک کنید یا عکس را به اینجا بکشید.
-                </p>
-              </>
-            )}
-          </Upload.Dragger>
-          {!!imagePreviewUrl && (
-            <ImageDisplayerWrapper
-              onRemove={() => {
-                setFileList([]);
-                setImagePreviewUrl(undefined);
-                form.setFieldValue("image", null);
-              }}
-              className="mx-auto"
-              imageRootClassName="relative w-[5rem] h-[5rem] border"
-            >
-              <Image fill src={imagePreviewUrl} alt="logo" />
-            </ImageDisplayerWrapper>
-          )}
-        </Form.Item>
-        <Form.Item>
-          <Form.List
-            name="prices"
-            rules={[
+    <>
+      <Card className="w-full">
+        <Form
+          form={form}
+          layout="vertical"
+          className="w-full"
+          onFinish={(values) => {
+            onFinish(values);
+          }}
+          onFinishFailed={(error) => {
+            console.log({
+              error,
+            });
+          }}
+          initialValues={{
+            prices: [
               {
-                async validator(rule, value, callback) {
-                  if (!value || value.length < 1) {
-                    return Promise.reject(
-                      new Error("حداقل 1 قیمت باید وارد کنید!")
-                    );
-                  }
-                },
+                title: "",
+                value: null,
               },
-            ]}
-          >
-            {(fields, { add, remove }, { errors }) => (
-              <Flex gap={"1rem"} vertical className="w-full">
-                <Row>
-                  <Flex vertical className="w-full" gap={"1rem"}>
-                    {fields.map(({ key, name, ...restFields }) => (
-                      <Row
-                        key={key}
-                        gutter={24}
-                        className="border p-2 rounded-[1rem]"
-                        align={"middle"}
-                      >
-                        <Col xs={24} md={12}>
-                          <Form.Item
-                            label="عنوان"
-                            name={[name, "title"]}
-                            rules={[
-                              {
-                                required: fields.length > 1,
-                                message: "عنوان قیمت اجباری است.",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="عنوان..." />
-                          </Form.Item>
-                        </Col>
-                        <Col xs={24} md={11}>
-                          <Form.Item
-                            label="قیمت"
-                            name={[name, "value"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "قیمت اجباری است.",
-                              },
-                            ]}
-                          >
-                            <InputNumber
-                              className="w-full"
-                              placeholder="قیمت..."
-                              min={0}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col
-                          span={24}
-                          md={1}
-                          className={classNames({
-                            "border-t": breakpoints.isXs,
-                          })}
-                        >
-                          <TrashOutlined
-                            width={20}
-                            height={20}
-                            color={redColor[600]}
-                            className={twMerge(
-                              classNames("cursor-pointer block w-fit", {
-                                "p-2 mx-auto":
-                                  breakpoints.isSm || breakpoints.isXs,
-                              })
-                            )}
-                            onClick={() => remove(name)}
-                          />
-                        </Col>
-                      </Row>
-                    ))}
-                  </Flex>
-                </Row>
-                <Row>
-                  <Button type="primary" block onClick={() => add()}>
-                    افزودن قیمت
-                  </Button>
-                </Row>
-                {!!errors.length && (
-                  <Row>
-                    <Form.ErrorList errors={errors} />
-                  </Row>
-                )}
-              </Flex>
+            ],
+          }}
+        >
+          <Row gutter={16}>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                name="title"
+                label="عنوان"
+                rules={[
+                  {
+                    required: true,
+                    message: "عنوان آیتم اجباری است!",
+                  },
+                ]}
+                extra="مثلا: اسپرسو"
+              >
+                <Input size="large" placeholder="عنوان آیتم..." />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                name="categories"
+                label="دسته بندی"
+                rules={[
+                  {
+                    required: true,
+                    message: "دسته بندی اجباری است!",
+                  },
+                ]}
+              >
+                <Select
+                  showSearch
+                  filterOption={(input, option) =>
+                    (option?.label ?? "").includes(input)
+                  }
+                  options={categories.map((cat) => ({
+                    label: cat.title,
+                    value: cat.uuid,
+                  }))}
+                  size="large"
+                  placeholder="انتخاب دسته بندی..."
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item name="description" label="توضیحات">
+            <Input.TextArea placeholder="توضیحات آیتم" />
+          </Form.Item>
+
+          <Form.Item label="تصویر" name="image">
+            <Upload.Dragger
+              multiple={false}
+              showUploadList={false}
+              accept=".png,.jpg,.jpeg"
+              customRequest={(options) => {
+                addL("upload-image");
+                return uploadCustomRequest(options)
+                  .finally(() => {
+                    removeL("upload-image");
+                  })
+                  .then((data) => {
+                    console.log({
+                      data,
+                    });
+                    form.setFieldValue("image", data.uuid);
+                  });
+              }}
+              onChange={handleUploadOnChange}
+              fileList={fileList}
+              openFileDialogOnClick={!!!fileList.length}
+            >
+              {Boolean(fileList.length) ? (
+                <p className="ant-upload-text">تصویر انتخاب شد</p>
+              ) : (
+                <>
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                  </p>
+                  <p className="ant-upload-text">
+                    برای انتخاب کلیک کنید یا عکس را به اینجا بکشید.
+                  </p>
+                </>
+              )}
+            </Upload.Dragger>
+            {!!imagePreviewUrl && (
+              <ImageDisplayerWrapper
+                onRemove={() => {
+                  setFileList([]);
+                  setImagePreviewUrl(undefined);
+                  form.setFieldValue("image", "");
+                }}
+                className="mx-auto"
+                imageRootClassName="relative w-[5rem] h-[5rem] border"
+              >
+                <Image fill src={imagePreviewUrl} alt="logo" />
+              </ImageDisplayerWrapper>
             )}
-          </Form.List>
-        </Form.Item>
-        <Form.Item label="تگ ها" name={"metadata"}>
-          <Checkbox.Group>
-            <Checkbox value="new">جدید</Checkbox>
-            <Checkbox value="sold_out">تمام شده</Checkbox>
-            <Checkbox value="day_offer">پیشنهاد روز</Checkbox>
-          </Checkbox.Group>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            ارسال
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+          </Form.Item>
+          <Form.Item>
+            <Form.List
+              name="prices"
+              rules={[
+                {
+                  async validator(rule, value, callback) {
+                    if (!value || value.length < 1) {
+                      return Promise.reject(
+                        new Error("حداقل 1 قیمت باید وارد کنید!")
+                      );
+                    }
+                  },
+                },
+              ]}
+            >
+              {(fields, { add, remove }, { errors }) => (
+                <Flex gap={"1rem"} vertical className="w-full">
+                  <Row>
+                    <Flex vertical className="w-full" gap={"1rem"}>
+                      {fields.map(({ key, name, ...restFields }) => (
+                        <Row
+                          key={key}
+                          gutter={24}
+                          className="border p-2 rounded-[1rem]"
+                          align={"middle"}
+                        >
+                          <Col xs={24} md={12}>
+                            <Form.Item
+                              label="عنوان"
+                              name={[name, "title"]}
+                              rules={[
+                                {
+                                  required: fields.length > 1,
+                                  message: "عنوان قیمت اجباری است.",
+                                },
+                              ]}
+                            >
+                              <Input placeholder="عنوان..." />
+                            </Form.Item>
+                          </Col>
+                          <Col xs={24} md={11}>
+                            <Form.Item
+                              label="قیمت"
+                              name={[name, "value"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "قیمت اجباری است.",
+                                },
+                              ]}
+                            >
+                              <InputNumber
+                                className="w-full"
+                                placeholder="قیمت..."
+                                min={0}
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col
+                            span={24}
+                            md={1}
+                            className={classNames({
+                              "border-t": breakpoints.isXs,
+                            })}
+                          >
+                            <TrashOutlined
+                              width={20}
+                              height={20}
+                              color={redColor[600]}
+                              className={twMerge(
+                                classNames("cursor-pointer block w-fit", {
+                                  "p-2 mx-auto":
+                                    breakpoints.isSm || breakpoints.isXs,
+                                })
+                              )}
+                              onClick={() => remove(name)}
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Flex>
+                  </Row>
+                  <Row>
+                    <Button type="primary" block onClick={() => add()}>
+                      افزودن قیمت
+                    </Button>
+                  </Row>
+                  {!!errors.length && (
+                    <Row>
+                      <Form.ErrorList errors={errors} />
+                    </Row>
+                  )}
+                </Flex>
+              )}
+            </Form.List>
+          </Form.Item>
+          <Form.Item label="تگ ها" name={"metadata"}>
+            <Checkbox.Group>
+              <Checkbox value="new">جدید</Checkbox>
+              <Checkbox value="sold_out">تمام شده</Checkbox>
+              <Checkbox value="day_offer">پیشنهاد روز</Checkbox>
+            </Checkbox.Group>
+          </Form.Item>
+          <Form.Item
+            label="اولویت نمایش"
+            name={"order"}
+            help="اولویت از عدد کوچک به بزرگ است"
+          >
+            <InputNumber placeholder="اولویت..." />
+          </Form.Item>
+          <Form.Item>
+            <Flex gap={4}>
+              <Button type="primary" htmlType="submit">
+                ذخیره
+              </Button>
+              {props.isEdit && (
+                <Button
+                  type="primary"
+                  danger
+                  onClick={() => setRemoveConfirmModal(true)}
+                >
+                  حذف
+                </Button>
+              )}
+            </Flex>
+          </Form.Item>
+        </Form>
+      </Card>
+
+      <ConfirmModal
+        open={removeConfirmModal}
+        title="حدف"
+        dangerConfirm
+        confirmText="حذف کن"
+        onClose={() => setRemoveConfirmModal(false)}
+        onConfirm={handleRemove}
+      >
+        <div className="text-center text-typography text-[.9rem]">
+          آیا از لغو این آیتم اطمینان دارید؟
+        </div>
+      </ConfirmModal>
+    </>
   );
 };
 

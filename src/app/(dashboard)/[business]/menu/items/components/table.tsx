@@ -11,10 +11,8 @@ import {
   useTailwindColor,
 } from "@/utils/hooks";
 import { renderTime } from "@/utils/tables";
-import { EditOutlined } from "@ant-design/icons";
-import { Button, Col, Flex, Table, TableProps } from "antd/lib";
+import { Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
-import moment from "jalali-moment";
 import * as _ from "lodash";
 import Image from "next/image";
 import { useParams } from "next/navigation";

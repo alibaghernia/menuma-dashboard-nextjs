@@ -11,6 +11,7 @@ export interface Product {
   categories?: CategoriesEntity[];
   image_url?: string;
   image: string;
+  order: number;
   business?: Business;
 }
 export interface PricesEntity {
@@ -26,8 +27,9 @@ export interface CategoriesEntity {
 }
 
 export interface IGetProductFilters {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
   title?: string;
   business_uuid?: string;
+  [x: string]: any;
 }
