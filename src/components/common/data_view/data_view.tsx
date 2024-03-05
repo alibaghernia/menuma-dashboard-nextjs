@@ -86,13 +86,6 @@ function DataView<T extends {}>(props: IDataViewProps<T>) {
       }),
     [columns]
   );
-  function disableFilter(filterName: string) {
-    setFilters((filters) =>
-      Object.fromEntries(
-        Object.entries(filters).filter(([key]) => key != filterName)
-      )
-    );
-  }
   const renderFiltersItems = useMemo(
     () =>
       props.filters?.items.map((filter) => (

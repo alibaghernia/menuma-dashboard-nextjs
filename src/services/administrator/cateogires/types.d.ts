@@ -6,6 +6,7 @@ export interface Category {
   title: string;
   slug?: null;
   image: string;
+  order: number;
   image_url?: string;
   products_count: number;
   business?: Business;
@@ -15,4 +16,5 @@ export interface IGetFilters {
   limit?: number;
   title?: string;
   business_uuid?: string;
+  [x: string]: any;
 }

@@ -219,11 +219,6 @@ const ItemsTable: ItemsTableType = (props) => {
         message.error("مشکلی در دریافت داده ها وجود دارد!");
       });
   }
-  useEffect(() => {
-    fetchBusinesses();
-  }, []);
-
-  // const dataSource = [];
   const onDataViewChange = (data: any) => {
     const { search, ...filters } = data;
     setDataViewSearch(search);
@@ -233,6 +228,10 @@ const ItemsTable: ItemsTableType = (props) => {
       title: search,
     });
   };
+  useEffect(() => {
+    fetchBusinesses();
+  }, []);
+
   return (
     <>
       <Flex vertical gap={"1rem"} className="w-full">
@@ -258,23 +257,6 @@ const ItemsTable: ItemsTableType = (props) => {
         <Row>
           <DataView<Product>
             data={items}
-            dragSorting={
-              !hasFilter
-                ? {
-                    onSort(item, newOrder) {
-                      addL("fetch-items-noall");
-                      DashboardBusinessService.init(item.business?.uuid!)
-                        .itemsService.update(item.uuid, { order: newOrder })
-                        .then(() => {
-                          fetchItems();
-                        })
-                        .finally(() => {
-                          removeL("fetch-items-noall");
-                        });
-                    },
-                  }
-                : undefined
-            }
             onChange={onDataViewChange}
             filters={{
               items: [

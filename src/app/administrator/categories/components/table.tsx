@@ -1,15 +1,16 @@
 "use client";
 import TableActions from "@/components/common/_table/actions";
+import DataView from "@/components/common/data_view/data_view";
 import Link from "@/components/common/link/link";
 import { BusinessProviderContext } from "@/providers/business/provider";
 import { BusinessService } from "@/services/administrator/business.service";
 import { CategoryService } from "@/services/administrator/cateogires/categories.service";
-import { IGetFilters } from "@/services/administrator/cateogires/types";
-import { Business } from "@/services/administrator/types";
+import { BusinessService as DashboardBusinessService } from "@/services/dashboard/business.service";
 import {
   Category,
-  IGetItemsFilters,
-} from "@/services/dashboard/categories/types";
+  IGetFilters,
+} from "@/services/administrator/cateogires/types";
+import { Business } from "@/services/administrator/types";
 import {
   useCurrentBreakpoints,
   useCustomRouter,
@@ -21,7 +22,7 @@ import { Avatar, Col, Flex, Row, Select, Table, TableProps } from "antd/lib";
 import { ColumnProps } from "antd/lib/table";
 import _ from "lodash";
 import { useParams } from "next/navigation";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 
 export type CategoriesTableType = FC<{
   search?: string;
@@ -30,7 +31,7 @@ export type CategoriesTableType = FC<{
 const CategoriesTable: CategoriesTableType = (props) => {
   const params = useParams();
   const message = useMessage();
-  const [addL, removeL] = useLoadings();
+  const [addL, removeL, hasL] = useLoadings();
   const [items, setItems] = useState<Category[]>([]);
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [selectedBusiness, setSelectedBusiness] = useState<string>();
@@ -41,6 +42,12 @@ const CategoriesTable: CategoriesTableType = (props) => {
   const [total, setTotal] = useState(0);
   const categoryService = CategoryService.init();
   const businessService = BusinessService.init();
+  const [dataViewFilters, setDataViewFilters] = useState({});
+  const hasFilter = useMemo(
+    () => !!Object.entries(dataViewFilters).filter(([, val]) => val).length,
+    [dataViewFilters]
+  );
+  const [dataViewSearch, setDataViewSearch] = useState("");
 
   const primaryColor = useTailwindColor("primary");
   const breakpoints = useCurrentBreakpoints();
@@ -84,7 +91,6 @@ const CategoriesTable: CategoriesTableType = (props) => {
       title: "تصویر",
       dataIndex: "image_url",
       render: renderImage,
-      responsive: ["md"],
     },
     {
       key: "actions",
@@ -138,11 +144,22 @@ const CategoriesTable: CategoriesTableType = (props) => {
     },
   ];
 
+  const pageAndLimit = useMemo(
+    () => ({ page: currentPage, limit: pageSize }),
+    [currentPage, pageSize]
+  );
   async function fetchItems(
     filters: IGetFilters = { page: currentPage, limit: pageSize }
   ) {
+    const search: IGetFilters = {
+      ...pageAndLimit,
+      business_uuid: selectedBusiness,
+      title: dataViewSearch,
+      ...dataViewFilters,
+      ...filters,
+    };
     try {
-      const { data } = await categoryService.getItems(filters);
+      const { data } = await categoryService.getItems(search);
       setTotal(data.total);
       setItems(data.categories);
     } catch (error) {
@@ -154,23 +171,10 @@ const CategoriesTable: CategoriesTableType = (props) => {
 
   useEffect(() => {
     fetchItems({
-      page: currentPage,
-      limit: pageSize,
-      title: props.search,
+      ...pageAndLimit,
       business_uuid: selectedBusiness,
     });
   }, [currentPage, pageSize, selectedBusiness]);
-  useEffect(
-    _.debounce(() => {
-      fetchItems({
-        page: currentPage,
-        limit: pageSize,
-        title: props.search,
-        business_uuid: selectedBusiness,
-      });
-    }, 500),
-    [props.search]
-  );
 
   function fetchBusinesses() {
     addL("load-businesses");
@@ -192,6 +196,15 @@ const CategoriesTable: CategoriesTableType = (props) => {
   const tablePaginationOnChange = (current: number, pageSize: number) => {
     setCurrentPage(current);
     setPageSize(pageSize);
+  };
+  const onDataViewChange = (data: any) => {
+    const { search, ...filters } = data;
+    setDataViewSearch(search);
+    setDataViewFilters(filters.filters);
+    fetchItems({
+      ...filters.filters,
+      title: search,
+    });
   };
   return (
     <Flex vertical gap={"1rem"} className="w-full">
@@ -215,15 +228,20 @@ const CategoriesTable: CategoriesTableType = (props) => {
         </Col>
       </Row>
       <Row>
-        <Table
-          className="w-full rounded-[1rem] overflow-hidden"
-          columns={columns}
-          dataSource={items}
-          pagination={{
-            current: currentPage,
-            pageSize,
-            total,
-            onChange: tablePaginationOnChange,
+        <DataView<Category>
+          data={items}
+          onChange={onDataViewChange}
+          columns={breakpoints.isXs ? ["title", "business"] : undefined}
+          options={{
+            className: "w-full rounded-[1rem] overflow-hidden",
+            columns: columns,
+            loading: hasL("fetch-items-noall", "delete-item-noall"),
+            pagination: {
+              current: currentPage,
+              pageSize,
+              total,
+              onChange: tablePaginationOnChange,
+            },
           }}
         />
       </Row>

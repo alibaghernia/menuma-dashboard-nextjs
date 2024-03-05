@@ -2,16 +2,10 @@
 import ConfirmModal from "@/components/common/confirm_modal/confirm_modal";
 import ImageDisplayerWrapper from "@/components/common/image-displayer";
 import TrashOutlined from "@/icons/trash-outlined";
-import { BusinessProviderContext } from "@/providers/business/provider";
 import { Category } from "@/services/dashboard/categories/types";
-import { Product } from "@/services/dashboard/items/types";
-import { FilesService } from "@/services/file/file.service";
-import { FormType } from "@/types";
 import {
   useCurrentBreakpoints,
-  useCustomRouter,
   useLoadings,
-  useMessage,
   useTailwindColor,
 } from "@/utils/hooks";
 import { uploadCustomRequest } from "@/utils/upload";
@@ -33,8 +27,7 @@ import {
 } from "antd/lib";
 import classNames from "classnames";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export interface IAddItemForm {
@@ -296,6 +289,12 @@ const AddItemForm: FC<IAddItemForm> = (props) => {
             label="اولویت نمایش"
             name={"order"}
             extra="اولویت از عدد کوچک به بزرگ است"
+            rules={[
+              {
+                required: true,
+                message: "اجباری است",
+              },
+            ]}
           >
             <InputNumber placeholder="اولویت..." />
           </Form.Item>

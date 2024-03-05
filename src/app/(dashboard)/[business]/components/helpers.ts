@@ -43,6 +43,13 @@ export const setMenuKeys = ({
       ]);
       break;
     }
+    case `/${params.business}/menu/items`: {
+      setSelectedKeys([
+        ...menu_items,
+        MENU_KEYS.menu_children.items_children.list,
+      ]);
+      break;
+    }
     case `/${params.business}/menu/items/add`: {
       setSelectedKeys([
         ...menu_items,
