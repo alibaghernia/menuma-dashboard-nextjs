@@ -89,9 +89,6 @@ export default LoginForm;
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-  console.log({
-    pending,
-  });
   return (
     <Button
       type="primary"

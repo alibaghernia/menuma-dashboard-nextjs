@@ -36,7 +36,8 @@
     "sass": "^1.70.0",
     "socket.io-client": "^4.7.4",
     "tailwind-merge": "^2.2.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "react-image-picker": "file:../js-packages/react-image-picker"
   },
   "devDependencies": {
     "@types/array-move": "^2.0.0",

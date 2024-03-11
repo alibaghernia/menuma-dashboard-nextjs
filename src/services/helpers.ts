@@ -1,8 +1,8 @@
-import axios from "@/lib/axios";
+import axios, { responseIntercepter } from "@/lib/axios";
 import axiosPkg, { AxiosInstance } from "axios";
 
 export const recreateServiceAxiosIns = (base_url: string) => {
-  return axiosPkg.create({
+  const axiosIns = axiosPkg.create({
     ...axios.defaults,
     baseURL: base_url.startsWith("http")
       ? base_url
@@ -11,4 +11,8 @@ export const recreateServiceAxiosIns = (base_url: string) => {
       ...axios.defaults.headers.common,
     },
   });
+
+  axiosIns.interceptors.response.use(...responseIntercepter);
+
+  return axiosIns;
 };
